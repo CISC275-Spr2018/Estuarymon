@@ -1,4 +1,6 @@
 import java.awt.event.KeyEvent;
+import java.util.HashSet;
+import java.util.Random;
 
 /**
  * Model: Contains all the state and logic
@@ -26,6 +28,8 @@ public class Model
 	Direction curDir = Direction.EAST;
 	
 	int dir = 0;
+	
+	HashSet<Litter> litterSet = new HashSet<>();
 
 	public Model(int winW, int winH, int imgW, int imgH) 
 	{
@@ -118,6 +122,11 @@ public class Model
 	public Direction getDirect()
 	{
 		return curDir;
+	}
+	
+	public void spawnLitter() {
+		Random cordGenerator = new Random();
+		
 	}
 
 

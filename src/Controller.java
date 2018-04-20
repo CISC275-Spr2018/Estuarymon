@@ -2,6 +2,7 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.TimerTask;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -11,6 +12,7 @@ public class Controller implements KeyListener {
 	private Model model;
 	private View view;
 	private Timer stepTimer;
+	java.util.Timer trashTimer = new java.util.Timer();
 
 	private static final int DRAW_DELAY = 100;
 
@@ -35,6 +37,7 @@ public class Controller implements KeyListener {
 			public void run() {
 				stepTimer = new Timer(DRAW_DELAY, stepAction);
 				stepTimer.start();
+				trashTimer.scheduleAtFixedRate(new TrashTask(), 0, 10);
 			}
 		});
 	}
@@ -97,5 +100,11 @@ public class Controller implements KeyListener {
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	class TrashTask extends TimerTask{
+		public void run() {
+			model.spawnLitter();
+		}
 	}
 }
