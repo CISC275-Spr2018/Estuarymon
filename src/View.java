@@ -1,16 +1,20 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
+import java.io.File;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class View extends JPanel{
-	private final static int frameWidth = 500;
-    private final static int frameHeight = 300;
+	private final static int frameWidth = 900;
+    private final static int frameHeight = 900;
     private final static int imgWidth = 165;
     private final static int imgHeight = 165;
     JFrame frame = new JFrame();
@@ -20,9 +24,23 @@ public class View extends JPanel{
 	private static final Color BACKGROUND_COLOR = Color.GRAY;
     static int bCount;
     Animation animation = Animation.IDLE;
+    
+    
+    
     public View() {
     	// Preload animations
 		Animation.preload();
+		
+    	JLabel plant1 = new JLabel();
+    	
+    	//loads plant image,converts it to icon, adds icon to label, resizes image
+    	ImageIcon plantIcon = new ImageIcon("images/MapObjects/plant.png");
+    	Image plantImg = plantIcon.getImage();
+    	Image newImg = plantImg.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH);
+    	
+    	plant1.setIcon(new ImageIcon(newImg));
+    	plant1.setBounds(frameWidth - (frameWidth/3), (frameHeight / 100), 100, 100);
+    	frame.getContentPane().add(plant1);
     	
     	frame.setFocusable(true);
     	frame.getContentPane().add(this);
