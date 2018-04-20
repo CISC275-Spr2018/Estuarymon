@@ -8,10 +8,13 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Timer;
 
+
 public class Controller implements KeyListener {
 	private Model model;
 	private View view;
 	private Timer stepTimer;
+	
+	java.util.Timer taskTimer = new java.util.Timer();
 	java.util.Timer trashTimer = new java.util.Timer();
 
 	private static final int DRAW_DELAY = 100;
@@ -27,7 +30,15 @@ public class Controller implements KeyListener {
 		model.updateModel();
 		view.update(model.getX(), model.getY(), model.getDirect());
 	}
-
+	
+	class PlantTask extends TimerTask 
+	{
+		public void run()
+		{
+			model.damagePlant();
+		}
+	}
+	
 	// run the simulation
 	public void start() {
 		view = new View();
@@ -37,6 +48,7 @@ public class Controller implements KeyListener {
 			public void run() {
 				stepTimer = new Timer(DRAW_DELAY, stepAction);
 				stepTimer.start();
+				taskTimer.scheduleAtFixedRate(new PlantTask(),500,1000); //creates task that chooses random plant and decreases its health
 				trashTimer.scheduleAtFixedRate(new TrashTask(), 0, 10);
 			}
 		});
