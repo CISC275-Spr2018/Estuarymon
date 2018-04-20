@@ -45,7 +45,7 @@ public class Model
 		//System.out.println("xLoc: " + xLoc + " yLoc: " + yLoc);
 		collisionDetection();
 		updateLocation();
-		System.out.println(plants[0].health + " " + " " + plants[1].health + " " + plants[2].health + " "+ plants[3].health);
+		//System.out.println(plants[0].health + " " + " " + plants[1].health + " " + plants[2].health + " "+ plants[3].health);
 
 	}
 	
