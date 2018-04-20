@@ -120,30 +120,5 @@ public class Model
 		return curDir;
 	}
 
-	private void checkCollisions() {
-		for(Litter litter : this.litter) {
-			if(litter.collidesWith(this.player))
-				this.player.pickUpLitter(litter);
-		}
-		
-		if(player.hasLitter()) {
-			if(player.collidesWith(this,trashBin))
-				this.trashBin.takeLitter(this.player);
-			if(player.collidesWith(this.recycleBin))
-				this.recycleBin.takeLitter(this.player);
-		}
 
-		for(Litter litter : this.litter) {
-			for(Animal animal : this.animals) {
-				if(litter.collidesWith(animal)) {
-					animal.eatLitter(litter);
-				}
-			}
-		}
-	}
-
-	private void updateLocations() {
-		for(Animal animal : this.animals)
-			animal.move();
-	}
 }
