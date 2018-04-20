@@ -25,16 +25,18 @@ public class View extends JPanel{
 	private static final Color BACKGROUND_COLOR = Color.GRAY;
 	static int bCount;
 	Animation animation = Animation.IDLE;
-
+	
+	ArrayList<JLabel> plantImgs = new ArrayList<JLabel>();
 
 
 	public View() {
 		// Preload animations
 		Animation.preload();
 
+		//PLANT SECTION**************************************
 		JLabel plant;
-		ArrayList<JLabel> plantImgs = new ArrayList<JLabel>();
 		int count = 0;
+		
 		for(int i = 0; i < 4; i++)
 		{
 			plant = new JLabel();
@@ -51,6 +53,7 @@ public class View extends JPanel{
 			count = count + 200;
 			frame.getContentPane().add(plant);
 		}
+		//********************************************************************8
 		
 		frame.setFocusable(true);
 		frame.getContentPane().add(this);
@@ -61,6 +64,17 @@ public class View extends JPanel{
 		frame.setVisible(true);
 	}
 
+	//makes plant dissappear if health is zero
+	public void deletePlant(int pick)
+	{
+		plantImgs.get(pick).setVisible(false);
+	}
+	
+	public void revivePlant(int pick)
+	{
+		plantImgs.get(pick).setVisible(true);
+	}
+	
 	public void setAnimation(Animation animation) {
 		this.animation = animation;
 	}

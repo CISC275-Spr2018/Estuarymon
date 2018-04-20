@@ -31,6 +31,7 @@ public class Model
 	
 	Plant [] plants = {new Plant(100), new Plant(100), new Plant(100), new Plant(100)};
 	int randPlant = (int) Math.floor(Math.random() * 4);//between 0 and 3
+	int deletePlant = 4;
 	HashSet<Litter> litterSet = new HashSet<>();
 
 	public Model(int winW, int winH, int imgW, int imgH) 
@@ -132,13 +133,18 @@ public class Model
 			System.out.println(randPlant);
 			if(plants[randPlant].getHealth() > 0)
 			{
+				deletePlant = 4;//dont delete a plant, no switch case for 4
 				plants[randPlant].health = plants[randPlant].health - 10;
 			}
 			else if(plants[randPlant].getHealth() == 0)
 			{
+				//send randplant number
+				//update view corresponding to which plant reached zero
+				deletePlant = randPlant;
 				randPlant = (int) Math.floor(Math.random() * 4);
 			}
 		}
+		
 	public void spawnLitter() {
 		Random coordGenerator = new Random();
 		Litter newLitter = new Trash();

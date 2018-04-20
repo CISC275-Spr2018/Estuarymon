@@ -31,11 +31,35 @@ public class Controller implements KeyListener {
 		view.update(model.getX(), model.getY(), model.getDirect());
 	}
 	
+	//plant stuff
 	class PlantTask extends TimerTask 
 	{
 		public void run()
 		{
 			model.damagePlant();
+			checkPlants();
+		}
+	}
+	
+	public void checkPlants()
+	{
+		int pick = model.deletePlant;
+		switch(pick)
+		{
+		//make first dissappear
+		case 0:
+			view.deletePlant(pick);
+			break;
+		//second..etc
+		case 1:
+			view.deletePlant(pick);
+			break;
+		case 2:
+			view.deletePlant(pick);
+			break;
+		case 3:
+			view.deletePlant(pick);
+			break;
 		}
 	}
 	
