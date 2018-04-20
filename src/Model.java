@@ -140,7 +140,16 @@ public class Model
 			}
 		}
 	public void spawnLitter() {
-		Random cordGenerator = new Random();
+		Random coordGenerator = new Random();
+		Litter newLitter = new Trash();
+		if(Math.random() < 0.5) {
+			newLitter = new Recyclable();
+		}
+		int litterXCord = coordGenerator.nextInt((winW-newLitter.getWidth()));
+		int litterYCord = coordGenerator.nextInt((winH-newLitter.getHeight()));
+		newLitter.setXLocation(litterXCord);
+		newLitter.setYLocation(litterYCord);
+		litterSet.add(newLitter);
 		
 	}
 
