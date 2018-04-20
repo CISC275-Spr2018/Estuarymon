@@ -26,6 +26,9 @@ public class Model
 	Direction curDir = Direction.EAST;
 	
 	int dir = 0;
+	
+	Plant [] plants = {new Plant(100), new Plant(100), new Plant(100), new Plant(100)};
+	int randPlant = (int) Math.floor(Math.random() * 4);//between 0 and 3
 
 	public Model(int winW, int winH, int imgW, int imgH) 
 	{
@@ -42,6 +45,7 @@ public class Model
 		//System.out.println("xLoc: " + xLoc + " yLoc: " + yLoc);
 		collisionDetection();
 		updateLocation();
+		System.out.println(plants[0].health + " " + " " + plants[1].health + " " + plants[2].health + " "+ plants[3].health);
 
 	}
 	
@@ -119,6 +123,20 @@ public class Model
 	{
 		return curDir;
 	}
+	
+	//damage plant every 10 seconds
+		public void damagePlant()
+		{
+			System.out.println(randPlant);
+			if(plants[randPlant].getHealth() > 0)
+			{
+				plants[randPlant].health = plants[randPlant].health - 10;
+			}
+			else if(plants[randPlant].getHealth() == 0)
+			{
+				randPlant = (int) Math.floor(Math.random() * 4);
+			}
+		}
 
 
 }
