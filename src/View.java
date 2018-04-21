@@ -37,6 +37,9 @@ public class View extends JPanel{
 		JLabel plant;
 		int count = 0;
 		
+		int plantXloc;
+		int plantYloc;
+		
 		for(int i = 0; i < 4; i++)
 		{
 			plant = new JLabel();
@@ -46,7 +49,13 @@ public class View extends JPanel{
 			Image newImg = plantImg.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH);
 			
 			plant.setIcon(new ImageIcon(newImg));
-			plant.setBounds(frameWidth - (frameWidth/3), (frameHeight / 100) + count, 100, 100);
+		
+			//set this in plant
+			plantXloc = frameWidth - (frameWidth/3);
+			plantYloc = (frameHeight / 100) + count;
+			
+			//set plant in array vars to these^
+			plant.setBounds(plantXloc, plantYloc, 100, 100);
 			//store images in a list to set vis false layer
 			plantImgs.add(plant);
 			//space out images by 200
@@ -69,7 +78,7 @@ public class View extends JPanel{
 	{
 		plantImgs.get(pick).setVisible(false);
 	}
-	
+	//make plant reappear
 	public void revivePlant(int pick)
 	{
 		plantImgs.get(pick).setVisible(true);

@@ -41,24 +41,34 @@ public class Controller implements KeyListener {
 		}
 	}
 	
+	//create task that checks this every one second for revive
 	public void checkPlants()
 	{
-		int pick = model.deletePlant;
-		switch(pick)
+		int plantNum = 0;
+		switch(plantNum)
 		{
 		//make first dissappear
 		case 0:
-			view.deletePlant(pick);
+			//if dead
+			//change mode. to player collision
+			if(model.plants[plantNum].health == 0 && model.xLoc == model.plants[plantNum].xLocation && model.yLoc == model.plants[plantNum].yLocation) 
+			{
+				view.revivePlant(plantNum);
+			}
+			else if(model.plants[plantNum].health == 0)
+			{
+				view.deletePlant(plantNum);
+			}
 			break;
 		//second..etc
 		case 1:
-			view.deletePlant(pick);
+			view.deletePlant(plantNum);
 			break;
 		case 2:
-			view.deletePlant(pick);
+			view.deletePlant(plantNum);
 			break;
 		case 3:
-			view.deletePlant(pick);
+			view.deletePlant(plantNum);
 			break;
 		}
 	}
@@ -72,7 +82,7 @@ public class Controller implements KeyListener {
 			public void run() {
 				stepTimer = new Timer(DRAW_DELAY, stepAction);
 				stepTimer.start();
-				taskTimer.scheduleAtFixedRate(new PlantTask(),500,1000); //creates task that chooses random plant and decreases its health
+				taskTimer.scheduleAtFixedRate(new PlantTask(),500,100); //creates task that chooses random plant and decreases its health
 				trashTimer.scheduleAtFixedRate(new TrashTask(), 0, 10);
 			}
 		});
