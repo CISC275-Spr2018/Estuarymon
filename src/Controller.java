@@ -58,6 +58,7 @@ public class Controller implements KeyListener {
 		case 0:
 			//if dead
 			//change model.xloc and model.yloc to playercollision so coordinates dont have to be exact
+			//player.getCollidesWith(plants[plantNum])
 			if(model.plants[plantNum].health == 0 && model.xLoc == model.plants[plantNum].xLocation && model.yLoc == model.plants[plantNum].yLocation) 
 			{
 				view.revivePlant(plantNum);

@@ -146,7 +146,7 @@ public class Model
 	//damage plant every 10 seconds
 		public void damagePlant()
 		{
-			System.out.println(randPlant);
+			//System.out.println(randPlant);
 			if(plants[randPlant].getHealth() > 0)
 			{
 				deletePlant = 4;//dont delete a plant, no switch case for 4
