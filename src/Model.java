@@ -35,6 +35,8 @@ public class Model
 	
 	Plant [] plants = new Plant[4]; 
 	int randPlant = (int) Math.floor(Math.random() * 4);//between 0 and 3
+	int plantDamage = 10;
+	int plantHealth = 100;
 	int deletePlant = 4;
 	
 	public Model(int winW, int winH, int imgW, int imgH) 
@@ -50,7 +52,7 @@ public class Model
 		{//health,xloc,yoc
 			//System.out.println(winW - (winW/3));
 			//System.out.println((winH / 100) + count);
-			this.plants[i] = new Plant(100, winW - (winW/3), (winH / 90) + count);//sets location of plants
+			this.plants[i] = new Plant(plantHealth, winW - (winW/3), (winH / 90) + count);//sets location of plants
 			count = count + 200;
 		}
 	}
@@ -148,7 +150,7 @@ public class Model
 			if(plants[randPlant].getHealth() > 0)
 			{
 				deletePlant = 4;//dont delete a plant, no switch case for 4
-				plants[randPlant].health = plants[randPlant].health - 10;
+				plants[randPlant].health = plants[randPlant].health - plantDamage;
 			}
 			else if(plants[randPlant].getHealth() == 0)
 			{
