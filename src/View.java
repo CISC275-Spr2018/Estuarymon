@@ -7,6 +7,7 @@ import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -44,7 +45,7 @@ public class View extends JPanel{
 		{
 			plant = new JLabel();
 			//loads plant image,converts it to icon, adds icon to label, resizes image
-			ImageIcon plantIcon = new ImageIcon("images/MapObjects/plant.png");
+			ImageIcon plantIcon = new ImageIcon("images/MapObjects/azalea.png");
 			Image plantImg = plantIcon.getImage();
 			Image newImg = plantImg.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH);
 			
@@ -63,6 +64,7 @@ public class View extends JPanel{
 			frame.getContentPane().add(plant);
 		}
 		//********************************************************************8
+		
 		
 		frame.setFocusable(true);
 		frame.getContentPane().add(this);
@@ -94,6 +96,8 @@ public class View extends JPanel{
 
 	public void paint(Graphics g) {
 		super.paint(g);
+		ImageIcon backg = new ImageIcon("images/Map/Background.jpg");
+		g.drawImage(backg.getImage(),0,0,this);
 		g.drawImage(this.animation.getCurrentFrameForDirection(this.curDir), xloc, yLoc, BACKGROUND_COLOR, this);
 	}
 

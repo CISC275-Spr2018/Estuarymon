@@ -49,8 +49,8 @@ public class Model
 		//fills plant array
 		for(int i = 0; i < 4; i++)
 		{//health,xloc,yoc
-			System.out.println(winW - (winW/3));
-			System.out.println((winH / 100) + count);
+			//System.out.println(winW - (winW/3));
+			//System.out.println((winH / 100) + count);
 			this.plants[i] = new Plant(100, winW - (winW/3), (winH / 90) + count);//sets location of plants
 			count = count + 200;
 		}
@@ -61,7 +61,7 @@ public class Model
 	{
 		
 		//System.out.println(xLoc + ":" + plants[0].xLocation + " and " + yLoc + ":" + plants[0].yLocation);
-		System.out.println(plants[0].health + " " + plants[1].health + " " + plants[2].health + " " + plants[3].health);
+		//System.out.println(plants[0].health + " " + plants[1].health + " " + plants[2].health + " " + plants[3].health);
 		collisionDetection();
 		updateLocation();
 
