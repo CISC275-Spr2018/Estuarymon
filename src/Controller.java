@@ -73,7 +73,7 @@ public class Controller implements KeyListener {
 				stepTimer = new Timer(DRAW_DELAY, stepAction);
 				stepTimer.start();
 				taskTimer.scheduleAtFixedRate(new PlantTask(),500,1000); //creates task that chooses random plant and decreases its health
-				trashTimer.scheduleAtFixedRate(new TrashTask(), 0, 10);
+				trashTimer.scheduleAtFixedRate(new TrashTask(), 0, 6000);
 			}
 		});
 	}
@@ -140,7 +140,22 @@ public class Controller implements KeyListener {
 	
 	class TrashTask extends TimerTask{
 		public void run() {
-			model.spawnLitter();
+			
+			if(Math.random() < 0.5) { //coin flip as to whether it will be trash or recyclable
+				Recyclable newLitter = new Recyclable();
+				model.genLitterCords(newLitter);
+				view.setLitterImage(newLitter);
+				
+			}
+			else {
+				Trash newLitter = new Trash();
+				model.genLitterCords(newLitter);
+				view.setLitterImage(newLitter);
+			}
+			
+		
+			//spawns the litter on the screen
+			
 		}
 	}
 }

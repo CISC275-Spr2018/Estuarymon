@@ -32,7 +32,6 @@ public class Model
 	Plant [] plants = {new Plant(100), new Plant(100), new Plant(100), new Plant(100)};
 	int randPlant = (int) Math.floor(Math.random() * 4);//between 0 and 3
 	int deletePlant = 4;
-	HashSet<Litter> litterSet = new HashSet<>();
 
 	public Model(int winW, int winH, int imgW, int imgH) 
 	{
@@ -145,17 +144,20 @@ public class Model
 			}
 		}
 		
-	public void spawnLitter() {
+	public void createLitter() {
+		
+		
+		
+	}
+	
+	public void genLitterCords(Litter l) {
 		Random coordGenerator = new Random();
-		Litter newLitter = new Trash();
-		if(Math.random() < 0.5) {
-			newLitter = new Recyclable();
-		}
-		int litterXCord = coordGenerator.nextInt((winW-newLitter.getWidth()));
-		int litterYCord = coordGenerator.nextInt((winH-newLitter.getHeight()));
-		newLitter.setXLocation(litterXCord);
-		newLitter.setYLocation(litterYCord);
-		litterSet.add(newLitter);
+		int litterXCord = coordGenerator.nextInt((winW-l.getWidth()));//generates random coordinates
+		int litterYCord = coordGenerator.nextInt((winH-l.getHeight()));
+		l.setXLocation(litterXCord);//
+		l.setYLocation(litterYCord);
+		Litter.litterSet.add(l);//Adds them to hashset of litter, prevents exact duplicates in terms of coordinates.
+		System.out.println(l);
 		
 	}
 
