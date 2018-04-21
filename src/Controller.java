@@ -32,11 +32,18 @@ public class Controller implements KeyListener {
 	}
 	
 	//plant stuff
-	class PlantTask extends TimerTask 
+	class damagePlantTask extends TimerTask 
 	{
 		public void run()
 		{
 			model.damagePlant();
+		}
+	}
+	
+	class checkPlantTask extends TimerTask 
+	{
+		public void run()
+		{
 			checkPlants();
 		}
 	}
@@ -44,17 +51,18 @@ public class Controller implements KeyListener {
 	//create task that checks this every one second for revive
 	public void checkPlants()
 	{
-		int plantNum = 0;
+		int plantNum = model.deletePlant;
 		switch(plantNum)
 		{
 		//make first dissappear
 		case 0:
 			//if dead
-			//change mode. to player collision
+			//change model.xloc and model.yloc to playercollision so coordinates dont have to be exact
 			if(model.plants[plantNum].health == 0 && model.xLoc == model.plants[plantNum].xLocation && model.yLoc == model.plants[plantNum].yLocation) 
 			{
 				view.revivePlant(plantNum);
-				model.plants[plantNum].health = 1000;
+				model.plants[plantNum].health = 100;
+				model.randPlant = (int) Math.floor(Math.random() * 4);
 			}
 			else if(model.plants[plantNum].health == 0)
 			{
@@ -63,13 +71,40 @@ public class Controller implements KeyListener {
 			break;
 		//second..etc
 		case 1:
-			view.deletePlant(plantNum);
+			if(model.plants[plantNum].health == 0 && model.xLoc == model.plants[plantNum].xLocation && model.yLoc == model.plants[plantNum].yLocation) 
+			{
+				view.revivePlant(plantNum);
+				model.plants[plantNum].health = 100;
+				model.randPlant = (int) Math.floor(Math.random() * 4);
+			}
+			else if(model.plants[plantNum].health == 0)
+			{
+				view.deletePlant(plantNum);
+			}
 			break;
 		case 2:
-			view.deletePlant(plantNum);
+			if(model.plants[plantNum].health == 0 && model.xLoc == model.plants[plantNum].xLocation && model.yLoc == model.plants[plantNum].yLocation) 
+			{
+				view.revivePlant(plantNum);
+				model.plants[plantNum].health = 100;
+				model.randPlant = (int) Math.floor(Math.random() * 4);
+			}
+			else if(model.plants[plantNum].health == 0)
+			{
+				view.deletePlant(plantNum);
+			}
 			break;
 		case 3:
-			view.deletePlant(plantNum);
+			if(model.plants[plantNum].health == 0 && model.xLoc == model.plants[plantNum].xLocation && model.yLoc == model.plants[plantNum].yLocation) 
+			{
+				view.revivePlant(plantNum);
+				model.plants[plantNum].health = 100;
+				model.randPlant = (int) Math.floor(Math.random() * 4);
+			}
+			else if(model.plants[plantNum].health == 0)
+			{
+				view.deletePlant(plantNum);
+			}
 			break;
 		}
 	}
@@ -83,7 +118,8 @@ public class Controller implements KeyListener {
 			public void run() {
 				stepTimer = new Timer(DRAW_DELAY, stepAction);
 				stepTimer.start();
-				taskTimer.scheduleAtFixedRate(new PlantTask(),500,100); //creates task that chooses random plant and decreases its health
+				taskTimer.scheduleAtFixedRate(new damagePlantTask(),500,1000);//damages plants every ten seconds
+				taskTimer.scheduleAtFixedRate(new checkPlantTask(),500,100);//evaluates plants with player every second
 				trashTimer.scheduleAtFixedRate(new TrashTask(), 0, 10);
 			}
 		});

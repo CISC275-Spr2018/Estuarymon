@@ -1,6 +1,6 @@
 
 public class Plant {
-	int health = 1000;
+	int health = 100;
 	int xLocation;
 	int yLocation;
 	

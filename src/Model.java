@@ -60,7 +60,8 @@ public class Model
 	public void updateModel()
 	{
 		
-		System.out.println(xLoc + ":" + plants[0].xLocation + " and " + yLoc + ":" + plants[0].yLocation);
+		//System.out.println(xLoc + ":" + plants[0].xLocation + " and " + yLoc + ":" + plants[0].yLocation);
+		System.out.println(plants[0].health + " " + plants[1].health + " " + plants[2].health + " " + plants[3].health);
 		collisionDetection();
 		updateLocation();
 
@@ -157,7 +158,7 @@ public class Model
 				deletePlant = randPlant;
 				//wait until player revives plant
 				
-				randPlant = (int) Math.floor(Math.random() * 4);
+				//randPlant = (int) Math.floor(Math.random() * 4);
 			}
 		}
 		
