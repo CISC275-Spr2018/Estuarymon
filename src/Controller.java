@@ -54,6 +54,7 @@ public class Controller implements KeyListener {
 			if(model.plants[plantNum].health == 0 && model.xLoc == model.plants[plantNum].xLocation && model.yLoc == model.plants[plantNum].yLocation) 
 			{
 				view.revivePlant(plantNum);
+				model.plants[plantNum].health = 1000;
 			}
 			else if(model.plants[plantNum].health == 0)
 			{
