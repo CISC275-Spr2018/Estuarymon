@@ -19,6 +19,7 @@ public class Model
 	int imgW;
 	int imgH;
 
+	
 	int xLoc = 0;
 	int yLoc = 0;
 
@@ -29,23 +30,37 @@ public class Model
 	
 	int dir = 0;
 	
-	Plant [] plants = {new Plant(100), new Plant(100), new Plant(100), new Plant(100)};
+	//plantXloc = frameWidth - (frameWidth/3);
+	//plantYloc = (frameHeight / 100) + count;
+	
+	Plant [] plants = new Plant[4]; 
 	int randPlant = (int) Math.floor(Math.random() * 4);//between 0 and 3
 	int deletePlant = 4;
-
+	
 	public Model(int winW, int winH, int imgW, int imgH) 
 	{
 		this.winW = winW;
 		this.winH = winH;
 		this.imgW = imgW;
 		this.imgH = imgH;
+		
+		int count = 0;
+		//fills plant array
+		for(int i = 0; i < 4; i++)
+		{//health,xloc,yoc
+			//System.out.println(winW - (winW/3));
+			//System.out.println((winH / 100) + count);
+			this.plants[i] = new Plant(100, winW - (winW/3), (winH / 90) + count);//sets location of plants
+			count = count + 200;
+		}
 	}
 
 	//same method as updateLocationAndDirection()
 	public void updateModel()
 	{
 		
-		//System.out.println("xLoc: " + xLoc + " yLoc: " + yLoc);
+		//System.out.println(xLoc + ":" + plants[0].xLocation + " and " + yLoc + ":" + plants[0].yLocation);
+		//System.out.println(plants[0].health + " " + plants[1].health + " " + plants[2].health + " " + plants[3].health);
 		collisionDetection();
 		updateLocation();
 
@@ -140,15 +155,12 @@ public class Model
 				//send randplant number
 				//update view corresponding to which plant reached zero
 				deletePlant = randPlant;
-				randPlant = (int) Math.floor(Math.random() * 4);
+				//wait until player revives plant
+				
+				//randPlant = (int) Math.floor(Math.random() * 4);
 			}
 		}
 		
-	public void createLitter() {
-		
-		
-		
-	}
 	
 	public void genLitterCords(Litter l) {
 		Random coordGenerator = new Random();

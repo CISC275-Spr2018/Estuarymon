@@ -58,16 +58,25 @@ public class View extends JPanel{
 		JLabel plant;
 		int count = 0;
 		
+		int plantXloc;
+		int plantYloc;
+		
 		for(int i = 0; i < 4; i++)
 		{
 			plant = new JLabel();
 			//loads plant image,converts it to icon, adds icon to label, resizes image
-			ImageIcon plantIcon = new ImageIcon("images/MapObjects/plant.png");
+			ImageIcon plantIcon = new ImageIcon("images/MapObjects/azalea.png");
 			Image plantImg = plantIcon.getImage();
 			Image newImg = plantImg.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH);
 			
 			plant.setIcon(new ImageIcon(newImg));
-			plant.setBounds(frameWidth - (frameWidth/3), (frameHeight / 100) + count, 100, 100);
+		
+			//set this in plant
+			plantXloc = frameWidth - (frameWidth/3);
+			plantYloc = (frameHeight / 100) + count;
+			
+			//set plant in array vars to these^
+			plant.setBounds(plantXloc, plantYloc, 100, 100);
 			//store images in a list to set vis false layer
 			plantImgs.add(plant);
 			//space out images by 200
@@ -75,6 +84,7 @@ public class View extends JPanel{
 			frame.getContentPane().add(plant);
 		}
 		//********************************************************************8
+		
 		
 		frame.setFocusable(true);
 		frame.setLayout(new BorderLayout());
@@ -92,7 +102,7 @@ public class View extends JPanel{
 	{
 		plantImgs.get(pick).setVisible(false);
 	}
-	
+	//make plant reappear
 	public void revivePlant(int pick)
 	{
 		plantImgs.get(pick).setVisible(true);
@@ -110,6 +120,8 @@ public class View extends JPanel{
 
 	public void paint(Graphics g) {
 		super.paint(g);
+		ImageIcon backg = new ImageIcon("images/Map/Background.jpg");
+		g.drawImage(backg.getImage(),0,0,this);
 		g.drawImage(this.animation.getCurrentFrameForDirection(this.curDir), xloc, yLoc, BACKGROUND_COLOR, this);
 		
 		//traverse through litter set and draw them, had to make a copy of litter set everytime to avoid ConcurrentModificationExceptions.
