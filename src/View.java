@@ -48,7 +48,7 @@ public class View extends JPanel{
 	int plant1H;
 	int plant2H;
 	int plant3H;
-	String coords;
+	String coords = "";
 	Animal crab;
 	BufferedImage[] img; //loading the images of the crab
 	int crabPicNum = 0; // current images of the crab
