@@ -48,7 +48,7 @@ public class View extends JPanel{
 	int plant1H;
 	int plant2H;
 	int plant3H;
-	String coords;
+	String coords = "";
 	Animal crab;
 	BufferedImage[] img; //loading the images of the crab
 	int crabPicNum = 0; // current images of the crab
@@ -147,13 +147,13 @@ public class View extends JPanel{
 		super.paint(g);
 		ImageIcon backg = new ImageIcon("images/Map/Background.jpg");
 		g.drawImage(backg.getImage(),0,0,this);
-		g.drawImage(this.animation.getCurrentFrameForDirection(this.curDir), xloc, yLoc, BACKGROUND_COLOR, this);
+		g.drawImage(this.animation.getCurrentFrameForDirection(this.curDir), xloc, yLoc, this);
 		crabPicNum = (crabPicNum + 3) % crab.getNumOfImages(); //change the 3 to change the speed
 		g.drawImage(img[crabPicNum], crab.getXLocation(), crab.getYLocation(), crab.getImageWidth(), crab.getImageHeight(), this); //drawing the crab onto the game
 		
 		//traverse through litter set and draw them, had to make a copy of litter set everytime to avoid ConcurrentModificationExceptions.
 		for(Litter l: new HashSet<Litter>(Litter.litterSet)) {
-			g.drawImage(l.getlitterImage(), l.getXLocation(), l.getYLocation(), BACKGROUND_COLOR, this);
+			g.drawImage(l.getlitterImage(), l.getXLocation(), l.getYLocation(), this);
 		}
 
 		g.setColor(Color.RED);
