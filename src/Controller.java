@@ -59,6 +59,7 @@ public class Controller implements KeyListener {
 		case 0:
 			//if dead
 			//change model.xloc and model.yloc to playercollision so coordinates dont have to be exact
+			//player.getCollidesWith(plants[plantNum])
 			if(model.plants[plantNum].health == 0 && model.xLoc == model.plants[plantNum].xLocation && model.yLoc == model.plants[plantNum].yLocation) 
 			{
 				view.revivePlant(plantNum);
@@ -121,7 +122,7 @@ public class Controller implements KeyListener {
 				stepTimer.start();
 				taskTimer.scheduleAtFixedRate(new damagePlantTask(),500,1000);//damages plants every ten seconds
 				taskTimer.scheduleAtFixedRate(new checkPlantTask(),500,100);//evaluates plants with player every second
-				trashTimer.scheduleAtFixedRate(new TrashTask(), 0, 10);
+				trashTimer.scheduleAtFixedRate(new TrashTask(), 0, 6000);
 			}
 		});
 	}
@@ -188,7 +189,22 @@ public class Controller implements KeyListener {
 	
 	class TrashTask extends TimerTask{
 		public void run() {
-			model.spawnLitter();
+			
+			if(Math.random() < 0.5) { //coin flip as to whether it will be trash or recyclable
+				Recyclable newLitter = new Recyclable();
+				model.genLitterCords(newLitter);
+				view.setLitterImage(newLitter);
+				
+			}
+			else {
+				Trash newLitter = new Trash();
+				model.genLitterCords(newLitter);
+				view.setLitterImage(newLitter);
+			}
+			
+		
+			//spawns the litter on the screen
+			
 		}
 	}
 }

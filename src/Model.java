@@ -36,8 +36,9 @@ public class Model
 	
 	Plant [] plants = new Plant[4]; 
 	int randPlant = (int) Math.floor(Math.random() * 4);//between 0 and 3
+	int plantDamage = 10;
+	int plantHealth = 100;
 	int deletePlant = 4;
-	HashSet<Litter> litterSet = new HashSet<>();
 	
 	Animal crab;
 	
@@ -53,9 +54,9 @@ public class Model
 		//fills plant array
 		for(int i = 0; i < 4; i++)
 		{//health,xloc,yoc
-			System.out.println(winW - (winW/3));
-			System.out.println((winH / 100) + count);
-			this.plants[i] = new Plant(100, winW - (winW/3), (winH / 90) + count);//sets location of plants
+			//System.out.println(winW - (winW/3));
+			//System.out.println((winH / 100) + count);
+			this.plants[i] = new Plant(plantHealth, winW - (winW/3), (winH / 90) + count);//sets location of plants
 			count = count + 200;
 		}
 	}
@@ -195,11 +196,11 @@ public class Model
 	//damage plant every 10 seconds
 		public void damagePlant()
 		{
-			System.out.println(randPlant);
+			//System.out.println(randPlant);
 			if(plants[randPlant].getHealth() > 0)
 			{
 				deletePlant = 4;//dont delete a plant, no switch case for 4
-				plants[randPlant].health = plants[randPlant].health - 10;
+				plants[randPlant].health = plants[randPlant].health - plantDamage;
 			}
 			else if(plants[randPlant].getHealth() == 0)
 			{
@@ -212,17 +213,15 @@ public class Model
 			}
 		}
 		
-	public void spawnLitter() {
+	
+	public void genLitterCords(Litter l) {
 		Random coordGenerator = new Random();
-		Litter newLitter = new Trash();
-		if(Math.random() < 0.5) {
-			newLitter = new Recyclable();
-		}
-		int litterXCord = coordGenerator.nextInt((winW-newLitter.getWidth()));
-		int litterYCord = coordGenerator.nextInt((winH-newLitter.getHeight()));
-		newLitter.setXLocation(litterXCord);
-		newLitter.setYLocation(litterYCord);
-		litterSet.add(newLitter);
+		int litterXCord = coordGenerator.nextInt((winW-l.getWidth()));//generates random coordinates
+		int litterYCord = coordGenerator.nextInt((winH-l.getHeight()));
+		l.setXLocation(litterXCord);//
+		l.setYLocation(litterYCord);
+		Litter.litterSet.add(l);//Adds them to hashset of litter, prevents exact duplicates in terms of coordinates.
+		System.out.println(l);
 		
 	}
 

@@ -32,20 +32,26 @@ public class View extends JPanel{
 	private static Direction curDir = Direction.EAST; //the direction the orc faces when it begins
 	private static final Color BACKGROUND_COLOR = Color.GRAY;
 	static int bCount;
+<<<<<<< HEAD
 	Animation animation = Animation.IDLE; //initial animation of the orc
 	
+	ArrayList<JLabel> plantImgs = new ArrayList<JLabel>();
 	
 	Animal crab;
 	BufferedImage[] img; //loading the images of the crab
 	int crabPicNum = 0; // current images of the crab
+=======
 	private static final int trashImgCount = 2;
 	private static final int recImgCount = 1;
 	private static final int litterCount = 20;
+	Animation animation = Animation.IDLE;
 	private BufferedImage[] trashImgs = new BufferedImage[trashImgCount+1];
 	private BufferedImage[] recImgs = new BufferedImage[recImgCount+1];
 	private Litter[] litterArr = new Litter[litterCount];
 	
 	ArrayList<JLabel> plantImgs = new ArrayList<JLabel>();
+	
+>>>>>>> 3b99997cf02fdb320150930fea65414dc0ad7a91
 
 
 	public View(Animal animal) {
@@ -53,9 +59,13 @@ public class View extends JPanel{
 		crab = animal;
 		img = crab.loadImages();
 		Animation.preload();
+<<<<<<< HEAD
+=======
 		preloadLitterImgs();
 		//fillLitterArr();
 		
+		
+>>>>>>> 3b99997cf02fdb320150930fea65414dc0ad7a91
 		
 		
 
@@ -128,14 +138,16 @@ public class View extends JPanel{
 		ImageIcon backg = new ImageIcon("images/Map/Background.jpg");
 		g.drawImage(backg.getImage(),0,0,this);
 		g.drawImage(this.animation.getCurrentFrameForDirection(this.curDir), xloc, yLoc, BACKGROUND_COLOR, this);
-
+<<<<<<< HEAD
 		crabPicNum = (crabPicNum + 3) % crab.getNumOfImages(); //change the 3 to change the speed
 		g.drawImage(img[crabPicNum], crab.getXLocation(), crab.getYLocation(), crab.getImageWidth(), crab.getImageHeight(), this); //drawing the crab onto the game
+=======
 		
 		//traverse through litter set and draw them, had to make a copy of litter set everytime to avoid ConcurrentModificationExceptions.
 		for(Litter l: new HashSet<Litter>(Litter.litterSet)) {
 			g.drawImage(l.getlitterImage(), l.getXLocation(), l.getYLocation(), BACKGROUND_COLOR, this);
 		}
+>>>>>>> 3b99997cf02fdb320150930fea65414dc0ad7a91
 	}
 
 	public int getHeight() {
