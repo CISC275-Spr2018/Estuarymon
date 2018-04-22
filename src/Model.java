@@ -39,7 +39,7 @@ public class Model
 	int plantDamage = 10;
 	int plantHealth = 100;
 	int deletePlant = 4;
-	//for alpha testing
+	
 	String coords = "";
 
 	TrashBin tBin = new TrashBin(0,450,128,128);
