@@ -163,8 +163,8 @@ public class View extends JPanel{
 		g.drawString(""+plant2H, 550, 460);
 		g.drawString(""+plant3H, 550, 660);
 		g.setColor(Color.PINK);
-		g.setFont(new Font("TimesRoman", Font.PLAIN, 25));
-		g.drawString("*for alpha purposes only* Match numbers " +coords + " and press p to regrow", 10, 20);
+		g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+		g.drawString("*for demoing purposes only* Match numbers " +coords + " and press p to regrow", 10, 20);
 		
 		
 	}
