@@ -13,6 +13,7 @@ public class Controller implements KeyListener {
 	private Model model;
 	private View view;
 	private Timer stepTimer;
+	private Animal crab = new Animal();
 	
 	java.util.Timer taskTimer = new java.util.Timer();
 	java.util.Timer trashTimer = new java.util.Timer();
@@ -112,9 +113,9 @@ public class Controller implements KeyListener {
 	
 	// run the simulation
 	public void start() {
-		view = new View();
+		view = new View(crab);
 		view.setKeyListener(this);
-		model = new Model(view.getWidth(), view.getHeight(), view.getImageWidth(), view.getImageHeight());
+		model = new Model(view.getWidth(), view.getHeight(), view.getImageWidth(), view.getImageHeight(), crab);
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				stepTimer = new Timer(DRAW_DELAY, stepAction);
@@ -146,12 +147,6 @@ public class Controller implements KeyListener {
 			model.setAttributes(4, Direction.WEST, 10, 0);
 			view.setAnimation(Animation.WALKING);
 			break;
-		case KeyEvent.VK_J:
-			//view.setAnimation(Animation.JUMP);
-			break;
-		case KeyEvent.VK_F:
-			//view.setAnimation(Animation.FIRE);
-			break;
 		}
 	}
 
@@ -168,14 +163,7 @@ public class Controller implements KeyListener {
 			view.setAnimation(Animation.IDLE);
 			break;
 		case KeyEvent.VK_J:
-			//System.out.println("Key was released");
 			view.setAnimation(Animation.JUMP);
-			//System.out.println("Animation set to Jump");
-			break;
-		case KeyEvent.VK_F:
-			//System.out.println("Key was released");
-			view.setAnimation(Animation.FIRE);
-			//System.out.println("Animation set to fire");
 			break;
 		}
 	}
@@ -202,7 +190,7 @@ public class Controller implements KeyListener {
 			}
 			
 		
-			//spawns the litter on the screen
+		
 			
 		}
 	}
