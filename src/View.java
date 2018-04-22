@@ -164,7 +164,7 @@ public class View extends JPanel{
 		g.drawString(""+plant3H, 550, 660);
 		g.setColor(Color.PINK);
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 25));
-		g.drawString("Make these match to regrow plant: "+coords, 150, 20);
+		g.drawString("*for alpha purposes only* Match numbers " +coords + " and press p to regrow", 10, 20);
 		
 		
 	}

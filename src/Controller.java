@@ -20,6 +20,9 @@ public class Controller implements KeyListener {
 
 	private static final int DRAW_DELAY = 100;
 
+	//for alpha only
+	boolean pressP = false;
+	
 	private final Action stepAction = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
 			step();
@@ -73,9 +76,12 @@ public class Controller implements KeyListener {
 			//add this in beta
 			if(model.plants[plantNum].health == 0 && model.myPlayer.xLocation == model.plants[plantNum].xLocation && model.myPlayer.yLocation == model.plants[plantNum].yLocation) 
 			{
-				view.revivePlant(plantNum);
-				model.plants[plantNum].health = 100;
-				model.randPlant = (int) Math.floor(Math.random() * 4);
+				if(pressP == true)
+				{
+					view.revivePlant(plantNum);
+					model.plants[plantNum].health = model.plantHealth;
+					model.randPlant = (int) Math.floor(Math.random() * 4);
+				}
 			}
 			else if(model.plants[plantNum].health == 0)
 			{
@@ -86,9 +92,12 @@ public class Controller implements KeyListener {
 		case 1:
 			if(model.plants[plantNum].health == 0 && model.myPlayer.xLocation == model.plants[plantNum].xLocation && model.myPlayer.yLocation == model.plants[plantNum].yLocation) 
 			{
-				view.revivePlant(plantNum);
-				model.plants[plantNum].health = 100;
-				model.randPlant = (int) Math.floor(Math.random() * 4);
+				if(pressP == true)
+				{
+					view.revivePlant(plantNum);
+					model.plants[plantNum].health = model.plantHealth;
+					model.randPlant = (int) Math.floor(Math.random() * 4);
+				}
 			}
 			else if(model.plants[plantNum].health == 0)
 			{
@@ -98,9 +107,12 @@ public class Controller implements KeyListener {
 		case 2:
 			if(model.plants[plantNum].health == 0 && model.myPlayer.xLocation == model.plants[plantNum].xLocation && model.myPlayer.yLocation == model.plants[plantNum].yLocation) 
 			{
-				view.revivePlant(plantNum);
-				model.plants[plantNum].health = 100;
-				model.randPlant = (int) Math.floor(Math.random() * 4);
+				if(pressP == true)
+				{
+					view.revivePlant(plantNum);
+					model.plants[plantNum].health = model.plantHealth;
+					model.randPlant = (int) Math.floor(Math.random() * 4);
+				}
 			}
 			else if(model.plants[plantNum].health == 0)
 			{
@@ -110,9 +122,12 @@ public class Controller implements KeyListener {
 		case 3:
 			if(model.plants[plantNum].health == 0 && model.myPlayer.xLocation == model.plants[plantNum].xLocation && model.myPlayer.yLocation == model.plants[plantNum].yLocation) 
 			{
-				view.revivePlant(plantNum);
-				model.plants[plantNum].health = 100;
-				model.randPlant = (int) Math.floor(Math.random() * 4);
+				if(pressP == true)
+				{
+					view.revivePlant(plantNum);
+					model.plants[plantNum].health = model.plantHealth;
+					model.randPlant = (int) Math.floor(Math.random() * 4);
+				}
 			}
 			else if(model.plants[plantNum].health == 0)
 			{
@@ -158,6 +173,9 @@ public class Controller implements KeyListener {
 			model.setAttributes(4, Direction.WEST, 10, 0);
 			view.setAnimation(Animation.WALKING);
 			break;
+		case KeyEvent.VK_P:
+			pressP = true;
+			break;
 		}
 	}
 
@@ -175,6 +193,9 @@ public class Controller implements KeyListener {
 			break;
 		case KeyEvent.VK_J:
 			view.setAnimation(Animation.JUMP);
+			break;
+		case KeyEvent.VK_P:
+			pressP = false;
 			break;
 		}
 	}
