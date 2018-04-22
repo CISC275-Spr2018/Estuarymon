@@ -108,10 +108,10 @@ public abstract class Animation {
 		public BufferedImage getCurrentFrameForDirection(Direction d) {
 			int start;
 			switch(d) {
-				case EAST: start = 0; break;
-				case WEST: start = 4; break;
-				case NORTH: start = 8; break;
-				case SOUTH: start = 12; break;
+				case EAST: start = 0; break; //0-3
+				case WEST: start = 4; break; //4-7
+				case NORTH: start = 8; break; //8-11
+				case SOUTH: start = 12; break; //12-15
 				default:
 					throw new RuntimeException("Idle animation is not aware of the Direction "+d);
 			}

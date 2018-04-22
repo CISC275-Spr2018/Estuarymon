@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -19,19 +20,27 @@ public class View extends JPanel{
 	private final static int imgWidth = 165;
 	private final static int imgHeight = 165;
 	JFrame frame = new JFrame();
-	private static int xloc = 0;
-	private static int yLoc = 0;
-	private static Direction curDir = Direction.EAST;
+	private static int xloc = 0; //player x location
+	private static int yLoc = 0; //player y location
+	private static Direction curDir = Direction.EAST; //the direction the orc faces when it begins
 	private static final Color BACKGROUND_COLOR = Color.GRAY;
 	static int bCount;
-	Animation animation = Animation.IDLE;
+	Animation animation = Animation.IDLE; //initial animation of the orc
 	
 	ArrayList<JLabel> plantImgs = new ArrayList<JLabel>();
+	
+	Animal crab;
+	BufferedImage[] img; //loading the images of the crab
+	int crabPicNum = 0; // current images of the crab
 
 
-	public View() {
+	public View(Animal animal) {
 		// Preload animations
+		crab = animal;
+		img = crab.loadImages();
 		Animation.preload();
+		
+		
 
 		//PLANT SECTION**************************************
 		JLabel plant;
@@ -95,6 +104,8 @@ public class View extends JPanel{
 	public void paint(Graphics g) {
 		super.paint(g);
 		g.drawImage(this.animation.getCurrentFrameForDirection(this.curDir), xloc, yLoc, BACKGROUND_COLOR, this);
+		crabPicNum = (crabPicNum + 3) % crab.getNumOfImages(); //change the 3 to change the speed
+		g.drawImage(img[crabPicNum], crab.getXLocation(), crab.getYLocation(), crab.getImageWidth(), crab.getImageHeight(), this); //drawing the crab onto the game
 	}
 
 	public int getHeight() {

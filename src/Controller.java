@@ -13,6 +13,7 @@ public class Controller implements KeyListener {
 	private Model model;
 	private View view;
 	private Timer stepTimer;
+	private Animal crab = new Animal();
 	
 	java.util.Timer taskTimer = new java.util.Timer();
 	java.util.Timer trashTimer = new java.util.Timer();
@@ -111,9 +112,9 @@ public class Controller implements KeyListener {
 	
 	// run the simulation
 	public void start() {
-		view = new View();
+		view = new View(crab);
 		view.setKeyListener(this);
-		model = new Model(view.getWidth(), view.getHeight(), view.getImageWidth(), view.getImageHeight());
+		model = new Model(view.getWidth(), view.getHeight(), view.getImageWidth(), view.getImageHeight(), crab);
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				stepTimer = new Timer(DRAW_DELAY, stepAction);

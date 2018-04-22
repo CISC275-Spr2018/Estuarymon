@@ -29,6 +29,7 @@ public class Model
 	Direction curDir = Direction.EAST;
 	
 	int dir = 0;
+	int crabDirection = 3;
 	
 	//plantXloc = frameWidth - (frameWidth/3);
 	//plantYloc = (frameHeight / 100) + count;
@@ -38,12 +39,15 @@ public class Model
 	int deletePlant = 4;
 	HashSet<Litter> litterSet = new HashSet<>();
 	
-	public Model(int winW, int winH, int imgW, int imgH) 
+	Animal crab;
+	
+	public Model(int winW, int winH, int imgW, int imgH, Animal animal) 
 	{
 		this.winW = winW;
 		this.winH = winH;
 		this.imgW = imgW;
 		this.imgH = imgH;
+		this.crab = animal;
 		
 		int count = 0;
 		//fills plant array
@@ -61,9 +65,11 @@ public class Model
 	{
 		
 		//System.out.println(xLoc + ":" + plants[0].xLocation + " and " + yLoc + ":" + plants[0].yLocation);
-		System.out.println(plants[0].health + " " + plants[1].health + " " + plants[2].health + " " + plants[3].health);
+		//System.out.println(plants[0].health + " " + plants[1].health + " " + plants[2].health + " " + plants[3].health);
 		collisionDetection();
 		updateLocation();
+		animalWallCollision();
+		updatingAnimalLocation();
 
 	}
 	
@@ -78,6 +84,46 @@ public class Model
 			dir = 3;
 		}else if(xLoc <= 0 && curDir == Direction.WEST) {
 			dir = 4;
+		}
+	}
+	
+	public void animalWallCollision() {
+		//System.out.println(crab.getDirection());
+		System.out.println(crab.getXLocation());
+		if(crab.getXLocation() <= 0) { //when the left wall is hit
+			System.out.println("hit left wall");
+			//crab.setDirection(Direction.EAST);
+			crabDirection = 1;
+		}else if(crab.getXLocation() >= winW - 400) { //when the right wall is hit
+			//crab.setDirection(Direction.WEST);
+			System.out.println("hit right wall");
+			crabDirection = 2;
+		}else if(crab.getYLocation() <= 0) { //when the top wall is hit
+			//crab.setDirection(Direction.SOUTH);
+			System.out.println("hit top wall");
+			crabDirection = 4;
+		}else if(crab.getYLocation() >= winH - 170) { //when the bottom wall is hit
+			//crab.setDirection(Direction.NORTH);
+			crabDirection = 3;
+		}
+	}
+	
+	public void updatingAnimalLocation() {
+		switch(crabDirection) {
+		case 1: //going east 
+			System.out.println("in here");
+			crab.updateXCoordinate(-3);
+			break;
+		case 2: //going west 
+			crab.updateXCoordinate(3);
+			break;
+		case 3: //going south
+			crab.updateYCoordinate(3);
+			break;
+		case 4: //going north
+			crab.updateYCoordinate(-3);
+			break;
+		
 		}
 	}
 	
@@ -140,6 +186,10 @@ public class Model
 	public Direction getDirect()
 	{
 		return curDir;
+	}
+	
+	public Animal getAnimal() {
+		return crab;
 	}
 	
 	//damage plant every 10 seconds
