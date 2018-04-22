@@ -1,6 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -42,6 +43,12 @@ public class View extends JPanel{
 	
 	ArrayList<JLabel> plantImgs = new ArrayList<JLabel>();
 	
+	//these plants vars for alpha testing
+	int plant0H;
+	int plant1H;
+	int plant2H;
+	int plant3H;
+	String coords;
 
 
 	public View() {
@@ -66,6 +73,7 @@ public class View extends JPanel{
 		recycleBin.setIcon(new ImageIcon(secondRecycleImg));
 		recycleBin.setBounds(0,580,100,100);
 		frame.getContentPane().add(recycleBin);
+		
 		//PLANT SECTION**************************************
 		JLabel plant;
 		int count = 0;
@@ -140,6 +148,18 @@ public class View extends JPanel{
 		for(Litter l: new HashSet<Litter>(Litter.litterSet)) {
 			g.drawImage(l.getlitterImage(), l.getXLocation(), l.getYLocation(), BACKGROUND_COLOR, this);
 		}
+
+		g.setColor(Color.RED);
+		g.setFont(new Font("TimesRoman", Font.BOLD, 25)); 
+		g.drawString(""+plant0H, 550, 60);//change to make it the spacing as the plant jlabels
+		g.drawString(""+plant1H, 550, 260);
+		g.drawString(""+plant2H, 550, 460);
+		g.drawString(""+plant3H, 550, 660);
+		g.setColor(Color.PINK);
+		g.setFont(new Font("TimesRoman", Font.PLAIN, 25));
+		g.drawString("Make these match to regrow plant: "+coords, 150, 20);
+		
+		
 	}
 
 	public int getHeight() {

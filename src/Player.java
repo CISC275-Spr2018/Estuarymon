@@ -2,6 +2,7 @@
 public class Player extends Interactable {
 	public static boolean hasLitter = false;
 	public static Class litterType; 
+	
 	public Player(int xLoc, int yLoc, int rWidth, int rHeight) {
 		this.xLocation = xLoc;
 		this.yLocation = yLoc;

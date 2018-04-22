@@ -37,6 +37,11 @@ public class Controller implements KeyListener {
 		public void run()
 		{
 			model.damagePlant();
+			//show plant health on screen
+			view.plant0H = model.plants[0].health;
+			view.plant1H = model.plants[1].health;
+			view.plant2H = model.plants[2].health;
+			view.plant3H = model.plants[3].health;
 		}
 	}
 	
@@ -45,6 +50,8 @@ public class Controller implements KeyListener {
 		public void run()
 		{
 			checkPlants();
+			//for alpha testing
+			view.coords = model.coords;
 		}
 	}
 	
@@ -58,7 +65,11 @@ public class Controller implements KeyListener {
 		case 0:
 			//if dead
 			//change model.xloc and model.yloc to playercollision so coordinates dont have to be exact
-			//player.getCollidesWith(plants[plantNum])
+			//player.getCollidesWith(model.plants[plantNum])
+			//^this doesnt work.
+			//we have to make sure players xloc and yloc are always being updated and sent
+			//to rectangle
+			//add this in beta
 			if(model.plants[plantNum].health == 0 && model.myPlayer.xLocation == model.plants[plantNum].xLocation && model.myPlayer.yLocation == model.plants[plantNum].yLocation) 
 			{
 				view.revivePlant(plantNum);

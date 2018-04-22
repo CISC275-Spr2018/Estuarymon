@@ -38,6 +38,8 @@ public class Model
 	int plantDamage = 10;
 	int plantHealth = 100;
 	int deletePlant = 4;
+	//for alphar testing
+	String coords;
 
 	TrashBin tBin = new TrashBin(0,450,128,128);
 	RecycleBin rBin = new RecycleBin(0,580,128,128);
@@ -64,8 +66,9 @@ public class Model
 	public void updateModel()
 	{
 		
-		//System.out.println(xLoc + ":" + plants[0].xLocation + " and " + yLoc + ":" + plants[0].yLocation);
+		//System.out.println(myPlayer.xLocation + ":" + plants[randPlant].xLocation + " and " + myPlayer.yLocation + ":" + plants[randPlant].yLocation);
 		//System.out.println(plants[0].health + " " + plants[1].health + " " + plants[2].health + " " + plants[3].health);
+		coords = myPlayer.xLocation + ":" + plants[randPlant].xLocation + " and " + myPlayer.yLocation + ":" + plants[randPlant].yLocation;
 		collisionDetection();
 		updateLocation();
 
@@ -160,6 +163,7 @@ public class Model
 				//send randplant number
 				//update view corresponding to which plant reached zero
 				deletePlant = randPlant;
+				
 				//wait until player revives plant
 				
 				//randPlant = (int) Math.floor(Math.random() * 4);
