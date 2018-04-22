@@ -59,7 +59,7 @@ public class Controller implements KeyListener {
 			//if dead
 			//change model.xloc and model.yloc to playercollision so coordinates dont have to be exact
 			//player.getCollidesWith(plants[plantNum])
-			if(model.plants[plantNum].health == 0 && model.xLoc == model.plants[plantNum].xLocation && model.yLoc == model.plants[plantNum].yLocation) 
+			if(model.plants[plantNum].health == 0 && model.myPlayer.xLocation == model.plants[plantNum].xLocation && model.myPlayer.yLocation == model.plants[plantNum].yLocation) 
 			{
 				view.revivePlant(plantNum);
 				model.plants[plantNum].health = 100;
@@ -72,7 +72,7 @@ public class Controller implements KeyListener {
 			break;
 		//second..etc
 		case 1:
-			if(model.plants[plantNum].health == 0 && model.xLoc == model.plants[plantNum].xLocation && model.yLoc == model.plants[plantNum].yLocation) 
+			if(model.plants[plantNum].health == 0 && model.myPlayer.xLocation == model.plants[plantNum].xLocation && model.myPlayer.yLocation == model.plants[plantNum].yLocation) 
 			{
 				view.revivePlant(plantNum);
 				model.plants[plantNum].health = 100;
@@ -84,7 +84,7 @@ public class Controller implements KeyListener {
 			}
 			break;
 		case 2:
-			if(model.plants[plantNum].health == 0 && model.xLoc == model.plants[plantNum].xLocation && model.yLoc == model.plants[plantNum].yLocation) 
+			if(model.plants[plantNum].health == 0 && model.myPlayer.xLocation == model.plants[plantNum].xLocation && model.myPlayer.yLocation == model.plants[plantNum].yLocation) 
 			{
 				view.revivePlant(plantNum);
 				model.plants[plantNum].health = 100;
@@ -96,7 +96,7 @@ public class Controller implements KeyListener {
 			}
 			break;
 		case 3:
-			if(model.plants[plantNum].health == 0 && model.xLoc == model.plants[plantNum].xLocation && model.yLoc == model.plants[plantNum].yLocation) 
+			if(model.plants[plantNum].health == 0 && model.myPlayer.xLocation == model.plants[plantNum].xLocation && model.myPlayer.yLocation == model.plants[plantNum].yLocation) 
 			{
 				view.revivePlant(plantNum);
 				model.plants[plantNum].health = 100;

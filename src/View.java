@@ -51,9 +51,21 @@ public class View extends JPanel{
 		//fillLitterArr();
 		
 		
+		JLabel trashBin = new JLabel();
+		ImageIcon trashIcon = new ImageIcon("images/MapObjects/garbage.png");
+		Image trashImg = trashIcon.getImage();
+		Image secondTrashImg = trashImg.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH) ;
+		trashBin.setIcon(new ImageIcon(secondTrashImg));
+		trashBin.setBounds(0,450,100,100);
+		frame.getContentPane().add(trashBin);
 		
-		
-
+		JLabel recycleBin = new JLabel();
+		ImageIcon recycleIcon = new ImageIcon("images/MapObjects/recycling-bin.png");
+		Image recycleImg = recycleIcon.getImage();
+		Image secondRecycleImg = recycleImg.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH) ;
+		recycleBin.setIcon(new ImageIcon(secondRecycleImg));
+		recycleBin.setBounds(0,580,100,100);
+		frame.getContentPane().add(recycleBin);
 		//PLANT SECTION**************************************
 		JLabel plant;
 		int count = 0;
