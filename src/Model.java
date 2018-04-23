@@ -19,9 +19,9 @@ public class Model
 	int imgW;
 	int imgH;
 
-	
-	int xLoc = 0;
-	int yLoc = 0;
+	Player myPlayer = new Player(0,0, 165,165);
+	//int xLoc = 0;
+	//int yLoc = 0;
 
 	int xIncr = 0;
 	int yIncr = 0;
@@ -39,6 +39,11 @@ public class Model
 	int plantDamage = 10;
 	int plantHealth = 100;
 	int deletePlant = 4;
+	
+	String coords = "";
+
+	TrashBin tBin = new TrashBin(0,450,128,128);
+	RecycleBin rBin = new RecycleBin(0,580,128,128);
 	
 	Animal crab;
 	
@@ -65,8 +70,9 @@ public class Model
 	public void updateModel()
 	{
 		
-		//System.out.println(xLoc + ":" + plants[0].xLocation + " and " + yLoc + ":" + plants[0].yLocation);
+		//System.out.println(myPlayer.xLocation + ":" + plants[randPlant].xLocation + " and " + myPlayer.yLocation + ":" + plants[randPlant].yLocation);
 		//System.out.println(plants[0].health + " " + plants[1].health + " " + plants[2].health + " " + plants[3].health);
+		coords = " x=" + myPlayer.xLocation + ":" + plants[randPlant].xLocation + " y=" + myPlayer.yLocation + ":" + plants[randPlant].yLocation;
 		collisionDetection();
 		updateLocation();
 		animalWallCollision();
@@ -77,34 +83,28 @@ public class Model
 	//used to be called updateDirection, but that no longer really applied because the orc
 	//doesn't need to change directions when it hits the wall
 	public void collisionDetection() {
-		if((yLoc + imgH/5)<= 0 && curDir == Direction.NORTH) {
+		if((myPlayer.yLocation + imgH/5)<= 0 && curDir == Direction.NORTH) {
 			dir = 1;
-		}else if((yLoc + imgH) >= winH && curDir == Direction.SOUTH) {
+		}else if((myPlayer.yLocation + imgH) >= winH && curDir == Direction.SOUTH) {
 			dir = 2;
-		}else if((xLoc + imgW) >= winW && curDir == Direction.EAST) {
+		}else if((myPlayer.xLocation + imgW) >= winW && curDir == Direction.EAST) {
 			dir = 3;
-		}else if(xLoc <= 0 && curDir == Direction.WEST) {
+		}else if(myPlayer.xLocation <= 0 && curDir == Direction.WEST) {
 			dir = 4;
 		}
 	}
 	
 	public void animalWallCollision() {
-		//System.out.println(crab.getDirection());
-		System.out.println(crab.getXLocation());
 		if(crab.getXLocation() <= 0) { //when the left wall is hit
 			System.out.println("hit left wall");
-			//crab.setDirection(Direction.EAST);
 			crabDirection = 1;
 		}else if(crab.getXLocation() >= winW - 400) { //when the right wall is hit
-			//crab.setDirection(Direction.WEST);
 			System.out.println("hit right wall");
 			crabDirection = 2;
 		}else if(crab.getYLocation() <= 0) { //when the top wall is hit
-			//crab.setDirection(Direction.SOUTH);
 			System.out.println("hit top wall");
 			crabDirection = 4;
 		}else if(crab.getYLocation() >= winH - 170) { //when the bottom wall is hit
-			//crab.setDirection(Direction.NORTH);
 			crabDirection = 3;
 		}
 	}
@@ -112,7 +112,6 @@ public class Model
 	public void updatingAnimalLocation() {
 		switch(crabDirection) {
 		case 1: //going east 
-			System.out.println("in here");
 			crab.updateXCoordinate(-3);
 			break;
 		case 2: //going west 
@@ -131,32 +130,32 @@ public class Model
 	public void updateLocation() {
 		switch(dir){
 		case 0:
-			xLoc += 0;
-			yLoc += 0;
+			myPlayer.xLocation += 0;
+			myPlayer.yLocation += 0;
 			break;
 		case 1: //bottom wall; for him to go n
-			if(yLoc + imgH/5 <= 0){
+			if(myPlayer.yLocation + imgH/5 <= 0){
 				yIncr = 0;
 			}
-			yLoc-=yIncr;
+			myPlayer.yLocation-=yIncr;
 			break;
 		case 2: //top wall; for him to go s
-			if((yLoc + imgH) >= winH) {
+			if((myPlayer.yLocation + imgH) >= winH) {
 				yIncr = 0;
 			}
-			yLoc+=yIncr;
+			myPlayer.yLocation+=yIncr;
 			break;
 		case 3: //left wall; for him to go e
-			if((xLoc + imgW) >= winW) {
+			if((myPlayer.xLocation + imgW) >= winW) {
 				xIncr = 0;
 			}
-			xLoc+=xIncr;
+			myPlayer.xLocation+=xIncr;
 			break;
 		case 4: //right wall; for him to go w
-			if(xLoc <= 0) {
+			if(myPlayer.xLocation <= 0) {
 				xIncr = 0;
 			}
-			xLoc-=xIncr;
+			myPlayer.xLocation-=xIncr;
 			break;
 		}
 	
@@ -176,12 +175,12 @@ public class Model
 
 	public int getX()
 	{
-		return xLoc;
+		return myPlayer.xLocation;
 	}
 
 	public int getY()
 	{
-		return yLoc;
+		return myPlayer.yLocation;
 	}
 
 	public Direction getDirect()
@@ -207,6 +206,7 @@ public class Model
 				//send randplant number
 				//update view corresponding to which plant reached zero
 				deletePlant = randPlant;
+				
 				//wait until player revives plant
 				
 				//randPlant = (int) Math.floor(Math.random() * 4);
@@ -224,6 +224,8 @@ public class Model
 		System.out.println(l);
 		
 	}
+	
+
 
 
 }
