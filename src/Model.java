@@ -1,6 +1,7 @@
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Random;
+import java.util.Iterator;
 
 /**
  * Model: Contains all the state and logic
@@ -46,6 +47,7 @@ public class Model
 	RecycleBin rBin = new RecycleBin(0,580,128,128);
 	
 	Animal crab;
+	HashSet<Animal> animals;
 	
 	public Model(int winW, int winH, int imgW, int imgH, Animal animal) 
 	{
@@ -64,6 +66,10 @@ public class Model
 			this.plants[i] = new Plant(plantHealth, winW - (winW/3), (winH / 90) + count);//sets location of plants
 			count = count + 200;
 		}
+
+		// Fill animals collection (temporary)
+		this.animals = new HashSet<>();
+		this.animals.add(this.crab);
 	}
 
 	//same method as updateLocationAndDirection()
@@ -72,6 +78,7 @@ public class Model
 		
 		//System.out.println(myPlayer.xLocation + ":" + plants[randPlant].xLocation + " and " + myPlayer.yLocation + ":" + plants[randPlant].yLocation);
 		//System.out.println(plants[0].health + " " + plants[1].health + " " + plants[2].health + " " + plants[3].health);
+		this.checkCollision();
 		coords = " x=" + myPlayer.xLocation + ":" + plants[randPlant].xLocation + " y=" + myPlayer.yLocation + ":" + plants[randPlant].yLocation;
 		collisionDetection();
 		updateLocation();
@@ -224,8 +231,31 @@ public class Model
 		System.out.println(l);
 		
 	}
-	
 
+	private void checkCollision() {
+		for(Litter litter : Litter.litterSet) {
+			if(litter.getCollidesWith(this.myPlayer))
+				this.myPlayer.pickUpLitter(litter);
+		}
+
+		if(this.myPlayer.hasLitter()) {
+			if(this.myPlayer.getCollidesWith(this.tBin))
+				this.tBin.takeLitter(this.myPlayer);
+			if(this.myPlayer.getCollidesWith(this.rBin))
+				this.rBin.takeLitter(this.myPlayer);
+		}
+
+		Iterator<Litter> litterIterator = Litter.litterSet.iterator();
+		while(litterIterator.hasNext()) {
+			Litter litter = litterIterator.next();
+			for(Animal animal : this.animals) {
+				if(litter.getCollidesWith(animal)) {
+					animal.eatLitter();
+					litterIterator.remove();
+				}
+			}
+		}
+	}
 
 
 }
