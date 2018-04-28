@@ -6,6 +6,7 @@ public class RecycleBin extends Receptacle {
 		this.yLocation = yLoc;
 		this.width = rWidth;
 		this.height = rHeight;
+		this.setRelativeCollisionRect(0, 0, rWidth, rHeight);
 	}
 		
 	

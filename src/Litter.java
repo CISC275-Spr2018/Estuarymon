@@ -9,6 +9,7 @@ public abstract class Litter extends Interactable{
 	public Litter() {
 		this.width = 60;
 		this.height = 60;
+		this.setRelativeCollisionRect(10, 10, 40, 40);
 	}
 	
 	public void setlitterImage(BufferedImage li) {

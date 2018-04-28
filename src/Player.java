@@ -8,6 +8,7 @@ public class Player extends Interactable {
 		this.yLocation = yLoc;
 		this.width = rWidth;
 		this.height = rHeight;
+		this.setRelativeCollisionRect(40, 40, rWidth-80, rHeight-80);
 	}
 	
 	public boolean shouldCollectLitter(Litter l) {
@@ -29,4 +30,12 @@ public class Player extends Interactable {
 		}
 	}
 
+	public boolean hasLitter() {
+		return this.hasLitter;
+	}
+
+	public void pickUpLitter(Litter l) {
+		// TODO
+		System.out.println("Player pick up litter "+l.toString());
+	}
 }
