@@ -2,9 +2,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
@@ -16,6 +18,7 @@ import java.util.HashSet;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -27,6 +30,9 @@ public class View extends JPanel{
 	private final static int frameHeight = 900;
 	private final static int imgWidth = 165;
 	private final static int imgHeight = 165;
+	private final static Dimension  screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
+	private final static double screenHeight = screenDimension.getHeight();
+	private final static double screenWidth = screenDimension.getWidth();
 	JFrame frame = new JFrame();
 	private static int xloc = 0; //player x location
 	private static int yLoc = 0; //player y location
@@ -70,7 +76,7 @@ public class View extends JPanel{
 		Image secondTrashImg = trashImg.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH) ;
 		trashBin.setIcon(new ImageIcon(secondTrashImg));
 		trashBin.setBounds(0,450,100,100);
-		frame.getContentPane().add(trashBin);
+		//frame.getContentPane().add(trashBin);
 		
 		JLabel recycleBin = new JLabel();
 		ImageIcon recycleIcon = new ImageIcon("images/MapObjects/recycling-bin.png");
@@ -78,7 +84,7 @@ public class View extends JPanel{
 		Image secondRecycleImg = recycleImg.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH) ;
 		recycleBin.setIcon(new ImageIcon(secondRecycleImg));
 		recycleBin.setBounds(0,580,100,100);
-		frame.getContentPane().add(recycleBin);
+		//frame.getContentPane().add(recycleBin);
 		
 		//PLANT SECTION**************************************
 		JLabel plant;
@@ -107,14 +113,16 @@ public class View extends JPanel{
 			plantImgs.add(plant);
 			//space out images by 200
 			count = count + 200;
-			frame.getContentPane().add(plant);
+			//frame.getContentPane().add(plant);
 		}
 		//********************************************************************8
 		
-		
+		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.setFocusable(true);
 		frame.setLayout(new BorderLayout());
-		frame.getContentPane().add(this);
+		frame.add(Box.createRigidArea(new Dimension((int)screenWidth,(int)(screenHeight - frameHeight)/2)), BorderLayout.PAGE_START);
+		frame.add(Box.createRigidArea(new Dimension((int)(screenWidth - frameWidth)/2,0)),BorderLayout.LINE_START);
+		frame.getContentPane().add(this, BorderLayout.CENTER);
 		frame.getContentPane().setBackground(BACKGROUND_COLOR);
 		this.setBackground(BACKGROUND_COLOR);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
