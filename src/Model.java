@@ -19,6 +19,11 @@ public class Model
 	int winH;
 	int imgW;
 	int imgH;
+	
+	private final static int frameWidth = 900;
+	private final static int frameHeight = 900;
+	private final static int imgWidth = 165;
+	private final static int imgHeight = 165;
 
 	Player myPlayer = new Player(0,0, 165,165);
 	//int xLoc = 0;
@@ -36,7 +41,8 @@ public class Model
 	//plantYloc = (frameHeight / 100) + count;
 	
 	Plant [] plants = new Plant[4]; 
-	int randPlant = (int) Math.floor(Math.random() * 4);//between 0 and 3
+	//int randPlant = (int) Math.floor(Math.random() * 4);//between 0 and 3
+	int randPlant = 0;
 	int plantDamage = 10;
 	int plantHealth = 100;
 	int deletePlant = 4;
@@ -49,12 +55,12 @@ public class Model
 	Animal crab;
 	HashSet<Animal> animals;
 	
-	public Model(int winW, int winH, int imgW, int imgH, Animal animal) 
+	public Model(Animal animal) 
 	{
-		this.winW = winW;
-		this.winH = winH;
-		this.imgW = imgW;
-		this.imgH = imgH;
+		this.winW = frameWidth;
+		this.winH = frameHeight;
+		this.imgW = imgWidth;
+		this.imgH = imgHeight;
 		this.crab = animal;
 		
 		int count = 0;
@@ -63,7 +69,8 @@ public class Model
 		{//health,xloc,yoc
 			//System.out.println(winW - (winW/3));
 			//System.out.println((winH / 100) + count);
-			this.plants[i] = new Plant(plantHealth, winW - (winW/3), (winH / 90) + count);//sets location of plants
+			this.plants[i] = new Plant(plantHealth, winW - (winW/3), 55 +(winH / 90) + count);//sets location of plants
+			plants[i].setRelativeCollisionRect(plants[i].getXLocation()-10, plants[i].getYLocation()-10, 100, 100);
 			count = count + 200;
 		}
 

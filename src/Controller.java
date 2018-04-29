@@ -14,6 +14,7 @@ public class Controller implements KeyListener {
 	private View view;
 	private Timer stepTimer;
 	private Animal crab = new Animal();
+	Plant [] plants;
 	
 	java.util.Timer taskTimer = new java.util.Timer();
 	java.util.Timer trashTimer = new java.util.Timer();
@@ -53,6 +54,7 @@ public class Controller implements KeyListener {
 	{
 		public void run()
 		{
+			//view.plants = model.plants;
 			checkPlants();
 			//for alpha testing
 			view.coords = model.coords;
@@ -62,7 +64,8 @@ public class Controller implements KeyListener {
 	//create task that checks this every one second for revive
 	public void checkPlants()
 	{
-		int plantNum = model.deletePlant;
+		//int plantNum = model.deletePlant;
+		int plantNum = 0;
 		switch(plantNum)
 		{
 		//make first dissappear
@@ -74,18 +77,20 @@ public class Controller implements KeyListener {
 			//we have to make sure players xloc and yloc are always being updated and sent
 			//to rectangle
 			//add this in beta
-			if(model.plants[plantNum].health == 0 && model.myPlayer.xLocation == model.plants[plantNum].xLocation && model.myPlayer.yLocation == model.plants[plantNum].yLocation) 
+			System.out.println(model.myPlayer.getCollidesWith(plants[plantNum]));
+			//System.out.println(model.myPlayer.getCollidesWith(plants[plantNum]));
+			if(model.plants[plantNum].health == 0 && model.myPlayer.getCollidesWith(plants[plantNum])) 
 			{
 				if(pressP == true)
 				{
-					view.revivePlant(plantNum);
+					//view.revivePlant(plantNum);
 					model.plants[plantNum].health = model.plantHealth;
 					model.randPlant = (int) Math.floor(Math.random() * 4);
 				}
 			}
 			else if(model.plants[plantNum].health == 0)
 			{
-				view.deletePlant(plantNum);
+				//view.deletePlant(plantNum);
 			}
 			break;
 		//second..etc
@@ -94,14 +99,14 @@ public class Controller implements KeyListener {
 			{
 				if(pressP == true)
 				{
-					view.revivePlant(plantNum);
+					//view.revivePlant(plantNum);
 					model.plants[plantNum].health = model.plantHealth;
 					model.randPlant = (int) Math.floor(Math.random() * 4);
 				}
 			}
 			else if(model.plants[plantNum].health == 0)
 			{
-				view.deletePlant(plantNum);
+				//view.deletePlant(plantNum);
 			}
 			break;
 		case 2:
@@ -109,14 +114,14 @@ public class Controller implements KeyListener {
 			{
 				if(pressP == true)
 				{
-					view.revivePlant(plantNum);
+					//view.revivePlant(plantNum);
 					model.plants[plantNum].health = model.plantHealth;
 					model.randPlant = (int) Math.floor(Math.random() * 4);
 				}
 			}
 			else if(model.plants[plantNum].health == 0)
 			{
-				view.deletePlant(plantNum);
+				//view.deletePlant(plantNum);
 			}
 			break;
 		case 3:
@@ -124,14 +129,14 @@ public class Controller implements KeyListener {
 			{
 				if(pressP == true)
 				{
-					view.revivePlant(plantNum);
+					//view.revivePlant(plantNum);
 					model.plants[plantNum].health = model.plantHealth;
 					model.randPlant = (int) Math.floor(Math.random() * 4);
 				}
 			}
 			else if(model.plants[plantNum].health == 0)
 			{
-				view.deletePlant(plantNum);
+				//view.deletePlant(plantNum);
 			}
 			break;
 		}
@@ -139,9 +144,11 @@ public class Controller implements KeyListener {
 	
 	// run the simulation
 	public void start() {
-		view = new View(crab);
+		model = new Model(crab);
+		this.plants = model.plants;
+		view = new View(crab, plants);
 		view.setKeyListener(this);
-		model = new Model(view.getWidth(), view.getHeight(), view.getImageWidth(), view.getImageHeight(), crab);
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				stepTimer = new Timer(DRAW_DELAY, stepAction);
