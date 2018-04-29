@@ -86,7 +86,7 @@ public class View extends JPanel{
 		recycleBin.setBounds(0,580,100,100);
 		//frame.getContentPane().add(recycleBin);
 		
-		//PLANT SECTION**************************************
+		/*//PLANT SECTION**************************************
 		JLabel plant;
 		int count = 0;
 		
@@ -116,7 +116,7 @@ public class View extends JPanel{
 			//frame.getContentPane().add(plant);
 		}
 		//********************************************************************8
-		
+*/		
 		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.setFocusable(true);
 		frame.setLayout(new BorderLayout());
@@ -151,13 +151,34 @@ public class View extends JPanel{
 		frame.addKeyListener(listener);
 	}
 
+	ImageIcon plantIcon = new ImageIcon("images/MapObjects/azalea.png");
+	Image plantImg = plantIcon.getImage();
+	Image newImg = plantImg.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH);
+	
 	public void paint(Graphics g) {
 		super.paint(g);
 		ImageIcon backg = new ImageIcon("images/Map/Background.jpg");
 		g.drawImage(backg.getImage(),0,0,this);
-		g.drawImage(this.animation.getCurrentFrameForDirection(this.curDir), xloc, yLoc, this);
+		
 		crabPicNum = (crabPicNum + 3) % crab.getNumOfImages(); //change the 3 to change the speed
-		g.drawImage(img[crabPicNum], crab.getXLocation(), crab.getYLocation(), crab.getImageWidth(), crab.getImageHeight(), this); //drawing the crab onto the game
+		
+		
+		if(Plant.plants[0].health > 0)
+		{
+			g.drawImage(newImg, Plant.plants[0].getXLocation(),Plant.plants[0].getYLocation(),this);	
+		}
+		if(Plant.plants[1].health > 0)
+		{
+			g.drawImage(newImg,Plant.plants[1].getXLocation(),Plant.plants[1].getYLocation(),this);	
+		}
+		if(Plant.plants[2].health > 0)
+		{
+			g.drawImage(newImg, Plant.plants[2].getXLocation(),Plant.plants[2].getYLocation(),this);	
+		}
+		if(Plant.plants[3].health > 0)
+		{
+			g.drawImage(newImg, Plant.plants[3].getXLocation(),Plant.plants[3].getYLocation(),this);	
+		}
 		
 		//traverse through litter set and draw them, had to make a copy of litter set everytime to avoid ConcurrentModificationExceptions.
 		for(Litter l: new HashSet<Litter>(Litter.litterSet)) {
@@ -166,13 +187,15 @@ public class View extends JPanel{
 
 		g.setColor(Color.RED);
 		g.setFont(new Font("TimesRoman", Font.BOLD, 25)); 
-		g.drawString(""+plant0H, 550, 60);//change to make it the spacing as the plant jlabels
+		g.drawString(""+plant0H, 550, 100);//change to make it the spacing as the plant jlabels
 		g.drawString(""+plant1H, 550, 260);
 		g.drawString(""+plant2H, 550, 460);
 		g.drawString(""+plant3H, 550, 660);
 		g.setColor(Color.PINK);
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
 		g.drawString(coords, 10, 20);
+		g.drawImage(img[crabPicNum], crab.getXLocation(), crab.getYLocation(), crab.getImageWidth(), crab.getImageHeight(), this); //drawing the crab onto the game
+		g.drawImage(this.animation.getCurrentFrameForDirection(this.curDir), xloc, yLoc, this);
 		
 		
 	}

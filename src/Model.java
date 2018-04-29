@@ -35,11 +35,10 @@ public class Model
 	//plantXloc = frameWidth - (frameWidth/3);
 	//plantYloc = (frameHeight / 100) + count;
 	
-	Plant [] plants = new Plant[4]; 
+	//Plant [] plants = new Plant[4]; 
 	int randPlant = (int) Math.floor(Math.random() * 4);//between 0 and 3
 	int plantDamage = 10;
 	int plantHealth = 100;
-	int deletePlant = 4;
 	
 	String coords = "";
 
@@ -63,7 +62,7 @@ public class Model
 		{//health,xloc,yoc
 			//System.out.println(winW - (winW/3));
 			//System.out.println((winH / 100) + count);
-			this.plants[i] = new Plant(plantHealth, winW - (winW/3), (winH / 90) + count);//sets location of plants
+			Plant.plants[i] = new Plant(plantHealth, winW - (winW/3), 50+(winH / 90) + count);//sets location of plants
 			count = count + 200;
 		}
 
@@ -79,7 +78,7 @@ public class Model
 		//System.out.println(myPlayer.xLocation + ":" + plants[randPlant].xLocation + " and " + myPlayer.yLocation + ":" + plants[randPlant].yLocation);
 		//System.out.println(plants[0].health + " " + plants[1].health + " " + plants[2].health + " " + plants[3].health);
 		this.checkCollision();
-		coords = " x=" + myPlayer.xLocation + ":" + plants[randPlant].xLocation + " y=" + myPlayer.yLocation + ":" + plants[randPlant].yLocation;
+		//coords = " x=" + myPlayer.xLocation + ":" + plants[randPlant].xLocation + " y=" + myPlayer.yLocation + ":" + plants[randPlant].yLocation;
 		collisionDetection();
 		updateLocation();
 		animalWallCollision();
@@ -203,16 +202,16 @@ public class Model
 		public void damagePlant()
 		{
 			//System.out.println(randPlant);
-			if(plants[randPlant].getHealth() > 0)
+			if(Plant.plants[randPlant].getHealth() > 0)
 			{
-				deletePlant = 4;//dont delete a plant, no switch case for 4
-				plants[randPlant].health = plants[randPlant].health - plantDamage;
+				//deletePlant = 4;//dont delete a plant, no switch case for 4
+				Plant.plants[randPlant].health = Plant.plants[randPlant].health - plantDamage;
 			}
-			else if(plants[randPlant].getHealth() == 0)
+			else if(Plant.plants[randPlant].getHealth() == 0)
 			{
 				//send randplant number
 				//update view corresponding to which plant reached zero
-				deletePlant = randPlant;
+				//deletePlant = randPlant;
 				
 				//wait until player revives plant
 				
@@ -237,7 +236,15 @@ public class Model
 			if(litter.getCollidesWith(this.myPlayer))
 				this.myPlayer.pickUpLitter(litter);
 		}
-
+		
+		for(int i = 0; i < 4; i++)
+		{
+			//add and health == 0
+			if(Plant.plants[i].health == 0 && Plant.plants[i].getCollidesWith(this.myPlayer))
+			{
+				this.myPlayer.growPlant(i);
+			}
+		}
 		if(this.myPlayer.hasLitter()) {
 			if(this.myPlayer.getCollidesWith(this.tBin))
 				this.tBin.takeLitter(this.myPlayer);
@@ -245,6 +252,8 @@ public class Model
 				this.rBin.takeLitter(this.myPlayer);
 		}
 
+		
+		
 		Iterator<Litter> litterIterator = Litter.litterSet.iterator();
 		while(litterIterator.hasNext()) {
 			Litter litter = litterIterator.next();
