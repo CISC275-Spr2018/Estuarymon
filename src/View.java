@@ -81,6 +81,7 @@ public class View extends JPanel{
 		frame.getContentPane().add(recycleBin);
 		
 		//PLANT SECTION**************************************
+		
 		JLabel plant;
 		int count = 0;
 		
