@@ -36,7 +36,7 @@ public class Model
 	//plantYloc = (frameHeight / 100) + count;
 	
 	//Plant [] plants = new Plant[4]; 
-	int randPlant = (int) Math.floor(Math.random() * 4);//between 0 and 3
+	//int randPlant = (int) Math.floor(Math.random() * 4);//between 0 and 3
 	int plantDamage = 10;
 	int plantHealth = 100;
 	
@@ -202,20 +202,14 @@ public class Model
 		public void damagePlant()
 		{
 			//System.out.println(randPlant);
-			if(Plant.plants[randPlant].getHealth() > 0)
+			if(Plant.plants[Plant.randPlant].getHealth() > 0)
 			{
 				//deletePlant = 4;//dont delete a plant, no switch case for 4
-				Plant.plants[randPlant].health = Plant.plants[randPlant].health - plantDamage;
+				Plant.plants[Plant.randPlant].health = Plant.plants[Plant.randPlant].health - plantDamage;
 			}
-			else if(Plant.plants[randPlant].getHealth() == 0)
+			else if(Plant.plants[Plant.randPlant].getHealth() == 0)
 			{
-				//send randplant number
-				//update view corresponding to which plant reached zero
-				//deletePlant = randPlant;
-				
-				//wait until player revives plant
-				
-				//randPlant = (int) Math.floor(Math.random() * 4);
+				//add in if we want more than one plant to die at onceS
 			}
 		}
 		

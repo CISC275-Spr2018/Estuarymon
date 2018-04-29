@@ -85,38 +85,7 @@ public class View extends JPanel{
 		recycleBin.setIcon(new ImageIcon(secondRecycleImg));
 		recycleBin.setBounds(0,580,100,100);
 		//frame.getContentPane().add(recycleBin);
-		
-		/*//PLANT SECTION**************************************
-		JLabel plant;
-		int count = 0;
-		
-		int plantXloc;
-		int plantYloc;
-		
-		for(int i = 0; i < 4; i++)
-		{
-			plant = new JLabel();
-			//loads plant image,converts it to icon, adds icon to label, resizes image
-			ImageIcon plantIcon = new ImageIcon("images/MapObjects/azalea.png");
-			Image plantImg = plantIcon.getImage();
-			Image newImg = plantImg.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH);
-			
-			plant.setIcon(new ImageIcon(newImg));
-		
-			//set this in plant
-			plantXloc = frameWidth - (frameWidth/3);
-			plantYloc = (frameHeight / 100) + count;
-			
-			//set plant in array vars to these^
-			plant.setBounds(plantXloc, plantYloc, 100, 100);
-			//store images in a list to set vis false layer
-			plantImgs.add(plant);
-			//space out images by 200
-			count = count + 200;
-			//frame.getContentPane().add(plant);
-		}
-		//********************************************************************8
-*/		
+				
 		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.setFocusable(true);
 		frame.setLayout(new BorderLayout());

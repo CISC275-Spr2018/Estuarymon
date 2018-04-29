@@ -42,6 +42,8 @@ public class Player extends Interactable {
 	public void growPlant(int i) {
 		// TODO
 		System.out.println("Plant!");
-		Plant.plants[i].health = 1000;
+		//restore health and pick new plant
+		Plant.plants[i].health = 100;
+		Plant.randPlant = (int) Math.floor(Math.random() * 4);
 	}
 }
