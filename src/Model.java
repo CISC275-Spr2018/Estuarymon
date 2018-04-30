@@ -207,10 +207,12 @@ public class Model
 				//deletePlant = 4;//dont delete a plant, no switch case for 4
 				Plant.plants[Plant.randPlant].health = Plant.plants[Plant.randPlant].health - plantDamage;
 			}
+			/*
 			else if(Plant.plants[Plant.randPlant].getHealth() == 0)
 			{
 				//add in if we want more than one plant to die at onceS
 			}
+			*/
 		}
 		
 	
