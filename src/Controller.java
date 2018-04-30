@@ -14,7 +14,6 @@ public class Controller implements KeyListener {
 	private View view;
 	private Timer stepTimer;
 	private Animal crab = new Animal();
-	Plant [] plants;
 	
 	java.util.Timer taskTimer = new java.util.Timer();
 	java.util.Timer trashTimer = new java.util.Timer();
@@ -43,10 +42,10 @@ public class Controller implements KeyListener {
 		{
 			model.damagePlant();
 			//show plant health on screen
-			view.plant0H = model.plants[0].health;
-			view.plant1H = model.plants[1].health;
-			view.plant2H = model.plants[2].health;
-			view.plant3H = model.plants[3].health;
+			view.plant0H = Plant.plants[0].health;
+			view.plant1H = Plant.plants[1].health;
+			view.plant2H = Plant.plants[2].health;
+			view.plant3H = Plant.plants[3].health;
 		}
 	}
 	
@@ -54,100 +53,19 @@ public class Controller implements KeyListener {
 	{
 		public void run()
 		{
-			//view.plants = model.plants;
-			checkPlants();
+			//checkPlants();
 			//for alpha testing
 			view.coords = model.coords;
 		}
 	}
 	
-	//create task that checks this every one second for revive
-	public void checkPlants()
-	{
-		//int plantNum = model.deletePlant;
-		int plantNum = 0;
-		switch(plantNum)
-		{
-		//make first dissappear
-		case 0:
-			//if dead
-			//change model.xloc and model.yloc to playercollision so coordinates dont have to be exact
-			//player.getCollidesWith(model.plants[plantNum])
-			//^this doesnt work.
-			//we have to make sure players xloc and yloc are always being updated and sent
-			//to rectangle
-			//add this in beta
-			System.out.println(model.myPlayer.getCollidesWith(plants[plantNum]));
-			//System.out.println(model.myPlayer.getCollidesWith(plants[plantNum]));
-			if(model.plants[plantNum].health == 0 && model.myPlayer.getCollidesWith(plants[plantNum])) 
-			{
-				if(pressP == true)
-				{
-					//view.revivePlant(plantNum);
-					model.plants[plantNum].health = model.plantHealth;
-					model.randPlant = (int) Math.floor(Math.random() * 4);
-				}
-			}
-			else if(model.plants[plantNum].health == 0)
-			{
-				//view.deletePlant(plantNum);
-			}
-			break;
-		//second..etc
-		case 1:
-			if(model.plants[plantNum].health == 0 && model.myPlayer.xLocation == model.plants[plantNum].xLocation && model.myPlayer.yLocation == model.plants[plantNum].yLocation) 
-			{
-				if(pressP == true)
-				{
-					//view.revivePlant(plantNum);
-					model.plants[plantNum].health = model.plantHealth;
-					model.randPlant = (int) Math.floor(Math.random() * 4);
-				}
-			}
-			else if(model.plants[plantNum].health == 0)
-			{
-				//view.deletePlant(plantNum);
-			}
-			break;
-		case 2:
-			if(model.plants[plantNum].health == 0 && model.myPlayer.xLocation == model.plants[plantNum].xLocation && model.myPlayer.yLocation == model.plants[plantNum].yLocation) 
-			{
-				if(pressP == true)
-				{
-					//view.revivePlant(plantNum);
-					model.plants[plantNum].health = model.plantHealth;
-					model.randPlant = (int) Math.floor(Math.random() * 4);
-				}
-			}
-			else if(model.plants[plantNum].health == 0)
-			{
-				//view.deletePlant(plantNum);
-			}
-			break;
-		case 3:
-			if(model.plants[plantNum].health == 0 && model.myPlayer.xLocation == model.plants[plantNum].xLocation && model.myPlayer.yLocation == model.plants[plantNum].yLocation) 
-			{
-				if(pressP == true)
-				{
-					//view.revivePlant(plantNum);
-					model.plants[plantNum].health = model.plantHealth;
-					model.randPlant = (int) Math.floor(Math.random() * 4);
-				}
-			}
-			else if(model.plants[plantNum].health == 0)
-			{
-				//view.deletePlant(plantNum);
-			}
-			break;
-		}
-	}
 	
 	// run the simulation
 	public void start() {
-		model = new Model(crab);
-		this.plants = model.plants;
-		view = new View(crab, plants);
+		view = new View(crab);
 		view.setKeyListener(this);
+		model = new Model(view.getWidth(), view.getHeight(), view.getImageWidth(), view.getImageHeight(), crab);
+		
 		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {

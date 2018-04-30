@@ -47,7 +47,6 @@ public class View extends JPanel{
 	private BufferedImage[] recImgs = new BufferedImage[recImgCount+1];
 	private Litter[] litterArr = new Litter[litterCount];
 	
-	Plant [] plants;
 	ArrayList<JLabel> plantImgs = new ArrayList<JLabel>();
 	
 	//these plants vars for alpha testing
@@ -61,10 +60,9 @@ public class View extends JPanel{
 	int crabPicNum = 0; // current images of the crab
 
 
-	public View(Animal animal, Plant [] plants) {
+	public View(Animal animal) {
 		// Preload animations
 		crab = animal;
-		this.plants = plants;
 		img = crab.loadImages();
 		Animation.preload();
 		
@@ -87,39 +85,7 @@ public class View extends JPanel{
 		recycleBin.setIcon(new ImageIcon(secondRecycleImg));
 		recycleBin.setBounds(0,580,100,100);
 		//frame.getContentPane().add(recycleBin);
-		
-		/*//PLANT SECTION**************************************
-		
-		JLabel plant;
-		int count = 0;
-		
-		int plantXloc;
-		int plantYloc;
-		
-		for(int i = 0; i < 4; i++)
-		{
-			plant = new JLabel();
-			//loads plant image,converts it to icon, adds icon to label, resizes image
-			ImageIcon plantIcon = new ImageIcon("images/MapObjects/azalea.png");
-			Image plantImg = plantIcon.getImage();
-			Image newImg = plantImg.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH);
-			
-			plant.setIcon(new ImageIcon(newImg));
-		
-			//set this in plant
-			plantXloc = frameWidth - (frameWidth/3);
-			plantYloc = (frameHeight / 100) + count;
-			
-			//set plant in array vars to these^
-			plant.setBounds(plantXloc, plantYloc, 100, 100);
-			//store images in a list to set vis false layer
-			plantImgs.add(plant);
-			//space out images by 200
-			count = count + 200;
-			//frame.getContentPane().add(plant);
-		}
-		//********************************************************************8
-*/		
+				
 		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.setFocusable(true);
 		frame.setLayout(new BorderLayout());
@@ -165,44 +131,41 @@ public class View extends JPanel{
 		
 		crabPicNum = (crabPicNum + 3) % crab.getNumOfImages(); //change the 3 to change the speed
 		
-		//if plant has health draw it
-		//FOR GLOWING if healht is less than planthealth, then glow
-		if(plants[0].health > 0)
+		
+		if(Plant.plants[0].health > 0)
 		{
-			g.drawImage(newImg, plants[0].getXLocation(),plants[0].getYLocation(),this);	
+			g.drawImage(newImg, Plant.plants[0].getXLocation(),Plant.plants[0].getYLocation(),this);	
 		}
-		if(plants[1].health > 0)
+		if(Plant.plants[1].health > 0)
 		{
-			g.drawImage(newImg, plants[1].getXLocation(),plants[1].getYLocation(),this);	
+			g.drawImage(newImg,Plant.plants[1].getXLocation(),Plant.plants[1].getYLocation(),this);	
 		}
-		if(plants[2].health > 0)
+		if(Plant.plants[2].health > 0)
 		{
-			g.drawImage(newImg, plants[2].getXLocation(),plants[2].getYLocation(),this);	
+			g.drawImage(newImg, Plant.plants[2].getXLocation(),Plant.plants[2].getYLocation(),this);	
 		}
-		if(plants[3].health > 0)
+		if(Plant.plants[3].health > 0)
 		{
-			g.drawImage(newImg, plants[3].getXLocation(),plants[3].getYLocation(),this);	
+			g.drawImage(newImg, Plant.plants[3].getXLocation(),Plant.plants[3].getYLocation(),this);	
 		}
-	
 		
 		//traverse through litter set and draw them, had to make a copy of litter set everytime to avoid ConcurrentModificationExceptions.
 		for(Litter l: new HashSet<Litter>(Litter.litterSet)) {
 			g.drawImage(l.getlitterImage(), l.getXLocation(), l.getYLocation(), this);
 		}
 
-		g.drawImage(img[crabPicNum], crab.getXLocation(), crab.getYLocation(), crab.getImageWidth(), crab.getImageHeight(), this); //drawing the crab onto the game
-		
 		g.setColor(Color.RED);
 		g.setFont(new Font("TimesRoman", Font.BOLD, 25)); 
-		g.drawString(""+plant0H, 550, 60);//change to make it the spacing as the plant jlabels
+		g.drawString(""+plant0H, 550, 100);//change to make it the spacing as the plant jlabels
 		g.drawString(""+plant1H, 550, 260);
 		g.drawString(""+plant2H, 550, 460);
 		g.drawString(""+plant3H, 550, 660);
 		g.setColor(Color.PINK);
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
-		g.drawString(coords, 100,200);
-		
+		g.drawString(coords, 10, 20);
+		g.drawImage(img[crabPicNum], crab.getXLocation(), crab.getYLocation(), crab.getImageWidth(), crab.getImageHeight(), this); //drawing the crab onto the game
 		g.drawImage(this.animation.getCurrentFrameForDirection(this.curDir), xloc, yLoc, this);
+		
 		
 	}
 

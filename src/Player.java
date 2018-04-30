@@ -38,4 +38,12 @@ public class Player extends Interactable {
 		// TODO
 		System.out.println("Player pick up litter "+l.toString());
 	}
+	
+	public void growPlant(int i) {
+		// TODO
+		System.out.println("Plant!");
+		//restore health and pick new plant
+		Plant.plants[i].health = 100;
+		Plant.randPlant = (int) Math.floor(Math.random() * 4);
+	}
 }
