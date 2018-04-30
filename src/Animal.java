@@ -15,6 +15,9 @@ public class Animal extends Interactable {
 	public Animal() {
 		this.setXLocation(200);
 		this.setYLocation(400);
+		this.width = imageHeight;
+		this.height = imageWidth;
+		this.setRelativeCollisionRect(15, 15, 90, 110);
 		// curDir = Direction.WEST;
 	}
 
@@ -74,4 +77,9 @@ public class Animal extends Interactable {
 		this.imageWidth = imageWidth;
 	}
 
+	public void eatLitter() {
+		// TODO
+		System.out.println("Animal eat litter!");
+		// Get sick, change sprite, slow down, retreat, etc.
+	}
 }

@@ -5,9 +5,20 @@ public class Interactable {
 	int yLocation;
 	int width;
 	int height;
+	private Rectangle relativeCollisionBox;
 
 	public Rectangle getCollisionRect() {
-		return new Rectangle(xLocation, yLocation, width, height);
+		if(this.relativeCollisionBox == null) {
+			System.out.println("Warning: no collision box set for "+this.toString());
+			return new Rectangle(0,0,0,0);
+		}
+		Rectangle collisionBox = new Rectangle(this.relativeCollisionBox);
+		collisionBox.translate(xLocation, yLocation);
+		return collisionBox;
+	}
+
+	public void setRelativeCollisionRect(int dx, int dy, int width, int height) {
+		this.relativeCollisionBox = new Rectangle(dx, dy, width, height);
 	}
 
 	public boolean getCollidesWith(Interactable other) {
