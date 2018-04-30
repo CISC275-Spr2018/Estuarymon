@@ -227,6 +227,11 @@ public class Model
 		
 	}
 
+	public void testCheckColl()
+	{
+		checkCollision();
+	}
+	
 	private void checkCollision() {
 		for(Litter litter : Litter.litterSet) {
 			if(litter.getCollidesWith(this.myPlayer))
@@ -241,6 +246,7 @@ public class Model
 				this.myPlayer.growPlant(i);
 			}
 		}
+		
 		if(this.myPlayer.hasLitter()) {
 			if(this.myPlayer.getCollidesWith(this.tBin))
 				this.tBin.takeLitter(this.myPlayer);
@@ -248,6 +254,8 @@ public class Model
 				this.rBin.takeLitter(this.myPlayer);
 		}
 
+		
+		
 		
 		
 		Iterator<Litter> litterIterator = Litter.litterSet.iterator();
