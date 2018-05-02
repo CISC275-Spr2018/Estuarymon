@@ -151,7 +151,7 @@ public class View extends JPanel{
 		
 		//traverse through litter set and draw them, had to make a copy of litter set everytime to avoid ConcurrentModificationExceptions.
 		for(Litter l: new HashSet<Litter>(Litter.litterSet)) {
-			g.drawImage(l.getlitterImage(), l.getXLocation(), l.getYLocation(), this);
+			g.drawImage(l.getlitterImage(), l.getXLocation(), l.getYLocation(),l.getHeight(),l.getWidth(), this);
 		}
 
 		g.setColor(Color.RED);
@@ -199,11 +199,18 @@ public class View extends JPanel{
 		frame.repaint();
 	}
 	
-	//made a BufferedImage attribute in the Litter class, this method assigns a random image to the litter after it has been created. 
+	/**
+	 * 
+	 * @param t The Trash object the image will be set for.
+	 */
 	public void setLitterImage(Trash t) {
 		t.setlitterImage(trashImgs[(int)(Math.random()*trashImgs.length)]);
 	}
 	
+	/**
+	 * 
+	 * @param r The Recyclable object the image will be set for. 
+	 */
 	public void setLitterImage(Recyclable r) {
 		r.setlitterImage(recImgs[(int)(Math.random()*recImgs.length)]);
 	}
@@ -216,7 +223,7 @@ public class View extends JPanel{
 		recImgs[0] = loadImg("Soda-Can");
 		recImgs[1] = loadImg("paper");
 		
-		for(int i = 0; i < trashImgCount; i++) {
+		/*for(int i = 0; i < trashImgCount; i++) {
 			BufferedImage tempImg = new BufferedImage(60,60,trashImgs[i].getType());
 			Graphics2D g2d = tempImg.createGraphics();
 			g2d.drawImage(trashImgs[i], 0,0,null);
@@ -231,7 +238,7 @@ public class View extends JPanel{
 			g2d.dispose();
 			recImgs[i] = tempImg;
 		}
-		
+		*/
 		
 		
 	}

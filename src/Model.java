@@ -26,6 +26,9 @@ public class Model
 
 	int xIncr = 0;
 	int yIncr = 0;
+	
+	int animalXIncr = 3;
+	int animalYIncr = 3;
 
 	Direction curDir = Direction.EAST;
 	
@@ -116,16 +119,16 @@ public class Model
 	public void updatingAnimalLocation() {
 		switch(crabDirection) {
 		case 1: //going east 
-			crab.updateXCoordinate(-3);
+			crab.setXLocation(crab.getXLocation()+animalXIncr);
 			break;
 		case 2: //going west 
-			crab.updateXCoordinate(3);
+			crab.setXLocation(crab.getXLocation()-animalXIncr);
 			break;
 		case 3: //going south
-			crab.updateYCoordinate(3);
+			crab.setYLocation(crab.getYLocation()-animalYIncr);
 			break;
 		case 4: //going north
-			crab.updateYCoordinate(-3);
+			crab.setYLocation(crab.getYLocation()+animalYIncr);
 			break;
 		
 		}
@@ -213,7 +216,10 @@ public class Model
 			*/
 		}
 		
-	
+	/**Generates and sets random x and y coordinates for a given Litter object. 
+	 * Coordinates are generated using Random.nextInt()
+	 * @param l the Litter object that the coordinates will be generated for. 
+	 */
 	public void genLitterCords(Litter l) {
 		Random coordGenerator = new Random();
 		int litterXCord = coordGenerator.nextInt((winW-l.getWidth()));//generates random coordinates

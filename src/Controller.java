@@ -73,7 +73,7 @@ public class Controller implements KeyListener {
 				stepTimer.start();
 				taskTimer.scheduleAtFixedRate(new damagePlantTask(),500,1000);//damages plants every ten seconds
 				taskTimer.scheduleAtFixedRate(new checkPlantTask(),500,100);//evaluates plants with player every second
-				trashTimer.scheduleAtFixedRate(new TrashTask(), 0, 6000);
+				trashTimer.scheduleAtFixedRate(new TrashTask(), 0, 10000);
 			}
 		});
 	}
@@ -131,7 +131,16 @@ public class Controller implements KeyListener {
 
 	}
 	
+	/**TimerTask subclass that handles the spawning of Litter object around the map at the set interval it was scheduled at. 
+	 * 
+	 * @author Juan Villacis
+	 *
+	 */
 	class TrashTask extends TimerTask{
+		/**Method that psuedo-randomly chooses whether the new Litter object will be of Trash or Litter type, and calls the appropriate method in Model to generate its coordinates and in View to set its image.
+		 * 
+		 * 
+		 */
 		public void run() {
 			
 			if(Math.random() < 0.5) { //coin flip as to whether it will be trash or recyclable

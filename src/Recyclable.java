@@ -1,8 +1,14 @@
-
+/**Subclass of Litter. 
+ * 
+ * @author Juan Villacis 
+ *
+ */
 public class Recyclable extends Litter{
 
 	
-
+	/**Method that gets the appropriate Receptacle for this type of Litter
+	 * @return RecycleBin
+	 */
 	@Override
 	public Class targetReceptacle() {
 		
