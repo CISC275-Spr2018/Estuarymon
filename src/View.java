@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -88,11 +89,10 @@ public class View extends JPanel{
 				
 		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.setFocusable(true);
-		frame.setLayout(new BorderLayout());
-		frame.add(Box.createRigidArea(new Dimension((int)screenWidth,(int)(screenHeight - frameHeight)/2)), BorderLayout.PAGE_START);
-		frame.add(Box.createRigidArea(new Dimension((int)(screenWidth - frameWidth)/2,0)),BorderLayout.LINE_START);
-		frame.getContentPane().add(this, BorderLayout.CENTER);
-		frame.getContentPane().setBackground(BACKGROUND_COLOR);
+		frame.setLayout(new GridBagLayout());
+		frame.setUndecorated(true);
+		frame.add(this);
+		frame.setBackground(BACKGROUND_COLOR);
 		this.setBackground(BACKGROUND_COLOR);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(frameWidth, frameHeight);
@@ -169,12 +169,14 @@ public class View extends JPanel{
 		
 	}
 
-	public int getHeight() {
-		return frameHeight;
-	}
-
-	public int getWidth() {
-		return frameWidth;
+	@Override
+	public Dimension getPreferredSize() {
+		Dimension parent = this.getParent().getSize();
+		if(parent.width > parent.height) {
+			return new Dimension(parent.height, parent.height);
+		} else {
+			return new Dimension(parent.width, parent.width);
+		}
 	}
 
 	public int getImageHeight() {
