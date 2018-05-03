@@ -27,8 +27,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class View extends JPanel{
-	private final static int frameWidth = 900;
-	private final static int frameHeight = 900;
 	private final static int imgWidth = 165;
 	private final static int imgHeight = 165;
 	private final static Dimension  screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -87,7 +85,6 @@ public class View extends JPanel{
 		recycleBin.setBounds(0,580,100,100);
 		//frame.getContentPane().add(recycleBin);
 				
-		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.setFocusable(true);
 		frame.setLayout(new GridBagLayout());
 		frame.setUndecorated(true);
@@ -95,7 +92,8 @@ public class View extends JPanel{
 		frame.setBackground(BACKGROUND_COLOR);
 		this.setBackground(BACKGROUND_COLOR);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(frameWidth, frameHeight);
+		frame.setSize(Controller.WORLD_WIDTH, Controller.WORLD_HEIGHT);
+		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.setVisible(true);
 	}
 
@@ -164,9 +162,27 @@ public class View extends JPanel{
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
 		g.drawString(coords, 10, 20);
 		g.drawImage(img[crabPicNum], crab.getXLocation(), crab.getYLocation(), crab.getImageWidth(), crab.getImageHeight(), this); //drawing the crab onto the game
-		g.drawImage(this.animation.getCurrentFrameForDirection(this.curDir), xloc, yLoc, this);
+		drawImage(g, this.animation.getCurrentFrameForDirection(this.curDir), xloc, yLoc);
 		
 		
+	}
+
+	private void drawImage(Graphics g, BufferedImage image, int world_x, int world_y) {
+		g.drawImage(image, cD(world_x), cD(world_y), this);
+	}
+
+	private void drawImage(Graphics g, BufferedImage image, int world_x, int world_y, int world_w, int world_h) {
+		g.drawImage(image, cD(world_x), cD(world_y), cD(world_w), cD(world_h), this);
+	}
+
+	// convertDimension: converts a dimension from world coordinates to pixel coordinates
+	private int convertDimension(int world_dimension) {
+		return (int) ((double) world_dimension / Controller.WORLD_WIDTH * this.getWidth());
+	}
+
+	// Shorthand syntax for convertDimension
+	private int cD(int d) {
+		return convertDimension(d);
 	}
 
 	@Override

@@ -7,7 +7,7 @@ compile: bin/compiled
 
 bin/compiled: $(SOURCES)
 	mkdir -p bin
-	javac -d bin src/*.java
+	javac -d bin -cp /usr/share/junit5 src/*.java
 	touch bin/compiled;
 
 .PHONY: run
