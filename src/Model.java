@@ -49,13 +49,17 @@ public class Model
 	Animal crab;
 	HashSet<Animal> animals;
 	
-	public Model(int winW, int winH, int imgW, int imgH, Animal animal) 
+	public Model(int winW, int winH, int imgW, int imgH) 
 	{
 		this.winW = winW;
 		this.winH = winH;
 		this.imgW = imgW;
 		this.imgH = imgH;
-		this.crab = animal;
+		this.crab = new Animal();
+		animals = new HashSet<Animal>();
+		animals.add(crab);
+		
+		
 		
 		int count = 0;
 		//fills plant array
@@ -68,9 +72,8 @@ public class Model
 		}
 
 		// Fill animals collection (temporary)
-		this.animals = new HashSet<>();
-		this.animals.add(this.crab);
 	}
+	
 
 	//same method as updateLocationAndDirection()
 	public void updateModel()
@@ -165,16 +168,17 @@ public class Model
 	
 	}
 	
-	public void setAttributes(int dir, Direction direction, int xIncr, int yIncr) {
+	public void setPlayerAttributes(int dir, Direction direction, int xIncr, int yIncr) {
 		this.dir = dir;
 		this.curDir = direction;
 		this.xIncr = xIncr;
 		this.yIncr = yIncr;
 	}
 
-	public void stop() {
+	public Animation stop() {
 		this.xIncr = 0;
 		this.yIncr = 0;
+		return Animation.IDLE;
 	}
 
 	public int getX()
