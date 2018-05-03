@@ -43,8 +43,8 @@ public class Model
 	
 	String coords = "";
 
-	TrashBin tBin = new TrashBin(0,450,128,128);
-	RecycleBin rBin = new RecycleBin(0,580,128,128);
+	Receptacle tBin = new Receptacle(0,450,128,128,ReceptacleType.TRASHBIN);
+	Receptacle rBin = new Receptacle(0,580,128,128,ReceptacleType.RECYCLINGBIN);
 	
 	Animal crab;
 	HashSet<Animal> animals;
@@ -76,10 +76,7 @@ public class Model
 	public void updateModel()
 	{
 		
-		//System.out.println(myPlayer.xLocation + ":" + plants[randPlant].xLocation + " and " + myPlayer.yLocation + ":" + plants[randPlant].yLocation);
-		//System.out.println(plants[0].health + " " + plants[1].health + " " + plants[2].health + " " + plants[3].health);
 		this.checkCollision();
-		//coords = " x=" + myPlayer.xLocation + ":" + plants[randPlant].xLocation + " y=" + myPlayer.yLocation + ":" + plants[randPlant].yLocation;
 		collisionDetection();
 		updateLocation();
 		animalWallCollision();
@@ -216,18 +213,21 @@ public class Model
 			*/
 		}
 		
-	/**Generates and sets random x and y coordinates for a given Litter object. 
-	 * Coordinates are generated using Random.nextInt()
-	 * @param l the Litter object that the coordinates will be generated for. 
+	/**Generates a new Litter object with random x and y coordinates, as well as adds it to the HashSet Litter.litterSet
+	 * @return the new Litter object created. 
+	 * 
 	 */
-	public void genLitterCords(Litter l) {
+	public Litter spawnLitter() {
 		Random coordGenerator = new Random();
+		Litter l = new Litter();
+		l.setType(LitterType.randomLitter());		
 		int litterXCord = coordGenerator.nextInt((winW-l.getWidth()));//generates random coordinates
 		int litterYCord = coordGenerator.nextInt((winH-l.getHeight()));
 		l.setXLocation(litterXCord);//
 		l.setYLocation(litterYCord);
 		Litter.litterSet.add(l);//Adds them to hashset of litter, prevents exact duplicates in terms of coordinates.
 		System.out.println(l);
+		return l;
 		
 	}
 

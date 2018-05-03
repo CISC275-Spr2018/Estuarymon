@@ -9,14 +9,11 @@ public class Animal extends Interactable {
 	private int numOfImages = 35;
 	BufferedImage[] img = new BufferedImage[numOfImages];
 	// Direction curDir;
-	private int imageHeight = 120;
-	private int imageWidth = 140;
+	private static int imageHeight = 120;
+	private static int imageWidth = 140;
 
 	public Animal() {
-		this.setXLocation(200);
-		this.setYLocation(400);
-		this.width = imageHeight;
-		this.height = imageWidth;
+		super(200, 400, imageHeight ,imageWidth);
 		this.setRelativeCollisionRect(15, 15, 90, 110);
 		// curDir = Direction.WEST;
 	}

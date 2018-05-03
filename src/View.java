@@ -45,7 +45,7 @@ public class View extends JPanel{
 	private static final int litterCount = 20;
 	Animation animation = Animation.IDLE;
 	private BufferedImage[] trashImgs = new BufferedImage[trashImgCount+1];
-	private BufferedImage[] recImgs = new BufferedImage[recImgCount+1];
+	private BufferedImage[] recyclableImgs = new BufferedImage[recImgCount+1];
 	private Litter[] litterArr = new Litter[litterCount];
 	
 	ArrayList<JLabel> plantImgs = new ArrayList<JLabel>();
@@ -201,50 +201,41 @@ public class View extends JPanel{
 		frame.repaint();
 	}
 	
-	/**
+	/**Sets the Litter object to a randomly selected image that is appropriate for its LitterType
 	 * 
-	 * @param t The Trash object the image will be set for.
+	 * @param t The Litter object the image will be set for.
 	 */
-	public void setLitterImage(Trash t) {
-		t.setlitterImage(trashImgs[(int)(Math.random()*trashImgs.length)]);
+	public void setLitterImage(Litter l) {
+		switch(l.getType()){
+		case TRASH:
+			l.setlitterImage(trashImgs[(int)(Math.random()*trashImgs.length)]);
+			break;
+		case RECYCLABLE:
+			l.setlitterImage(recyclableImgs[(int)(Math.random()*recyclableImgs.length)]);
+		}
+		
 	}
 	
-	/**
-	 * 
-	 * @param r The Recyclable object the image will be set for. 
-	 */
-	public void setLitterImage(Recyclable r) {
-		r.setlitterImage(recImgs[(int)(Math.random()*recImgs.length)]);
-	}
 	
-	//method to load in different trash or recyclable images that can be displayed. 
+	/**Loads in the different Litter images to be used in the game. 
+	 * 
+	 */
 	public void preloadLitterImgs() {
 		trashImgs[0] = loadImg("bananaSkin");
 		trashImgs[1] = loadImg("CompostA");
 		
-		recImgs[0] = loadImg("Soda-Can");
-		recImgs[1] = loadImg("paper");
-		
-		/*for(int i = 0; i < trashImgCount; i++) {
-			BufferedImage tempImg = new BufferedImage(60,60,trashImgs[i].getType());
-			Graphics2D g2d = tempImg.createGraphics();
-			g2d.drawImage(trashImgs[i], 0,0,null);
-			g2d.dispose();
-			trashImgs[i] = tempImg;
-		}
-		
-		for(int i = 0; i < recImgCount; i++) {
-			BufferedImage tempImg = new BufferedImage(60,60,recImgs[i].getType());
-			Graphics2D g2d = tempImg.createGraphics();
-			g2d.drawImage(recImgs[i], 0,0,null);
-			g2d.dispose();
-			recImgs[i] = tempImg;
-		}
-		*/
+		recyclableImgs[0] = loadImg("Soda-Can");
+		recyclableImgs[1] = loadImg("paper");
 		
 		
 	}
 	
+	/**Reads in an image file, and creates a corresponding BufferedImage
+	 * 
+	 * @param File name of the image without the file extension (ie: .png)
+	 * @return Buffered image corresponding to the image file.
+	 * @throws IOException if the image file cannot be found based on the name given. 
+	 */
 	protected BufferedImage loadImg(String name) {
 		try {
 			return ImageIO.read(new File("images/MapObjects/"+name+".png"));

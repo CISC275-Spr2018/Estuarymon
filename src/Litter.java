@@ -8,9 +8,10 @@ import java.util.HashSet;
  * 
  *
  */
-public abstract class Litter extends Interactable implements Serializable {
+public class Litter extends Interactable implements Serializable {
 	
 	BufferedImage litterImage;
+	LitterType lType;
 	
 	public static HashSet<Litter> litterSet = new HashSet<Litter>();
 	
@@ -18,9 +19,9 @@ public abstract class Litter extends Interactable implements Serializable {
 	 *
 	 */
 	public Litter() {
-		this.width = 40;
-		this.height = 40;
+		super(0,0,40,40);
 		this.setRelativeCollisionRect(10, 10, 40, 40);
+		
 	}
 	
 	/**Method that sets the BufferedImage that View displays to represent the Litter object 
@@ -37,13 +38,22 @@ public abstract class Litter extends Interactable implements Serializable {
 		return this.litterImage;
 	}
 	
-	/**Method that returns the appropriate Receptacle for the Litter object to be disposed into.  
-	 * @return the Class of the Receptacle that matches the Litter object type
-	 */
-	public abstract Class targetReceptacle();
+	public void setType(LitterType lt) {
+		this.lType = lt;
+	}
+	
+	public LitterType getType() {
+		return this.lType;
+	}
+	
+	@Override
+	public String toString() {
+		return this.lType.getName() + " at x:" + this.xLocation + " y:" + this.yLocation;
+	}
+	
 	
 	/**
-	 * Overriden hashCode function that hashes the Litter object by its xLocation on the map. 
+	 * Overridden hashCode function that hashes the Litter object by its xLocation on the map. 
 	 * @return The litter object's x location. 
 	 */
 	@Override
@@ -52,7 +62,7 @@ public abstract class Litter extends Interactable implements Serializable {
 	}
 	
 	/**
-	 * Overriden equals method. Two objects are considered equals such that l1.equals(l2) returns true if their x and y locations match.
+	 * Overridden equals method. Two objects are considered equals such that l1.equals(l2) returns true if their x and y locations match.
 	 * @return true if the two Litter object coordinates match, false otherwise. 
 	 */
 	@Override
