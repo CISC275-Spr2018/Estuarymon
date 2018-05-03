@@ -6,9 +6,8 @@ public class Plant extends Interactable{
 	
 	public Plant(int health, int xLocation, int yLocation) 
 	{
+		super(xLocation,yLocation,100,100);
 		this.health = health;
-		this.xLocation = xLocation;
-		this.yLocation = yLocation;
 		this.setRelativeCollisionRect(10, 10, 100, 100);
 	}
 

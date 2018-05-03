@@ -143,17 +143,8 @@ public class Controller implements KeyListener {
 		 */
 		public void run() {
 			
-			if(Math.random() < 0.5) { //coin flip as to whether it will be trash or recyclable
-				Recyclable newLitter = new Recyclable();
-				model.genLitterCords(newLitter);
-				view.setLitterImage(newLitter);
-				
-			}
-			else {
-				Trash newLitter = new Trash();
-				model.genLitterCords(newLitter);
-				view.setLitterImage(newLitter);
-			}
+			Litter l = model.spawnLitter();
+			view.setLitterImage(l);
 			
 		
 		

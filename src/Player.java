@@ -1,19 +1,16 @@
 
 public class Player extends Interactable {
 	public static boolean hasLitter = false;
-	public static Class litterType; 
+	public LitterType litterType;
 	
 	public Player(int xLoc, int yLoc, int rWidth, int rHeight) {
-		this.xLocation = xLoc;
-		this.yLocation = yLoc;
-		this.width = rWidth;
-		this.height = rHeight;
-		this.setRelativeCollisionRect(40, 40, rWidth-80, rHeight-80);
+		super(xLoc, yLoc, rWidth, rHeight);
+;		this.setRelativeCollisionRect(40, 40, rWidth-80, rHeight-80);
 	}
 	
 	public boolean shouldCollectLitter(Litter l) {
 		if(this.getCollidesWith(l) && !hasLitter) {
-			litterType = l.targetReceptacle();
+			litterType = l.getType();
 			return true;
 		}
 		else {
@@ -22,7 +19,7 @@ public class Player extends Interactable {
 	}
 	
 	public boolean shouldDepositLitter(Receptacle r) {
-		if(this.getCollidesWith(r) && hasLitter && r.getClass() == litterType) {
+		if(this.getCollidesWith(r) && hasLitter && r.getType().ordinal() == litterType.ordinal()) {
 			return true;
 		}
 		else {

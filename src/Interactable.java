@@ -6,6 +6,13 @@ public class Interactable {
 	int width;
 	int height;
 	private Rectangle relativeCollisionBox;
+	
+	public Interactable(int x, int y, int width, int height) {
+		this.xLocation = x;
+		this.yLocation = y;
+		this.width = width;
+		this.height = height;
+	}
 
 	public Rectangle getCollisionRect() {
 		if(this.relativeCollisionBox == null) {
