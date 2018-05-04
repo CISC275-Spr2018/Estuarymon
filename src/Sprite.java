@@ -13,7 +13,13 @@ class Sprite {
 
 	public static enum ID {
 		ORC_WALK_NORTH("orc_forward_north.png", 200, 200, 10, 1),
-		ORC_IDLE_NORTH("orc_idle_ewns.png", 200, 200, 4, 4);
+		ORC_WALK_SOUTH("orc_forward_south.png", 200, 200, 10, 1),
+		ORC_WALK_EAST("orc_forward_east.png", 200, 200, 10, 1),
+		ORC_WALK_WEST("orc_forward_west.png", 200, 200, 10, 1),
+		ORC_IDLE_NORTH("orc_idle_north.png", 200, 200, 4, 1),
+		ORC_IDLE_SOUTH("orc_idle_south.png", 200, 200, 4, 1),
+		ORC_IDLE_EAST("orc_idle_east.png", 200, 200, 4, 1),
+		ORC_IDLE_WEST("orc_idle_west.png", 200, 200, 4, 1);
 
 		private String fname;
 		private int worldWidth;

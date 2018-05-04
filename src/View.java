@@ -165,7 +165,7 @@ public class View extends JPanel{
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
 		g.drawString(coords, 10, 20);
 		g.drawImage(this.crabImg[crabPicNum], crabXLoc, crabYLoc, 140 ,120, this); //drawing the crab onto the game
-		drawImage(g, Sprite.ID.ORC_WALK_NORTH, playerXLoc, playerYLoc);
+		drawImage(g, Sprite.ID.ORC_IDLE_NORTH, playerXLoc, playerYLoc);
 		
 		
 	}
