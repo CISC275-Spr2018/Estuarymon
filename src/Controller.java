@@ -23,7 +23,6 @@ public class Controller implements KeyListener {
 	private static final int DRAW_DELAY = 1000/30; // 30fps
 
 	//for alpha only
-	boolean pressP = false;
 	
 	private final Action stepAction = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
@@ -34,15 +33,15 @@ public class Controller implements KeyListener {
 	private void step() {
 		// increment the x and y coordinates, alter direction if necessary
 		model.updateModel();
-		Player player = model.getPlayer();
-		Animal animal = model.getAnimal();
 		view.update(
-			player.getXLocation(),
-			player.getYLocation(),
-			player.getDirection(),
-			player.getStatus(),
-			animal.getXLocation(),
-			animal.getYLocation());
+			model.getPlayer().getXLocation(),
+			model.getPlayer().getYLocation(),
+			model.getPlayer().getDirection(),
+			model.getPlayer().getStatus(),
+			model.getAnimal().getXLocation(),
+			model.getAnimal().getYLocation(),
+			model.getPickedUpLitter(),
+			model.getPlayer().getHasLitter());
 	}
 	
 	//plant stuff
@@ -139,19 +138,19 @@ public class Controller implements KeyListener {
 
 	}
 	
-	/**TimerTask subclass that handles the spawning of Litter object around the map at the set interval it was scheduled at. 
+	/**TimerTask subclass that handles the spawning of Litter object around the map at the set interval it was scheduled at by calling the appropriate Model to View communication.
 	 * 
 	 * @author Juan Villacis
 	 *
 	 */
 	class TrashTask extends TimerTask{
-		/**Method that psuedo-randomly chooses whether the new Litter object will be of Trash or Litter type, and calls the appropriate method in Model to generate its coordinates and in View to set its image.
+		/**Calls the view method that adds a Litter object to the HashMap of rendered Litter object. Its parameter is the Litter object the model method returns after creating a new Model object and setting its logical attributes. 
 		 * 
 		 * 
 		 */
 		public void run() {
 			
-			view.setLitterImage(model.spawnLitter());
+			view.addLitter(model.spawnLitter());
 			
 		
 		

@@ -1,7 +1,6 @@
 
 public class Player extends Interactable {
 	public static boolean hasLitter = false;
-	public LitterType litterType;
 	private int dx = 0;
 	private int dy = 0;
 	private final int speed = 10;
@@ -32,14 +31,28 @@ public class Player extends Interactable {
 		}
 	}
 	*/
-
-	public boolean hasLitter() {
+	public void setDx(int dx) {
+		this.dx = dx;
+	}
+	
+	/**Returns a boolean depending on whether or not this player is currently holding a Litter object that needs to be disposed of. 
+	 * 
+	 * @return True if the player is holding a peice of Litter, false otherwise. 
+	 */
+	public boolean getHasLitter() {
 		return this.hasLitter;
 	}
-
-	public void pickUpLitter(Litter l) {
+	
+	/**"Picks up" a Litter object the Player is colliding with. 
+	 * 
+	 * @param l The Litter object being picked up 
+	 * @return The Litter object being picked up
+	 */
+	public Litter pickUpLitter(Litter l) {
 		// TODO
-		System.out.println("Player pick up litter "+l.toString());
+		this.hasLitter = true;
+		Litter.litterSet.remove(l);
+		return l;
 	}
 	
 	public void growPlant(int i) {
