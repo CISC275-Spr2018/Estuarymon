@@ -27,8 +27,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class View extends JPanel{
-	private final static int imgWidth = 165;
-	private final static int imgHeight = 165;
 	private final static Dimension  screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
 	private final static double screenHeight = screenDimension.getHeight();
 	private final static double screenWidth = screenDimension.getWidth();
@@ -44,13 +42,9 @@ public class View extends JPanel{
 	private static final int trashImgCount = 2;
 	private static final int recImgCount = 1;
 	private static final int litterCount = 20;
-	Animation animation = Animation.IDLE;
 	private BufferedImage[] trashImgs = new BufferedImage[trashImgCount+1];
 	private BufferedImage[] recyclableImgs = new BufferedImage[recImgCount+1];
 	private Litter[] litterArr = new Litter[litterCount];
-	private BufferedImage[] crabImg = new BufferedImage[crabImgCount]; 
-	private static final int crabImgCount = 35;
-	ArrayList<JLabel> plantImgs = new ArrayList<JLabel>();
 
 	//these plants vars for alpha testing
 	int plant0H;
@@ -58,16 +52,8 @@ public class View extends JPanel{
 	int plant2H;
 	int plant3H;
 	String coords = "";
-//loading the images of the crab
-	int crabPicNum = 0; // current images of the crab
-
 
 	public View() {
-		// Preload animations
-		loadCrabImages(this.crabImg);
-		Animation.preload();
-		
-		
 		preloadLitterImgs();
 		
 		
@@ -94,7 +80,7 @@ public class View extends JPanel{
 		frame.setBackground(BACKGROUND_COLOR);
 		this.setBackground(BACKGROUND_COLOR);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(Controller.WORLD_WIDTH, Controller.WORLD_HEIGHT);
+		frame.setSize((int) screenWidth, (int) screenHeight);
 		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.setVisible(true);
 	}
@@ -112,10 +98,6 @@ public class View extends JPanel{
 	
 	
 	
-	public void setAnimation(Animation animation) {
-		this.animation = animation;
-	}
-
 	public void setKeyListener(KeyListener listener) {
 		frame.addKeyListener(listener);
 	}
@@ -131,7 +113,12 @@ public class View extends JPanel{
 		
 		//traverse through litter set and draw them, had to make a copy of litter set everytime to avoid ConcurrentModificationExceptions.
 		for(Litter l: new HashSet<Litter>(Litter.litterSet)) {
-			g.drawImage(l.getlitterImage(), l.getXLocation(), l.getYLocation(),l.getHeight(),l.getWidth(), this);
+			g.drawImage(l.getlitterImage(),
+				convertDimension(l.getXLocation()),
+				convertDimension(l.getYLocation()),
+				l.getHeight(),
+				l.getWidth(),
+				this);
 		}
 
 		g.setColor(Color.RED);
@@ -163,11 +150,6 @@ public class View extends JPanel{
 		return (int) ((double) world_dimension / Controller.WORLD_WIDTH * this.getWidth());
 	}
 
-	// Shorthand syntax for convertDimension
-	private int cD(int d) {
-		return convertDimension(d);
-	}
-
 	private BufferedImage createImage(int pictureIndex) {
 		BufferedImage bufferedImage;
 		// System.out.println(imgName + dir.getName());
@@ -181,12 +163,6 @@ public class View extends JPanel{
 
 	}
 
-	public void loadCrabImages(BufferedImage[] crabImg) {
-		for (int i = 0; i < crabImgCount; i++) {
-			crabImg[i] = createImage(i);
-		}
-	}
-
 	@Override
 	public Dimension getPreferredSize() {
 		Dimension parent = this.getParent().getSize();
@@ -197,14 +173,6 @@ public class View extends JPanel{
 		}
 	}
 
-	public int getImageHeight() {
-		return imgHeight;
-	}
-
-	public int getImageWidth() {
-		return imgWidth;
-	}
-
 	public void update(int playerX, int playerY, Direction dir, int crabX, int crabY) {
 		playerXLoc = playerX;
 		playerYLoc = playerY;
@@ -212,13 +180,6 @@ public class View extends JPanel{
 		crabXLoc = crabX;
 		crabYLoc = crabY;
 		
-		//System.out.println(animation.jumpEnd);
-		if(this.animation.getFireEnd() || this.animation.getJumpEnd()) {
-			//System.out.println("Setting Animation to Idle");
-			setAnimation(Animation.IDLE);
-			this.animation.setFireEnd(false);
-			this.animation.setJumpEnd(false);
-		}
 		frame.repaint();
 	}
 	
