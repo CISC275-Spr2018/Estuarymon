@@ -15,7 +15,6 @@ public class Controller implements KeyListener {
 	private Model model;
 	private View view;
 	private Timer stepTimer;
-	private Animal crab = new Animal();
 	
 	java.util.Timer taskTimer = new java.util.Timer();
 	java.util.Timer trashTimer = new java.util.Timer();
@@ -34,7 +33,7 @@ public class Controller implements KeyListener {
 	private void step() {
 		// increment the x and y coordinates, alter direction if necessary
 		model.updateModel();
-		view.update(model.getX(), model.getY(), model.getDirect());
+		view.update(model.getX(), model.getY(), model.getDirect(), model.getAnimal().getXLocation(), model.getAnimal().getYLocation());
 	}
 	
 	//plant stuff
@@ -64,9 +63,9 @@ public class Controller implements KeyListener {
 	
 	// run the simulation
 	public void start() {
-		view = new View(crab);
+		view = new View();
 		view.setKeyListener(this);
-		model = new Model(view.getWidth(), view.getHeight(), view.getImageWidth(), view.getImageHeight(), crab);
+		model = new Model(view.getWidth(), view.getHeight(), view.getImageWidth(), view.getImageHeight());
 		
 		
 		EventQueue.invokeLater(new Runnable() {
@@ -85,19 +84,19 @@ public class Controller implements KeyListener {
 		int key = e.getKeyCode();
 		switch(key) {
 		case KeyEvent.VK_UP:
-			model.setAttributes(1, Direction.NORTH, 0, 10);
+			model.setPlayerAttributes(1, Direction.NORTH, 0, 10);
 			view.setAnimation(Animation.WALKING);
 			break;
 		case KeyEvent.VK_DOWN:
-			model.setAttributes(2, Direction.SOUTH, 0, 10);
+			model.setPlayerAttributes(2, Direction.SOUTH, 0, 10);
 			view.setAnimation(Animation.WALKING);
 			break;
 		case KeyEvent.VK_RIGHT:
-			model.setAttributes(3, Direction.EAST, 10, 0);
+			model.setPlayerAttributes(3, Direction.EAST, 10, 0);
 			view.setAnimation(Animation.WALKING);
 			break;
 		case KeyEvent.VK_LEFT:
-			model.setAttributes(4, Direction.WEST, 10, 0);
+			model.setPlayerAttributes(4, Direction.WEST, 10, 0);
 			view.setAnimation(Animation.WALKING);
 			break;
 		case KeyEvent.VK_P:
@@ -115,8 +114,7 @@ public class Controller implements KeyListener {
 		case KeyEvent.VK_DOWN:
 		case KeyEvent.VK_RIGHT:
 		case KeyEvent.VK_LEFT:
-			model.stop();
-			view.setAnimation(Animation.IDLE);
+			view.setAnimation(model.stop());
 			break;
 		case KeyEvent.VK_J:
 			view.setAnimation(Animation.JUMP);
@@ -145,8 +143,7 @@ public class Controller implements KeyListener {
 		 */
 		public void run() {
 			
-			Litter l = model.spawnLitter();
-			view.setLitterImage(l);
+			view.setLitterImage(model.spawnLitter());
 			
 		
 		

@@ -33,8 +33,11 @@ public class View extends JPanel{
 	private final static double screenHeight = screenDimension.getHeight();
 	private final static double screenWidth = screenDimension.getWidth();
 	JFrame frame = new JFrame();
-	private static int xloc = 0; //player x location
-	private static int yLoc = 0; //player y location
+	private static int playerXLoc = 0; //player x location
+	private static int playerYLoc = 0; //player y location
+	private static int crabXLoc = 200;
+	private static int crabYLoc = 400;
+	
 	private static Direction curDir = Direction.EAST; //the direction the orc faces when it begins
 	private static final Color BACKGROUND_COLOR = Color.GRAY;
 	static int bCount;
@@ -45,10 +48,11 @@ public class View extends JPanel{
 	private BufferedImage[] trashImgs = new BufferedImage[trashImgCount+1];
 	private BufferedImage[] recyclableImgs = new BufferedImage[recImgCount+1];
 	private Litter[] litterArr = new Litter[litterCount];
+	private BufferedImage[] crabImg = new BufferedImage[crabImgCount]; 
+	private static final int crabImgCount = 35;
+	ArrayList<JLabel> plantImgs = new ArrayList<JLabel>();
 
 	private Sprite orc = new Sprite("orc_idle_ewns.png", 1000, 1000);
-	
-	ArrayList<JLabel> plantImgs = new ArrayList<JLabel>();
 	
 	//these plants vars for alpha testing
 	int plant0H;
@@ -56,15 +60,13 @@ public class View extends JPanel{
 	int plant2H;
 	int plant3H;
 	String coords = "";
-	Animal crab;
-	BufferedImage[] img; //loading the images of the crab
+//loading the images of the crab
 	int crabPicNum = 0; // current images of the crab
 
 
-	public View(Animal animal) {
+	public View() {
 		// Preload animations
-		crab = animal;
-		img = crab.loadImages();
+		loadCrabImages(this.crabImg);
 		Animation.preload();
 		
 		
@@ -129,7 +131,7 @@ public class View extends JPanel{
 		ImageIcon backg = new ImageIcon("images/Map/Background.jpg");
 		g.drawImage(backg.getImage(),0,0,this);
 		
-		crabPicNum = (crabPicNum + 3) % crab.getNumOfImages(); //change the 3 to change the speed
+		crabPicNum = (crabPicNum + 3) % Animal.getNumOfImages(); //change the 3 to change the speed
 		
 		
 		if(Plant.plants[0].health > 0)
@@ -163,8 +165,8 @@ public class View extends JPanel{
 		g.setColor(Color.PINK);
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
 		g.drawString(coords, 10, 20);
-		g.drawImage(img[crabPicNum], crab.getXLocation(), crab.getYLocation(), crab.getImageWidth(), crab.getImageHeight(), this); //drawing the crab onto the game
-		drawImage(g, this.orc, xloc, yLoc);
+		g.drawImage(this.crabImg[crabPicNum], crabXLoc, crabYLoc, 140 ,120, this); //drawing the crab onto the game
+		drawImage(g, this.orc, playerXLoc, playerYLoc);
 		
 		
 	}
@@ -191,6 +193,25 @@ public class View extends JPanel{
 		return convertDimension(d);
 	}
 
+	private BufferedImage createImage(int pictureIndex) {
+		BufferedImage bufferedImage;
+		// System.out.println(imgName + dir.getName());
+		try {
+			bufferedImage = ImageIO.read(new File("images/Animal/skeleton-idle_" + pictureIndex + ".png"));
+			return bufferedImage;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
+	public void loadCrabImages(BufferedImage[] crabImg) {
+		for (int i = 0; i < crabImgCount; i++) {
+			crabImg[i] = createImage(i);
+		}
+	}
+
 	@Override
 	public Dimension getPreferredSize() {
 		Dimension parent = this.getParent().getSize();
@@ -209,10 +230,13 @@ public class View extends JPanel{
 		return imgWidth;
 	}
 
-	public void update(int x, int y, Direction dir) {
-		xloc = x;
-		yLoc = y;
+	public void update(int playerX, int playerY, Direction dir, int crabX, int crabY) {
+		playerXLoc = playerX;
+		playerYLoc = playerY;
 		curDir = dir;
+		crabXLoc = crabX;
+		crabYLoc = crabY;
+		
 		//System.out.println(animation.jumpEnd);
 		if(this.animation.getFireEnd() || this.animation.getJumpEnd()) {
 			//System.out.println("Setting Animation to Idle");

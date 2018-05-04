@@ -6,7 +6,7 @@ import javax.imageio.ImageIO;
 
 public class Animal extends Interactable {
 
-	private int numOfImages = 35;
+	private static int numOfImages = 35;
 	BufferedImage[] img = new BufferedImage[numOfImages];
 	// Direction curDir;
 	private static int imageHeight = 120;
@@ -18,27 +18,9 @@ public class Animal extends Interactable {
 		// curDir = Direction.WEST;
 	}
 
-	private BufferedImage createImage(int pictureIndex) {
-		BufferedImage bufferedImage;
-		// System.out.println(imgName + dir.getName());
-		try {
-			bufferedImage = ImageIO.read(new File("images/Animal/skeleton-idle_" + pictureIndex + ".png"));
-			return bufferedImage;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
+	
 
-	}
-
-	public BufferedImage[] loadImages() {
-		for (int i = 0; i < 35; i++) {
-			img[i] = createImage(i);
-		}
-		return img;
-	}
-
-	public int getNumOfImages() {
+	public static int getNumOfImages() {
 		return numOfImages;
 	}
 
