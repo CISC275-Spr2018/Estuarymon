@@ -27,10 +27,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class View extends JPanel{
-	private final static int frameWidth = 900;
-	private final static int frameHeight = 900;
-	private final static int imgWidth = 165;
-	private final static int imgHeight = 165;
 	private final static Dimension  screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
 	private final static double screenHeight = screenDimension.getHeight();
 	private final static double screenWidth = screenDimension.getWidth();
@@ -46,30 +42,18 @@ public class View extends JPanel{
 	private static final int trashImgCount = 2;
 	private static final int recImgCount = 1;
 	private static final int litterCount = 20;
-	Animation animation = Animation.IDLE;
 	private BufferedImage[] trashImgs = new BufferedImage[trashImgCount+1];
 	private BufferedImage[] recyclableImgs = new BufferedImage[recImgCount+1];
 	private Litter[] litterArr = new Litter[litterCount];
-	private BufferedImage[] crabImg = new BufferedImage[crabImgCount]; 
-	private static final int crabImgCount = 35;
-	ArrayList<JLabel> plantImgs = new ArrayList<JLabel>();
-	
+
 	//these plants vars for alpha testing
 	int plant0H;
 	int plant1H;
 	int plant2H;
 	int plant3H;
 	String coords = "";
-//loading the images of the crab
-	int crabPicNum = 0; // current images of the crab
-
 
 	public View() {
-		// Preload animations
-		loadCrabImages(this.crabImg);
-		Animation.preload();
-		
-		
 		preloadLitterImgs();
 		
 		
@@ -89,7 +73,6 @@ public class View extends JPanel{
 		recycleBin.setBounds(0,580,100,100);
 		//frame.getContentPane().add(recycleBin);
 				
-		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.setFocusable(true);
 		frame.setLayout(new GridBagLayout());
 		frame.setUndecorated(true);
@@ -97,7 +80,8 @@ public class View extends JPanel{
 		frame.setBackground(BACKGROUND_COLOR);
 		this.setBackground(BACKGROUND_COLOR);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(frameWidth, frameHeight);
+		frame.setSize((int) screenWidth, (int) screenHeight);
+		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.setVisible(true);
 	}
 
@@ -114,46 +98,27 @@ public class View extends JPanel{
 	
 	
 	
-	public void setAnimation(Animation animation) {
-		this.animation = animation;
-	}
-
 	public void setKeyListener(KeyListener listener) {
 		frame.addKeyListener(listener);
 	}
-
-	ImageIcon plantIcon = new ImageIcon("images/MapObjects/azalea.png");
-	Image plantImg = plantIcon.getImage();
-	Image newImg = plantImg.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH);
 	
 	public void paint(Graphics g) {
 		super.paint(g);
-		ImageIcon backg = new ImageIcon("images/Map/Background.jpg");
-		g.drawImage(backg.getImage(),0,0,this);
-		
-		crabPicNum = (crabPicNum + 3) % Animal.getNumOfImages(); //change the 3 to change the speed
-		
-		
-		if(Plant.plants[0].health > 0)
-		{
-			g.drawImage(newImg, Plant.plants[0].getXLocation(),Plant.plants[0].getYLocation(),this);	
-		}
-		if(Plant.plants[1].health > 0)
-		{
-			g.drawImage(newImg,Plant.plants[1].getXLocation(),Plant.plants[1].getYLocation(),this);	
-		}
-		if(Plant.plants[2].health > 0)
-		{
-			g.drawImage(newImg, Plant.plants[2].getXLocation(),Plant.plants[2].getYLocation(),this);	
-		}
-		if(Plant.plants[3].health > 0)
-		{
-			g.drawImage(newImg, Plant.plants[3].getXLocation(),Plant.plants[3].getYLocation(),this);	
+		Sprite.incrementFrameCounter();
+		drawImage(g, Sprite.ID.BACKGROUND, 0, 0);
+
+		for(Plant plant : Plant.plants) {
+			drawImage(g, Sprite.ID.PLANT, plant.getXLocation(), plant.getYLocation());
 		}
 		
 		//traverse through litter set and draw them, had to make a copy of litter set everytime to avoid ConcurrentModificationExceptions.
 		for(Litter l: new HashSet<Litter>(Litter.litterSet)) {
-			g.drawImage(l.getlitterImage(), l.getXLocation(), l.getYLocation(),l.getHeight(),l.getWidth(), this);
+			g.drawImage(l.getlitterImage(),
+				convertDimension(l.getXLocation()),
+				convertDimension(l.getYLocation()),
+				l.getHeight(),
+				l.getWidth(),
+				this);
 		}
 
 		g.setColor(Color.RED);
@@ -165,11 +130,26 @@ public class View extends JPanel{
 		g.setColor(Color.PINK);
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
 		g.drawString(coords, 10, 20);
-		g.drawImage(this.crabImg[crabPicNum], crabXLoc, crabYLoc, 140 ,120, this); //drawing the crab onto the game
-		g.drawImage(this.animation.getCurrentFrameForDirection(this.curDir), playerXLoc, playerYLoc, this);
+		drawImage(g, Sprite.ID.CRAB, crabXLoc, crabYLoc);
+		drawImage(g, Sprite.ID.ORC_IDLE_NORTH, playerXLoc, playerYLoc);
 		
 		
 	}
+
+	private void drawImage(Graphics g, Sprite.ID s, int world_x, int world_y) {
+		g.drawImage(
+			Sprite.getImage(s,
+			(double) this.getWidth() / Controller.WORLD_WIDTH),
+			convertDimension(world_x),
+			convertDimension(world_y),
+			this);
+	}
+
+	// convertDimension: converts a dimension from world coordinates to pixel coordinates
+	private int convertDimension(int world_dimension) {
+		return (int) ((double) world_dimension / Controller.WORLD_WIDTH * this.getWidth());
+	}
+
 	private BufferedImage createImage(int pictureIndex) {
 		BufferedImage bufferedImage;
 		// System.out.println(imgName + dir.getName());
@@ -183,12 +163,6 @@ public class View extends JPanel{
 
 	}
 
-	public void loadCrabImages(BufferedImage[] crabImg) {
-		for (int i = 0; i < crabImgCount; i++) {
-			crabImg[i] = createImage(i);
-		}
-	}
-
 	@Override
 	public Dimension getPreferredSize() {
 		Dimension parent = this.getParent().getSize();
@@ -199,14 +173,6 @@ public class View extends JPanel{
 		}
 	}
 
-	public int getImageHeight() {
-		return imgHeight;
-	}
-
-	public int getImageWidth() {
-		return imgWidth;
-	}
-
 	public void update(int playerX, int playerY, Direction dir, int crabX, int crabY) {
 		playerXLoc = playerX;
 		playerYLoc = playerY;
@@ -214,13 +180,6 @@ public class View extends JPanel{
 		crabXLoc = crabX;
 		crabYLoc = crabY;
 		
-		//System.out.println(animation.jumpEnd);
-		if(this.animation.getFireEnd() || this.animation.getJumpEnd()) {
-			//System.out.println("Setting Animation to Idle");
-			setAnimation(Animation.IDLE);
-			this.animation.setFireEnd(false);
-			this.animation.setJumpEnd(false);
-		}
 		frame.repaint();
 	}
 	

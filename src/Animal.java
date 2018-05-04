@@ -6,8 +6,6 @@ import javax.imageio.ImageIO;
 
 public class Animal extends Interactable {
 
-	private static int numOfImages = 35;
-	BufferedImage[] img = new BufferedImage[numOfImages];
 	// Direction curDir;
 	private static int imageHeight = 120;
 	private static int imageWidth = 140;
@@ -16,12 +14,6 @@ public class Animal extends Interactable {
 		super(200, 400, imageHeight ,imageWidth);
 		this.setRelativeCollisionRect(15, 15, 90, 110);
 		// curDir = Direction.WEST;
-	}
-
-	
-
-	public static int getNumOfImages() {
-		return numOfImages;
 	}
 
 	// public Direction getDirection() {
@@ -38,22 +30,6 @@ public class Animal extends Interactable {
 
 	public void updateYCoordinate(int y) {
 		this.setYLocation(this.getYLocation() - y);
-	}
-
-	public int getImageHeight() {
-		return imageHeight;
-	}
-
-	public void setImageHeight(int imageHeight) {
-		this.imageHeight = imageHeight;
-	}
-
-	public int getImageWidth() {
-		return imageWidth;
-	}
-
-	public void setImageWidth(int imageWidth) {
-		this.imageWidth = imageWidth;
 	}
 
 	public void eatLitter() {

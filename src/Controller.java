@@ -10,6 +10,8 @@ import javax.swing.Timer;
 
 
 public class Controller implements KeyListener {
+	public static final int WORLD_WIDTH = 1000;
+	public static final int WORLD_HEIGHT = 1000;
 	private Model model;
 	private View view;
 	private Timer stepTimer;
@@ -63,7 +65,7 @@ public class Controller implements KeyListener {
 	public void start() {
 		view = new View();
 		view.setKeyListener(this);
-		model = new Model(view.getWidth(), view.getHeight(), view.getImageWidth(), view.getImageHeight());
+		model = new Model();
 		
 		
 		EventQueue.invokeLater(new Runnable() {
@@ -83,19 +85,15 @@ public class Controller implements KeyListener {
 		switch(key) {
 		case KeyEvent.VK_UP:
 			model.setPlayerAttributes(1, Direction.NORTH, 0, 10);
-			view.setAnimation(Animation.WALKING);
 			break;
 		case KeyEvent.VK_DOWN:
 			model.setPlayerAttributes(2, Direction.SOUTH, 0, 10);
-			view.setAnimation(Animation.WALKING);
 			break;
 		case KeyEvent.VK_RIGHT:
 			model.setPlayerAttributes(3, Direction.EAST, 10, 0);
-			view.setAnimation(Animation.WALKING);
 			break;
 		case KeyEvent.VK_LEFT:
 			model.setPlayerAttributes(4, Direction.WEST, 10, 0);
-			view.setAnimation(Animation.WALKING);
 			break;
 		case KeyEvent.VK_P:
 			pressP = true;
@@ -112,10 +110,7 @@ public class Controller implements KeyListener {
 		case KeyEvent.VK_DOWN:
 		case KeyEvent.VK_RIGHT:
 		case KeyEvent.VK_LEFT:
-			view.setAnimation(model.stop());
-			break;
-		case KeyEvent.VK_J:
-			view.setAnimation(Animation.JUMP);
+			model.stop();
 			break;
 		case KeyEvent.VK_P:
 			pressP = false;
