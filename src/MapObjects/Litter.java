@@ -1,3 +1,4 @@
+package MapObjects;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import java.util.HashSet;
