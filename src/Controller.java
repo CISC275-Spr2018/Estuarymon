@@ -10,15 +10,16 @@ import javax.swing.Timer;
 
 
 public class Controller implements KeyListener {
+	public static final int WORLD_WIDTH = 1000;
+	public static final int WORLD_HEIGHT = 1000;
 	private Model model;
 	private View view;
 	private Timer stepTimer;
-	private Animal crab = new Animal();
 	
 	java.util.Timer taskTimer = new java.util.Timer();
 	java.util.Timer trashTimer = new java.util.Timer();
 
-	private static final int DRAW_DELAY = 100;
+	private static final int DRAW_DELAY = 1000/30; // 30fps
 
 	//for alpha only
 	boolean pressP = false;
@@ -32,7 +33,15 @@ public class Controller implements KeyListener {
 	private void step() {
 		// increment the x and y coordinates, alter direction if necessary
 		model.updateModel();
-		view.update(model.getX(), model.getY(), model.getDirect());
+		Player player = model.getPlayer();
+		Animal animal = model.getAnimal();
+		view.update(
+			player.getXLocation(),
+			player.getYLocation(),
+			player.getDirection(),
+			player.getStatus(),
+			animal.getXLocation(),
+			animal.getYLocation());
 	}
 	
 	//plant stuff
@@ -42,10 +51,10 @@ public class Controller implements KeyListener {
 		{
 			model.damagePlant();
 			//show plant health on screen
-			view.plant0H = model.plants[0].health;
-			view.plant1H = model.plants[1].health;
-			view.plant2H = model.plants[2].health;
-			view.plant3H = model.plants[3].health;
+			view.plant0H = Plant.plants[0].health;
+			view.plant1H = Plant.plants[1].health;
+			view.plant2H = Plant.plants[2].health;
+			view.plant3H = Plant.plants[3].health;
 		}
 	}
 	
@@ -53,102 +62,27 @@ public class Controller implements KeyListener {
 	{
 		public void run()
 		{
-			checkPlants();
+			//checkPlants();
 			//for alpha testing
 			view.coords = model.coords;
 		}
 	}
 	
-	//create task that checks this every one second for revive
-	public void checkPlants()
-	{
-		int plantNum = model.deletePlant;
-		switch(plantNum)
-		{
-		//make first dissappear
-		case 0:
-			//if dead
-			//change model.xloc and model.yloc to playercollision so coordinates dont have to be exact
-			//player.getCollidesWith(model.plants[plantNum])
-			//^this doesnt work.
-			//we have to make sure players xloc and yloc are always being updated and sent
-			//to rectangle
-			//add this in beta
-			if(model.plants[plantNum].health == 0 && model.myPlayer.xLocation == model.plants[plantNum].xLocation && model.myPlayer.yLocation == model.plants[plantNum].yLocation) 
-			{
-				if(pressP == true)
-				{
-					view.revivePlant(plantNum);
-					model.plants[plantNum].health = model.plantHealth;
-					model.randPlant = (int) Math.floor(Math.random() * 4);
-				}
-			}
-			else if(model.plants[plantNum].health == 0)
-			{
-				view.deletePlant(plantNum);
-			}
-			break;
-		//second..etc
-		case 1:
-			if(model.plants[plantNum].health == 0 && model.myPlayer.xLocation == model.plants[plantNum].xLocation && model.myPlayer.yLocation == model.plants[plantNum].yLocation) 
-			{
-				if(pressP == true)
-				{
-					view.revivePlant(plantNum);
-					model.plants[plantNum].health = model.plantHealth;
-					model.randPlant = (int) Math.floor(Math.random() * 4);
-				}
-			}
-			else if(model.plants[plantNum].health == 0)
-			{
-				view.deletePlant(plantNum);
-			}
-			break;
-		case 2:
-			if(model.plants[plantNum].health == 0 && model.myPlayer.xLocation == model.plants[plantNum].xLocation && model.myPlayer.yLocation == model.plants[plantNum].yLocation) 
-			{
-				if(pressP == true)
-				{
-					view.revivePlant(plantNum);
-					model.plants[plantNum].health = model.plantHealth;
-					model.randPlant = (int) Math.floor(Math.random() * 4);
-				}
-			}
-			else if(model.plants[plantNum].health == 0)
-			{
-				view.deletePlant(plantNum);
-			}
-			break;
-		case 3:
-			if(model.plants[plantNum].health == 0 && model.myPlayer.xLocation == model.plants[plantNum].xLocation && model.myPlayer.yLocation == model.plants[plantNum].yLocation) 
-			{
-				if(pressP == true)
-				{
-					view.revivePlant(plantNum);
-					model.plants[plantNum].health = model.plantHealth;
-					model.randPlant = (int) Math.floor(Math.random() * 4);
-				}
-			}
-			else if(model.plants[plantNum].health == 0)
-			{
-				view.deletePlant(plantNum);
-			}
-			break;
-		}
-	}
 	
 	// run the simulation
 	public void start() {
-		view = new View(crab);
+		view = new View();
 		view.setKeyListener(this);
-		model = new Model(view.getWidth(), view.getHeight(), view.getImageWidth(), view.getImageHeight(), crab);
+		model = new Model();
+		
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				stepTimer = new Timer(DRAW_DELAY, stepAction);
 				stepTimer.start();
 				taskTimer.scheduleAtFixedRate(new damagePlantTask(),500,1000);//damages plants every ten seconds
 				taskTimer.scheduleAtFixedRate(new checkPlantTask(),500,100);//evaluates plants with player every second
-				trashTimer.scheduleAtFixedRate(new TrashTask(), 0, 6000);
+				trashTimer.scheduleAtFixedRate(new TrashTask(), 0, 10000);
 			}
 		});
 	}
@@ -158,20 +92,16 @@ public class Controller implements KeyListener {
 		int key = e.getKeyCode();
 		switch(key) {
 		case KeyEvent.VK_UP:
-			model.setAttributes(1, Direction.NORTH, 0, 10);
-			view.setAnimation(Animation.WALKING);
+			model.getPlayer().alterVelocity(0, -1);
 			break;
 		case KeyEvent.VK_DOWN:
-			model.setAttributes(2, Direction.SOUTH, 0, 10);
-			view.setAnimation(Animation.WALKING);
+			model.getPlayer().alterVelocity(0, 1);
 			break;
 		case KeyEvent.VK_RIGHT:
-			model.setAttributes(3, Direction.EAST, 10, 0);
-			view.setAnimation(Animation.WALKING);
+			model.getPlayer().alterVelocity(1, 0);
 			break;
 		case KeyEvent.VK_LEFT:
-			model.setAttributes(4, Direction.WEST, 10, 0);
-			view.setAnimation(Animation.WALKING);
+			model.getPlayer().alterVelocity(-1, 0);
 			break;
 		case KeyEvent.VK_P:
 			pressP = true;
@@ -185,14 +115,16 @@ public class Controller implements KeyListener {
 
 		switch(key) {
 		case KeyEvent.VK_UP:
-		case KeyEvent.VK_DOWN:
-		case KeyEvent.VK_RIGHT:
-		case KeyEvent.VK_LEFT:
-			model.stop();
-			view.setAnimation(Animation.IDLE);
+			model.getPlayer().alterVelocity(0, 1);
 			break;
-		case KeyEvent.VK_J:
-			view.setAnimation(Animation.JUMP);
+		case KeyEvent.VK_DOWN:
+			model.getPlayer().alterVelocity(0, -1);
+			break;
+		case KeyEvent.VK_RIGHT:
+			model.getPlayer().alterVelocity(-1, 0);
+			break;
+		case KeyEvent.VK_LEFT:
+			model.getPlayer().alterVelocity(1, 0);
 			break;
 		case KeyEvent.VK_P:
 			pressP = false;
@@ -206,20 +138,19 @@ public class Controller implements KeyListener {
 
 	}
 	
+	/**TimerTask subclass that handles the spawning of Litter object around the map at the set interval it was scheduled at. 
+	 * 
+	 * @author Juan Villacis
+	 *
+	 */
 	class TrashTask extends TimerTask{
+		/**Method that psuedo-randomly chooses whether the new Litter object will be of Trash or Litter type, and calls the appropriate method in Model to generate its coordinates and in View to set its image.
+		 * 
+		 * 
+		 */
 		public void run() {
 			
-			if(Math.random() < 0.5) { //coin flip as to whether it will be trash or recyclable
-				Recyclable newLitter = new Recyclable();
-				model.genLitterCords(newLitter);
-				view.setLitterImage(newLitter);
-				
-			}
-			else {
-				Trash newLitter = new Trash();
-				model.genLitterCords(newLitter);
-				view.setLitterImage(newLitter);
-			}
+			view.setLitterImage(model.spawnLitter());
 			
 		
 		

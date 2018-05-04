@@ -15,47 +15,37 @@ import java.util.Iterator;
  **/
 public class Model
 {
-	int winW;
-	int winH;
-	int imgW;
-	int imgH;
+	private static final int WIDTH = Controller.WORLD_WIDTH;
+	private static final int HEIGHT = Controller.WORLD_HEIGHT;
 
-	Player myPlayer = new Player(0,0, 165,165);
-	//int xLoc = 0;
-	//int yLoc = 0;
-
-	int xIncr = 0;
-	int yIncr = 0;
-
-	Direction curDir = Direction.EAST;
+	Player player = new Player(0,0, 165,165);
 	
-	int dir = 0;
+	int animalXIncr = 3;
+	int animalYIncr = 3;
+
 	int crabDirection = 3;
 	
 	//plantXloc = frameWidth - (frameWidth/3);
 	//plantYloc = (frameHeight / 100) + count;
 	
-	Plant [] plants = new Plant[4]; 
-	int randPlant = (int) Math.floor(Math.random() * 4);//between 0 and 3
 	int plantDamage = 10;
 	int plantHealth = 100;
-	int deletePlant = 4;
 	
 	String coords = "";
 
-	TrashBin tBin = new TrashBin(0,450,128,128);
-	RecycleBin rBin = new RecycleBin(0,580,128,128);
+	Receptacle tBin = new Receptacle(0,450,128,128,ReceptacleType.TRASHBIN);
+	Receptacle rBin = new Receptacle(0,580,128,128,ReceptacleType.RECYCLINGBIN);
 	
 	Animal crab;
 	HashSet<Animal> animals;
 	
-	public Model(int winW, int winH, int imgW, int imgH, Animal animal) 
+	public Model()
 	{
-		this.winW = winW;
-		this.winH = winH;
-		this.imgW = imgW;
-		this.imgH = imgH;
-		this.crab = animal;
+		this.crab = new Animal();
+		animals = new HashSet<Animal>();
+		animals.add(crab);
+		
+		
 		
 		int count = 0;
 		//fills plant array
@@ -63,138 +53,112 @@ public class Model
 		{//health,xloc,yoc
 			//System.out.println(winW - (winW/3));
 			//System.out.println((winH / 100) + count);
-			this.plants[i] = new Plant(plantHealth, winW - (winW/3), (winH / 90) + count);//sets location of plants
+			Plant.plants[i] = new Plant(plantHealth, WIDTH - (WIDTH/3), 50+(WIDTH / 90) + count);//sets location of plants
 			count = count + 200;
 		}
 
 		// Fill animals collection (temporary)
-		this.animals = new HashSet<>();
-		this.animals.add(this.crab);
 	}
+	
 
 	//same method as updateLocationAndDirection()
 	public void updateModel()
 	{
-		
-		//System.out.println(myPlayer.xLocation + ":" + plants[randPlant].xLocation + " and " + myPlayer.yLocation + ":" + plants[randPlant].yLocation);
-		//System.out.println(plants[0].health + " " + plants[1].health + " " + plants[2].health + " " + plants[3].health);
+		this.player.move();
 		this.checkCollision();
-		coords = " x=" + myPlayer.xLocation + ":" + plants[randPlant].xLocation + " y=" + myPlayer.yLocation + ":" + plants[randPlant].yLocation;
-		collisionDetection();
-		updateLocation();
-		animalWallCollision();
+		//animalWallCollision();
 		updatingAnimalLocation();
 
 	}
 	
-	//used to be called updateDirection, but that no longer really applied because the orc
-	//doesn't need to change directions when it hits the wall
-	public void collisionDetection() {
-		if((myPlayer.yLocation + imgH/5)<= 0 && curDir == Direction.NORTH) {
-			dir = 1;
-		}else if((myPlayer.yLocation + imgH) >= winH && curDir == Direction.SOUTH) {
-			dir = 2;
-		}else if((myPlayer.xLocation + imgW) >= winW && curDir == Direction.EAST) {
-			dir = 3;
-		}else if(myPlayer.xLocation <= 0 && curDir == Direction.WEST) {
-			dir = 4;
-		}
-	}
-	
 	public void animalWallCollision() {
-		if(crab.getXLocation() <= 0) { //when the left wall is hit
+		if(crab.getXLocation() <= 0 && crab.getDirection() == Direction.WEST) { //when the left wall is hit
 			System.out.println("hit left wall");
-			crabDirection = 1;
-		}else if(crab.getXLocation() >= winW - 400) { //when the right wall is hit
+			crab.setDirection(Direction.EAST);
+		}else if(crab.getXLocation() >= WIDTH - 400 && crab.getDirection() == Direction.EAST) { //when the right wall is hit
 			System.out.println("hit right wall");
-			crabDirection = 2;
-		}else if(crab.getYLocation() <= 0) { //when the top wall is hit
+			crab.setDirection(Direction.WEST);
+		}
+		
+		else if(crab.getYLocation() <= 0 && crab.getDirection() == Direction.SOUTH) { //when the top wall is hit
 			System.out.println("hit top wall");
-			crabDirection = 4;
-		}else if(crab.getYLocation() >= winH - 170) { //when the bottom wall is hit
-			crabDirection = 3;
+			crab.setDirection(Direction.SOUTH);
+		}else if(crab.getYLocation() >= HEIGHT - 170 && crab.getDirection() == Direction.NORTH) { //when the bottom wall is hit
+			crab.setDirection(Direction.NORTH);
+		}
+		
+		else if(crab.getXLocation() >= WIDTH - 400 && crab.getDirection() == Direction.NORTHEAST) { //when the right wall is hit
+			System.out.println("code 1");
+			crab.setDirection(Direction.NORTHWEST);
+		}else if(crab.getXLocation() >= WIDTH - 400 && crab.getDirection() == Direction.SOUTHEAST) { //when the right wall is hit
+			System.out.println("code 2");
+			crab.setDirection(Direction.SOUTHWEST);
+		}
+		
+		else if(crab.getYLocation() + crab.getHeight() <= 0  && crab.getDirection() == Direction.NORTHEAST) { //when the top wall is hit
+			System.out.println("code 3");
+			crab.setDirection(Direction.SOUTHEAST);
+		}else if(crab.getYLocation() <= 0  && crab.getDirection() == Direction.NORTHWEST) { //when the top wall is hit
+			System.out.println("code 4");
+			crab.setDirection(Direction.SOUTHWEST);
+		}
+		
+		else if(crab.getYLocation() + crab.getWidth() >= HEIGHT - 170 && crab.getDirection() == Direction.SOUTHEAST) { //when the bottom wall is hit
+			System.out.println("code 5");
+			crab.setDirection(Direction.NORTHEAST);
+		}else if(crab.getYLocation() >= HEIGHT - 170 && crab.getDirection() == Direction.SOUTHWEST) { //when the bottom wall is hit
+			System.out.println("code 6");
+			crab.setDirection(Direction.NORTHWEST);
+		}
+		
+		else if(crab.getXLocation() <= 0 && crab.getDirection() == Direction.NORTHWEST) { //when the left wall is hit
+			System.out.println("code 7");
+			crab.setDirection(Direction.NORTHEAST);
+		}else if(crab.getXLocation() <= 0 && crab.getDirection() == Direction.SOUTHEAST) { //when the left wall is hit
+			System.out.println("code 8");
+			crab.setDirection(Direction.NORTHWEST);
 		}
 	}
 	
 	public void updatingAnimalLocation() {
-		switch(crabDirection) {
+		System.out.println(crab.getDirection().ordinal());
+		switch(crab.getDirection().ordinal()) {
 		case 1: //going east 
-			crab.updateXCoordinate(-3);
+			crab.setXLocation(crab.getXLocation()+animalXIncr);
 			break;
-		case 2: //going west 
-			crab.updateXCoordinate(3);
+		case 3: //going west 
+			crab.setXLocation(crab.getXLocation()-animalXIncr);
 			break;
-		case 3: //going south
-			crab.updateYCoordinate(3);
+		case 0: //going north
+			crab.setYLocation(crab.getYLocation()-animalYIncr);
 			break;
-		case 4: //going north
-			crab.updateYCoordinate(-3);
+		case 2: //going south
+			crab.setYLocation(crab.getYLocation()+animalYIncr);
+			break;
+		case 5: //going northeast
+			crab.setYLocation(crab.getYLocation()-animalYIncr);
+			crab.setXLocation(crab.getXLocation()+animalXIncr);
+			break;
+		case 6: //going northwest
+			crab.setYLocation(crab.getYLocation()-animalYIncr);
+			crab.setXLocation(crab.getXLocation()-animalXIncr);
+			break;
+		case 7: //going southeast
+			crab.setYLocation(crab.getYLocation()+animalYIncr);
+			crab.setXLocation(crab.getXLocation()+animalXIncr);
+			break;
+		case 8: //going southwest
+			crab.setYLocation(crab.getYLocation()+animalYIncr);
+			crab.setXLocation(crab.getXLocation()-animalXIncr);
 			break;
 		
 		}
 	}
 	
-	public void updateLocation() {
-		switch(dir){
-		case 0:
-			myPlayer.xLocation += 0;
-			myPlayer.yLocation += 0;
-			break;
-		case 1: //bottom wall; for him to go n
-			if(myPlayer.yLocation + imgH/5 <= 0){
-				yIncr = 0;
-			}
-			myPlayer.yLocation-=yIncr;
-			break;
-		case 2: //top wall; for him to go s
-			if((myPlayer.yLocation + imgH) >= winH) {
-				yIncr = 0;
-			}
-			myPlayer.yLocation+=yIncr;
-			break;
-		case 3: //left wall; for him to go e
-			if((myPlayer.xLocation + imgW) >= winW) {
-				xIncr = 0;
-			}
-			myPlayer.xLocation+=xIncr;
-			break;
-		case 4: //right wall; for him to go w
-			if(myPlayer.xLocation <= 0) {
-				xIncr = 0;
-			}
-			myPlayer.xLocation-=xIncr;
-			break;
-		}
-	
-	}
-	
-	public void setAttributes(int dir, Direction direction, int xIncr, int yIncr) {
-		this.dir = dir;
-		this.curDir = direction;
-		this.xIncr = xIncr;
-		this.yIncr = yIncr;
+	public Player getPlayer() {
+		return player;
 	}
 
-	public void stop() {
-		this.xIncr = 0;
-		this.yIncr = 0;
-	}
-
-	public int getX()
-	{
-		return myPlayer.xLocation;
-	}
-
-	public int getY()
-	{
-		return myPlayer.yLocation;
-	}
-
-	public Direction getDirect()
-	{
-		return curDir;
-	}
-	
 	public Animal getAnimal() {
 		return crab;
 	}
@@ -203,48 +167,72 @@ public class Model
 		public void damagePlant()
 		{
 			//System.out.println(randPlant);
-			if(plants[randPlant].getHealth() > 0)
+			if(Plant.plants[Plant.randPlant].getHealth() > 0)
 			{
-				deletePlant = 4;//dont delete a plant, no switch case for 4
-				plants[randPlant].health = plants[randPlant].health - plantDamage;
+				//deletePlant = 4;//dont delete a plant, no switch case for 4
+				Plant.plants[Plant.randPlant].health = Plant.plants[Plant.randPlant].health - plantDamage;
 			}
-			else if(plants[randPlant].getHealth() == 0)
+			/*
+			else if(Plant.plants[Plant.randPlant].getHealth() == 0)
 			{
-				//send randplant number
-				//update view corresponding to which plant reached zero
-				deletePlant = randPlant;
-				
-				//wait until player revives plant
-				
-				//randPlant = (int) Math.floor(Math.random() * 4);
+				//add in if we want more than one plant to die at onceS
 			}
+			*/
 		}
 		
-	
-	public void genLitterCords(Litter l) {
+	/**Generates a new Litter object with random x and y coordinates, as well as adds it to the HashSet Litter.litterSet
+	 * @return the new Litter object created. 
+	 * 
+	 */
+	public Litter spawnLitter() {
 		Random coordGenerator = new Random();
-		int litterXCord = coordGenerator.nextInt((winW-l.getWidth()));//generates random coordinates
-		int litterYCord = coordGenerator.nextInt((winH-l.getHeight()));
+		Litter l = new Litter();
+		l.setType(LitterType.randomLitter());		
+		int litterXCord = coordGenerator.nextInt((WIDTH-l.getWidth()));//generates random coordinates
+		int litterYCord = coordGenerator.nextInt((HEIGHT-l.getHeight()));
 		l.setXLocation(litterXCord);//
 		l.setYLocation(litterYCord);
 		Litter.litterSet.add(l);//Adds them to hashset of litter, prevents exact duplicates in terms of coordinates.
 		System.out.println(l);
+		return l;
 		
 	}
 
+	public void testCheckColl()
+	{
+		checkCollision();
+	}
+	
 	private void checkCollision() {
 		for(Litter litter : Litter.litterSet) {
-			if(litter.getCollidesWith(this.myPlayer))
-				this.myPlayer.pickUpLitter(litter);
+			if(litter.getCollidesWith(this.player))
+				this.player.pickUpLitter(litter);
+		}
+		
+		for(int i = 0; i < 4; i++)
+		{
+			//add and health == 0
+			if(Plant.plants[i].health == 0 && Plant.plants[i].getCollidesWith(this.player))
+			{
+				this.player.growPlant(i);
+			}
+		}
+		
+		if(this.player.hasLitter()) {
+			if(this.player.getCollidesWith(this.tBin))
+				this.tBin.takeLitter(this.player);
+			if(this.player.getCollidesWith(this.rBin))
+				this.rBin.takeLitter(this.player);
+		}
+		
+		if(this.player.getCollidesWith(this.crab)) {
+			System.out.println("player hit crab");
 		}
 
-		if(this.myPlayer.hasLitter()) {
-			if(this.myPlayer.getCollidesWith(this.tBin))
-				this.tBin.takeLitter(this.myPlayer);
-			if(this.myPlayer.getCollidesWith(this.rBin))
-				this.rBin.takeLitter(this.myPlayer);
-		}
-
+		animalWallCollision();
+		
+		
+		
 		Iterator<Litter> litterIterator = Litter.litterSet.iterator();
 		while(litterIterator.hasNext()) {
 			Litter litter = litterIterator.next();
