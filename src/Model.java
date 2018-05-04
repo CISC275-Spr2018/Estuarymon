@@ -154,10 +154,9 @@ public class Model
 		this.yIncr = yIncr;
 	}
 
-	public Animation stop() {
+	public void stop() {
 		this.xIncr = 0;
 		this.yIncr = 0;
-		return Animation.IDLE;
 	}
 
 	public int getX()
