@@ -119,35 +119,14 @@ public class View extends JPanel{
 	public void setKeyListener(KeyListener listener) {
 		frame.addKeyListener(listener);
 	}
-
-	ImageIcon plantIcon = new ImageIcon("images/MapObjects/azalea.png");
-	Image plantImg = plantIcon.getImage();
-	Image newImg = plantImg.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH);
 	
 	public void paint(Graphics g) {
 		super.paint(g);
 		Sprite.incrementFrameCounter();
-		ImageIcon backg = new ImageIcon("images/Map/Background.jpg");
-		g.drawImage(backg.getImage(),0,0,this);
-		
-		crabPicNum = (crabPicNum + 3) % Animal.getNumOfImages(); //change the 3 to change the speed
-		
-		
-		if(Plant.plants[0].health > 0)
-		{
-			g.drawImage(newImg, Plant.plants[0].getXLocation(),Plant.plants[0].getYLocation(),this);	
-		}
-		if(Plant.plants[1].health > 0)
-		{
-			g.drawImage(newImg,Plant.plants[1].getXLocation(),Plant.plants[1].getYLocation(),this);	
-		}
-		if(Plant.plants[2].health > 0)
-		{
-			g.drawImage(newImg, Plant.plants[2].getXLocation(),Plant.plants[2].getYLocation(),this);	
-		}
-		if(Plant.plants[3].health > 0)
-		{
-			g.drawImage(newImg, Plant.plants[3].getXLocation(),Plant.plants[3].getYLocation(),this);	
+		drawImage(g, Sprite.ID.BACKGROUND, 0, 0);
+
+		for(Plant plant : Plant.plants) {
+			drawImage(g, Sprite.ID.PLANT, plant.getXLocation(), plant.getYLocation());
 		}
 		
 		//traverse through litter set and draw them, had to make a copy of litter set everytime to avoid ConcurrentModificationExceptions.
@@ -164,7 +143,7 @@ public class View extends JPanel{
 		g.setColor(Color.PINK);
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
 		g.drawString(coords, 10, 20);
-		g.drawImage(this.crabImg[crabPicNum], crabXLoc, crabYLoc, 140 ,120, this); //drawing the crab onto the game
+		drawImage(g, Sprite.ID.CRAB, crabXLoc, crabYLoc);
 		drawImage(g, Sprite.ID.ORC_IDLE_NORTH, playerXLoc, playerYLoc);
 		
 		

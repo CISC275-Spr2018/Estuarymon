@@ -12,14 +12,20 @@ class Sprite {
 	private static int frameCounter = 0;
 
 	public static enum ID {
-		ORC_WALK_NORTH("orc_forward_north.png", 200, 200, 10, 1),
-		ORC_WALK_SOUTH("orc_forward_south.png", 200, 200, 10, 1),
-		ORC_WALK_EAST("orc_forward_east.png", 200, 200, 10, 1),
-		ORC_WALK_WEST("orc_forward_west.png", 200, 200, 10, 1),
-		ORC_IDLE_NORTH("orc_idle_north.png", 200, 200, 4, 1),
-		ORC_IDLE_SOUTH("orc_idle_south.png", 200, 200, 4, 1),
-		ORC_IDLE_EAST("orc_idle_east.png", 200, 200, 4, 1),
-		ORC_IDLE_WEST("orc_idle_west.png", 200, 200, 4, 1);
+		BACKGROUND("Map/Background.jpg", Controller.WORLD_WIDTH, Controller.WORLD_HEIGHT),
+
+		ORC_WALK_NORTH("orc/orc_forward_north.png", 165, 165, 10, 1),
+		ORC_WALK_SOUTH("orc/orc_forward_south.png", 165, 165, 10, 1),
+		ORC_WALK_EAST("orc/orc_forward_east.png", 165, 165, 10, 1),
+		ORC_WALK_WEST("orc/orc_forward_west.png", 165, 165, 10, 1),
+
+		ORC_IDLE_NORTH("orc/orc_idle_north.png", 165, 165, 4, 1),
+		ORC_IDLE_SOUTH("orc/orc_idle_south.png", 165, 165, 4, 1),
+		ORC_IDLE_EAST("orc/orc_idle_east.png", 165, 165, 4, 1),
+		ORC_IDLE_WEST("orc/orc_idle_west.png", 165, 165, 4, 1),
+
+		CRAB("Animal/crab.png", 150, 100, 7, 5),
+		PLANT("MapObjects/azalea.png", 100, 100);
 
 		private String fname;
 		private int worldWidth;
@@ -79,7 +85,7 @@ class Sprite {
 
 		System.out.println("Loading "+this.fname+" from disk.");
 		try {
-			this.source = ImageIO.read(new File("images/orc/"+this.fname));
+			this.source = ImageIO.read(new File("images/"+this.fname));
 			this.scaled = null;
 		} catch(IOException e) {
 			e.printStackTrace();
