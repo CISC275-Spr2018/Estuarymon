@@ -33,7 +33,14 @@ public class Controller implements KeyListener {
 	private void step() {
 		// increment the x and y coordinates, alter direction if necessary
 		model.updateModel();
-		view.update(model.getX(), model.getY(), model.getDirect(), model.getAnimal().getXLocation(), model.getAnimal().getYLocation());
+		Player player = model.getPlayer();
+		Animal animal = model.getAnimal();
+		view.update(
+			player.getXLocation(),
+			player.getYLocation(),
+			player.getDirection(),
+			animal.getXLocation(),
+			animal.getYLocation());
 	}
 	
 	//plant stuff
@@ -84,16 +91,16 @@ public class Controller implements KeyListener {
 		int key = e.getKeyCode();
 		switch(key) {
 		case KeyEvent.VK_UP:
-			model.setPlayerAttributes(1, Direction.NORTH, 0, 10);
+			model.getPlayer().alterVelocity(0, -1);
 			break;
 		case KeyEvent.VK_DOWN:
-			model.setPlayerAttributes(2, Direction.SOUTH, 0, 10);
+			model.getPlayer().alterVelocity(0, 1);
 			break;
 		case KeyEvent.VK_RIGHT:
-			model.setPlayerAttributes(3, Direction.EAST, 10, 0);
+			model.getPlayer().alterVelocity(1, 0);
 			break;
 		case KeyEvent.VK_LEFT:
-			model.setPlayerAttributes(4, Direction.WEST, 10, 0);
+			model.getPlayer().alterVelocity(-1, 0);
 			break;
 		case KeyEvent.VK_P:
 			pressP = true;
@@ -107,10 +114,16 @@ public class Controller implements KeyListener {
 
 		switch(key) {
 		case KeyEvent.VK_UP:
+			model.getPlayer().alterVelocity(0, 1);
+			break;
 		case KeyEvent.VK_DOWN:
+			model.getPlayer().alterVelocity(0, -1);
+			break;
 		case KeyEvent.VK_RIGHT:
+			model.getPlayer().alterVelocity(-1, 0);
+			break;
 		case KeyEvent.VK_LEFT:
-			model.stop();
+			model.getPlayer().alterVelocity(1, 0);
 			break;
 		case KeyEvent.VK_P:
 			pressP = false;

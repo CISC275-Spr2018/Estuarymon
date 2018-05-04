@@ -18,19 +18,11 @@ public class Model
 	private static final int WIDTH = Controller.WORLD_WIDTH;
 	private static final int HEIGHT = Controller.WORLD_HEIGHT;
 
-	Player myPlayer = new Player(0,0, 165,165);
-	//int xLoc = 0;
-	//int yLoc = 0;
-
-	int xIncr = 0;
-	int yIncr = 0;
+	Player player = new Player(0,0, 165,165);
 	
 	int animalXIncr = 3;
 	int animalYIncr = 3;
 
-	Direction curDir = Direction.EAST;
-	
-	int dir = 0;
 	int crabDirection = 3;
 	
 	//plantXloc = frameWidth - (frameWidth/3);
@@ -72,9 +64,8 @@ public class Model
 	//same method as updateLocationAndDirection()
 	public void updateModel()
 	{
-		
+		this.player.move();
 		this.checkCollision();
-		updateLocation();
 		animalWallCollision();
 		updatingAnimalLocation();
 
@@ -113,67 +104,10 @@ public class Model
 		}
 	}
 	
-	public void updateLocation() {
-		switch(dir){
-		case 0:
-			myPlayer.xLocation += 0;
-			myPlayer.yLocation += 0;
-			break;
-		case 1: //bottom wall; for him to go n
-			if(myPlayer.yLocation/5 <= 0){
-				yIncr = 0;
-			}
-			myPlayer.yLocation-=yIncr;
-			break;
-		case 2: //top wall; for him to go s
-			if((myPlayer.yLocation) >= WIDTH) {
-				yIncr = 0;
-			}
-			myPlayer.yLocation+=yIncr;
-			break;
-		case 3: //left wall; for him to go e
-			if((myPlayer.xLocation) >= WIDTH) {
-				xIncr = 0;
-			}
-			myPlayer.xLocation+=xIncr;
-			break;
-		case 4: //right wall; for him to go w
-			if(myPlayer.xLocation <= 0) {
-				xIncr = 0;
-			}
-			myPlayer.xLocation-=xIncr;
-			break;
-		}
-	
-	}
-	
-	public void setPlayerAttributes(int dir, Direction direction, int xIncr, int yIncr) {
-		this.dir = dir;
-		this.curDir = direction;
-		this.xIncr = xIncr;
-		this.yIncr = yIncr;
+	public Player getPlayer() {
+		return player;
 	}
 
-	public void stop() {
-		this.xIncr = 0;
-		this.yIncr = 0;
-	}
-
-	public int getX()
-	{
-		return myPlayer.xLocation;
-	}
-
-	public int getY()
-	{
-		return myPlayer.yLocation;
-	}
-
-	public Direction getDirect()
-	{
-		return curDir;
-	}
-	
 	public Animal getAnimal() {
 		return crab;
 	}
@@ -220,24 +154,24 @@ public class Model
 	
 	private void checkCollision() {
 		for(Litter litter : Litter.litterSet) {
-			if(litter.getCollidesWith(this.myPlayer))
-				this.myPlayer.pickUpLitter(litter);
+			if(litter.getCollidesWith(this.player))
+				this.player.pickUpLitter(litter);
 		}
 		
 		for(int i = 0; i < 4; i++)
 		{
 			//add and health == 0
-			if(Plant.plants[i].health == 0 && Plant.plants[i].getCollidesWith(this.myPlayer))
+			if(Plant.plants[i].health == 0 && Plant.plants[i].getCollidesWith(this.player))
 			{
-				this.myPlayer.growPlant(i);
+				this.player.growPlant(i);
 			}
 		}
 		
-		if(this.myPlayer.hasLitter()) {
-			if(this.myPlayer.getCollidesWith(this.tBin))
-				this.tBin.takeLitter(this.myPlayer);
-			if(this.myPlayer.getCollidesWith(this.rBin))
-				this.rBin.takeLitter(this.myPlayer);
+		if(this.player.hasLitter()) {
+			if(this.player.getCollidesWith(this.tBin))
+				this.tBin.takeLitter(this.player);
+			if(this.player.getCollidesWith(this.rBin))
+				this.rBin.takeLitter(this.player);
 		}
 
 		
