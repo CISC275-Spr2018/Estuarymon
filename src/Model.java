@@ -15,26 +15,16 @@ import java.util.Iterator;
  **/
 public class Model
 {
-	int winW;
-	int winH;
-	int imgW;
-	int imgH;
+	private static final int WIDTH = Controller.WORLD_WIDTH;
+	private static final int HEIGHT = Controller.WORLD_HEIGHT;
 
-	Player myPlayer = new Player(0,0, 165,165);
-	//int xLoc = 0;
-	//int yLoc = 0;
-
-	int xIncr = 0;
-	int yIncr = 0;
+	Player player = new Player(0,0, 165,165);
 	
 	int animalXIncr = 3;
 	int animalYIncr = 3;
 	
 	boolean spacePressed = false;
 
-	Direction curDir = Direction.EAST;
-	
-	int dir = 0;
 	int crabDirection = 3;
 	
 	//plantXloc = frameWidth - (frameWidth/3);
@@ -51,12 +41,8 @@ public class Model
 	Animal crab;
 	HashSet<Animal> animals;
 	
-	public Model(int winW, int winH, int imgW, int imgH) 
+	public Model()
 	{
-		this.winW = winW;
-		this.winH = winH;
-		this.imgW = imgW;
-		this.imgH = imgH;
 		this.crab = new Animal();
 		animals = new HashSet<Animal>();
 		animals.add(crab);
@@ -69,7 +55,7 @@ public class Model
 		{//health,xloc,yoc
 			//System.out.println(winW - (winW/3));
 			//System.out.println((winH / 100) + count);
-			Plant.plants[i] = new Plant(plantHealth, winW - (winW/3), 50+(winH / 90) + count);//sets location of plants
+			Plant.plants[i] = new Plant(plantHealth, WIDTH - (WIDTH/3), 50+(WIDTH / 90) + count);//sets location of plants
 			count = count + 200;
 		}
 
@@ -80,40 +66,24 @@ public class Model
 	//same method as updateLocationAndDirection()
 	public void updateModel()
 	{
-		
+		this.player.move();
 		this.checkCollision();
-		collisionDetection();
-		updateLocation();
 		animalWallCollision();
 		updatingAnimalLocation();
 
-	}
-	
-	//used to be called updateDirection, but that no longer really applied because the orc
-	//doesn't need to change directions when it hits the wall
-	public void collisionDetection() {
-		if((myPlayer.yLocation + imgH/5)<= 0 && curDir == Direction.NORTH) {
-			dir = 1;
-		}else if((myPlayer.yLocation + imgH) >= winH && curDir == Direction.SOUTH) {
-			dir = 2;
-		}else if((myPlayer.xLocation + imgW) >= winW && curDir == Direction.EAST) {
-			dir = 3;
-		}else if(myPlayer.xLocation <= 0 && curDir == Direction.WEST) {
-			dir = 4;
-		}
 	}
 	
 	public void animalWallCollision() {
 		if(crab.getXLocation() <= 0) { //when the left wall is hit
 			System.out.println("hit left wall");
 			crabDirection = 1;
-		}else if(crab.getXLocation() >= winW - 400) { //when the right wall is hit
+		}else if(crab.getXLocation() >= WIDTH - 400) { //when the right wall is hit
 			System.out.println("hit right wall");
 			crabDirection = 2;
 		}else if(crab.getYLocation() <= 0) { //when the top wall is hit
 			System.out.println("hit top wall");
 			crabDirection = 4;
-		}else if(crab.getYLocation() >= winH - 170) { //when the bottom wall is hit
+		}else if(crab.getYLocation() >= HEIGHT - 170) { //when the bottom wall is hit
 			crabDirection = 3;
 		}
 	}
@@ -136,76 +106,10 @@ public class Model
 		}
 	}
 	
-	public void spaceKeyPressed() {
-		this.spacePressed = true;
-	}
-	
-	public void spaceKeyReleased() {
-		this.spacePressed = false;
-	}
-	
-	public void updateLocation() {
-		switch(dir){
-		case 0:
-			myPlayer.xLocation += 0;
-			myPlayer.yLocation += 0;
-			break;
-		case 1: //bottom wall; for him to go n
-			if(myPlayer.yLocation + imgH/5 <= 0){
-				yIncr = 0;
-			}
-			myPlayer.yLocation-=yIncr;
-			break;
-		case 2: //top wall; for him to go s
-			if((myPlayer.yLocation + imgH) >= winH) {
-				yIncr = 0;
-			}
-			myPlayer.yLocation+=yIncr;
-			break;
-		case 3: //left wall; for him to go e
-			if((myPlayer.xLocation + imgW) >= winW) {
-				xIncr = 0;
-			}
-			myPlayer.xLocation+=xIncr;
-			break;
-		case 4: //right wall; for him to go w
-			if(myPlayer.xLocation <= 0) {
-				xIncr = 0;
-			}
-			myPlayer.xLocation-=xIncr;
-			break;
-		}
-	
-	}
-	
-	public void setPlayerAttributes(int dir, Direction direction, int xIncr, int yIncr) {
-		this.dir = dir;
-		this.curDir = direction;
-		this.xIncr = xIncr;
-		this.yIncr = yIncr;
+	public Player getPlayer() {
+		return player;
 	}
 
-	public Animation stop() {
-		this.xIncr = 0;
-		this.yIncr = 0;
-		return Animation.IDLE;
-	}
-
-	public int getX()
-	{
-		return myPlayer.xLocation;
-	}
-
-	public int getY()
-	{
-		return myPlayer.yLocation;
-	}
-
-	public Direction getDirect()
-	{
-		return curDir;
-	}
-	
 	public Animal getAnimal() {
 		return crab;
 	}
@@ -235,8 +139,8 @@ public class Model
 		Random coordGenerator = new Random();
 		Litter l = new Litter();
 		l.setType(LitterType.randomLitter());		
-		int litterXCord = coordGenerator.nextInt((winW-l.getWidth()));//generates random coordinates
-		int litterYCord = coordGenerator.nextInt((winH-l.getHeight()));
+		int litterXCord = coordGenerator.nextInt((WIDTH-l.getWidth()));//generates random coordinates
+		int litterYCord = coordGenerator.nextInt((HEIGHT-l.getHeight()));
 		l.setXLocation(litterXCord);//
 		l.setYLocation(litterYCord);
 		Litter.litterSet.add(l);//Adds them to hashset of litter, prevents exact duplicates in terms of coordinates.
@@ -254,25 +158,25 @@ public class Model
 		
 		if(!Player.hasLitter) {
 			for(Litter litter : Litter.litterSet) {
-				if(litter.getCollidesWith(this.myPlayer))
-					this.myPlayer.pickUpLitter(litter);
+				if(litter.getCollidesWith(this.player))
+					this.player.pickUpLitter(litter);
 			}
 		}
 		
 		for(int i = 0; i < 4; i++)
 		{
 			//add and health == 0
-			if(Plant.plants[i].health == 0 && Plant.plants[i].getCollidesWith(this.myPlayer))
+			if(Plant.plants[i].health == 0 && Plant.plants[i].getCollidesWith(this.player))
 			{
-				this.myPlayer.growPlant(i);
+				this.player.growPlant(i);
 			}
 		}
 		
-		if(this.myPlayer.hasLitter()) {
-			if(this.myPlayer.getCollidesWith(this.tBin))
-				this.tBin.takeLitter(this.myPlayer);
-			if(this.myPlayer.getCollidesWith(this.rBin))
-				this.rBin.takeLitter(this.myPlayer);
+		if(this.player.hasLitter()) {
+			if(this.player.getCollidesWith(this.tBin))
+				this.tBin.takeLitter(this.player);
+			if(this.player.getCollidesWith(this.rBin))
+				this.rBin.takeLitter(this.player);
 		}
 
 		
