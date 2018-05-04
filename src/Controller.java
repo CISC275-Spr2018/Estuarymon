@@ -17,7 +17,7 @@ public class Controller implements KeyListener {
 	java.util.Timer taskTimer = new java.util.Timer();
 	java.util.Timer trashTimer = new java.util.Timer();
 
-	private static final int DRAW_DELAY = 100;
+	private static final int DRAW_DELAY = 1000/30; // 30fps
 
 	//for alpha only
 	boolean pressP = false;
