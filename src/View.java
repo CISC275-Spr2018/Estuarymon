@@ -52,8 +52,6 @@ public class View extends JPanel{
 	private static final int crabImgCount = 35;
 	ArrayList<JLabel> plantImgs = new ArrayList<JLabel>();
 
-	private Sprite orc = new Sprite("orc_idle_ewns.png", 1000, 1000);
-	
 	//these plants vars for alpha testing
 	int plant0H;
 	int plant1H;
@@ -166,21 +164,18 @@ public class View extends JPanel{
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
 		g.drawString(coords, 10, 20);
 		g.drawImage(this.crabImg[crabPicNum], crabXLoc, crabYLoc, 140 ,120, this); //drawing the crab onto the game
-		drawImage(g, this.orc, playerXLoc, playerYLoc);
+		drawImage(g, Sprite.ID.ORC_IDLE, playerXLoc, playerYLoc);
 		
 		
 	}
 
-	private void drawImage(Graphics g, Sprite s, int world_x, int world_y) {
-		drawImage(g, s.getImage((double) this.getWidth() / Controller.WORLD_WIDTH), world_x, world_y);
-	}
-
-	private void drawImage(Graphics g, BufferedImage image, int world_x, int world_y) {
-		g.drawImage(image, cD(world_x), cD(world_y), this);
-	}
-
-	private void drawImage(Graphics g, BufferedImage image, int world_x, int world_y, int world_w, int world_h) {
-		g.drawImage(image, cD(world_x), cD(world_y), cD(world_w), cD(world_h), this);
+	private void drawImage(Graphics g, Sprite.ID s, int world_x, int world_y) {
+		g.drawImage(
+			Sprite.getImage(s,
+			(double) this.getWidth() / Controller.WORLD_WIDTH),
+			convertDimension(world_x),
+			convertDimension(world_y),
+			this);
 	}
 
 	// convertDimension: converts a dimension from world coordinates to pixel coordinates

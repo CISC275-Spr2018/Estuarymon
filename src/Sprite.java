@@ -2,9 +2,39 @@ import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import javax.imageio.ImageIO;
 
 class Sprite {
+	// ---------- STATIC stuff
+	private static HashMap<Sprite.ID, Sprite> instances = new HashMap<>();
+
+	public static enum ID {
+		ORC_IDLE("orc_idle_ewns.png", 1000, 1000);
+
+		private String fname;
+		private int worldWidth;
+		private int worldHeight;
+
+		private ID(String fname, int worldWidth, int worldHeight) {
+			this.fname = fname;
+			this.worldWidth = worldWidth;
+			this.worldHeight = worldHeight;
+		}
+	}
+
+	public static BufferedImage getImage(Sprite.ID id, double scaleFactor) {
+		Sprite s = instances.get(id);
+		if(s == null) {
+			s = new Sprite(id.fname, id.worldWidth, id.worldHeight);
+			instances.put(id, s);
+		}
+
+		return s.getImage(scaleFactor);
+	}
+
+	// ---------- NON-STATIC stuff
+
 	private String fname;
 	private double scaleFactor = -1;
 	private int worldWidth;
@@ -12,7 +42,7 @@ class Sprite {
 	private BufferedImage source;
 	private BufferedImage scaled;
 
-	public Sprite(String fname, int worldWidth, int worldHeight) {
+	private Sprite(String fname, int worldWidth, int worldHeight) {
 		this.fname = fname;
 		this.worldWidth = worldWidth;
 		this.worldHeight = worldHeight;
@@ -49,7 +79,7 @@ class Sprite {
 		g.dispose();
 	}
 
-	public BufferedImage getImage(double scaleFactor) {
+	private BufferedImage getImage(double scaleFactor) {
 		if(this.source == null) this.loadSource();
 		this.scale(scaleFactor);
 		return this.scaled;
