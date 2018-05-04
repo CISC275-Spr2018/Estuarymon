@@ -6,49 +6,71 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 
 class Sprite {
-	// ---------- STATIC stuff
+	// ---------- STATIC stuff (all public stuff is here) ---------- //
 	private static HashMap<Sprite.ID, Sprite> instances = new HashMap<>();
 
+	private static int frameCounter = 0;
+
 	public static enum ID {
-		ORC_IDLE("orc_idle_ewns.png", 1000, 1000);
+		ORC_WALK_NORTH("orc_forward_north.png", 200, 200, 10, 1),
+		ORC_IDLE_NORTH("orc_idle_ewns.png", 200, 200, 4, 4);
 
 		private String fname;
 		private int worldWidth;
 		private int worldHeight;
+		private int numTilesWide;
+		private int numTilesHigh;
 
 		private ID(String fname, int worldWidth, int worldHeight) {
+			this(fname, worldWidth, worldHeight, 1, 1);
+		}
+
+		private ID(String fname, int worldWidth, int worldHeight, int numTilesWide, int numTilesHigh) {
 			this.fname = fname;
 			this.worldWidth = worldWidth;
 			this.worldHeight = worldHeight;
+			this.numTilesWide = numTilesWide;
+			this.numTilesHigh = numTilesHigh;
 		}
 	}
 
 	public static BufferedImage getImage(Sprite.ID id, double scaleFactor) {
 		Sprite s = instances.get(id);
 		if(s == null) {
-			s = new Sprite(id.fname, id.worldWidth, id.worldHeight);
+			s = new Sprite(id.fname, id.worldWidth, id.worldHeight, id.numTilesWide, id.numTilesHigh);
 			instances.put(id, s);
 		}
 
 		return s.getImage(scaleFactor);
 	}
 
-	// ---------- NON-STATIC stuff
+	public static void incrementFrameCounter() {
+		frameCounter++;
+	}
+
+	// ---------- NON-STATIC stuff (all private) ---------- //
 
 	private String fname;
 	private double scaleFactor = -1;
 	private int worldWidth;
 	private int worldHeight;
+	private int numTilesWide;
+	private int numTilesHigh;
 	private BufferedImage source;
 	private BufferedImage scaled;
+	private BufferedImage[] scaledTiles;
 
-	private Sprite(String fname, int worldWidth, int worldHeight) {
+	private Sprite(String fname, int worldWidth, int worldHeight, int numTilesWide, int numTilesHigh) {
 		this.fname = fname;
 		this.worldWidth = worldWidth;
 		this.worldHeight = worldHeight;
+		this.numTilesWide = numTilesWide;
+		this.numTilesHigh = numTilesHigh;
 	}
 
 	private void loadSource() {
+		if(this.source != null) return;
+
 		System.out.println("Loading "+this.fname+" from disk.");
 		try {
 			this.source = ImageIO.read(new File("images/orc/"+this.fname));
@@ -65,8 +87,8 @@ class Sprite {
 
 		System.out.println("Scaling "+this.fname+" by scale factor " + scaleFactor);
 
-		int scaledWidth = (int) (worldWidth*scaleFactor);
-		int scaledHeight = (int) (worldHeight*scaleFactor);
+		int scaledWidth = (int) (worldWidth*scaleFactor*this.numTilesWide);
+		int scaledHeight = (int) (worldHeight*scaleFactor*this.numTilesHigh);
 
 		if(scaledWidth == this.source.getWidth() && scaledHeight == this.source.getHeight()) {
 			this.scaled = this.source;
@@ -79,9 +101,27 @@ class Sprite {
 		g.dispose();
 	}
 
+	private void tile() {
+		this.scaledTiles = new BufferedImage[this.numTilesWide*this.numTilesHigh];
+
+		double tileWidth = (double) this.scaled.getWidth() / this.numTilesWide;
+		double tileHeight = (double) this.scaled.getHeight() / this.numTilesHigh;
+
+		for(int y = 0; y < this.numTilesHigh; y++) {
+			for(int x = 0; x < this.numTilesWide; x++) {
+				this.scaledTiles[y*numTilesWide + x] = this.scaled.getSubimage(
+					(int) (x*tileWidth),
+					(int) (y*tileHeight),
+					(int) (tileWidth),
+					(int) (tileHeight));
+			}
+		}
+	}
+
 	private BufferedImage getImage(double scaleFactor) {
-		if(this.source == null) this.loadSource();
+		this.loadSource();
 		this.scale(scaleFactor);
-		return this.scaled;
+		this.tile();
+		return this.scaledTiles[Sprite.frameCounter % this.scaledTiles.length];
 	}
 }

@@ -126,6 +126,7 @@ public class View extends JPanel{
 	
 	public void paint(Graphics g) {
 		super.paint(g);
+		Sprite.incrementFrameCounter();
 		ImageIcon backg = new ImageIcon("images/Map/Background.jpg");
 		g.drawImage(backg.getImage(),0,0,this);
 		
@@ -164,7 +165,7 @@ public class View extends JPanel{
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
 		g.drawString(coords, 10, 20);
 		g.drawImage(this.crabImg[crabPicNum], crabXLoc, crabYLoc, 140 ,120, this); //drawing the crab onto the game
-		drawImage(g, Sprite.ID.ORC_IDLE, playerXLoc, playerYLoc);
+		drawImage(g, Sprite.ID.ORC_WALK_NORTH, playerXLoc, playerYLoc);
 		
 		
 	}
