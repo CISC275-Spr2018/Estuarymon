@@ -1,4 +1,5 @@
-SOURCES=$(wildcard src/*.java)
+SOURCES=$(shell find src/*.java | grep -v Test.java)
+
 .PHONY: default
 default: run
 
@@ -7,7 +8,7 @@ compile: bin/compiled
 
 bin/compiled: $(SOURCES)
 	mkdir -p bin
-	javac -d bin src/*.java
+	javac -d bin $(SOURCES)
 	touch bin/compiled;
 
 .PHONY: run
