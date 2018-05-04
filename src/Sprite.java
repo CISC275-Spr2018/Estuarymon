@@ -18,6 +18,10 @@ class Sprite {
 		ORC_WALK_SOUTH("orc/orc_forward_south.png", 165, 165, 10, 1),
 		ORC_WALK_EAST("orc/orc_forward_east.png", 165, 165, 10, 1),
 		ORC_WALK_WEST("orc/orc_forward_west.png", 165, 165, 10, 1),
+		ORC_WALK_NORTHWEST("orc/orc_forward_northwest.png", 165, 165, 10, 1),
+		ORC_WALK_NORTHEAST("orc/orc_forward_northeast.png", 165, 165, 10, 1),
+		ORC_WALK_SOUTHWEST("orc/orc_forward_southwest.png", 165, 165, 10, 1),
+		ORC_WALK_SOUTHEAST("orc/orc_forward_southeast.png", 165, 165, 10, 1),
 
 		ORC_IDLE_NORTH("orc/orc_idle_north.png", 165, 165, 4, 1),
 		ORC_IDLE_SOUTH("orc/orc_idle_south.png", 165, 165, 4, 1),

@@ -47,6 +47,14 @@ public class Interactable {
 	public void setYLocation(int y) {
 		this.yLocation = y;
 	}
+
+	public void addXLocation(int dx) {
+		this.xLocation += dx;
+	}
+
+	public void addYLocation(int dy) {
+		this.yLocation += dy;
+	}
 	
 	public int getXLocation() {
 		return this.xLocation;

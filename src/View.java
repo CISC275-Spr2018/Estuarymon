@@ -33,10 +33,11 @@ public class View extends JPanel{
 	JFrame frame = new JFrame();
 	private static int playerXLoc = 0; //player x location
 	private static int playerYLoc = 0; //player y location
+	private static PlayerStatus playerStatus = PlayerStatus.IDLE;
 	private static int crabXLoc = 200;
 	private static int crabYLoc = 400;
 	
-	private static Direction curDir = Direction.EAST; //the direction the orc faces when it begins
+	private static Direction playerDirection = Direction.EAST;
 	private static final Color BACKGROUND_COLOR = Color.GRAY;
 	static int bCount;
 	private static final int trashImgCount = 2;
@@ -131,9 +132,42 @@ public class View extends JPanel{
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
 		g.drawString(coords, 10, 20);
 		drawImage(g, Sprite.ID.CRAB, crabXLoc, crabYLoc);
-		drawImage(g, Sprite.ID.ORC_IDLE_NORTH, playerXLoc, playerYLoc);
+		drawImage(g, getPlayerSprite(), playerXLoc, playerYLoc);
 		
 		
+	}
+
+	private Sprite.ID getPlayerSprite() {
+		switch(this.playerStatus) {
+			case IDLE:
+				switch(this.playerDirection) {
+					case NORTH:
+					case NORTHEAST: return Sprite.ID.ORC_IDLE_NORTH;
+					case EAST:
+					case SOUTHEAST: return Sprite.ID.ORC_IDLE_EAST;
+					case SOUTH:
+					case SOUTHWEST: return Sprite.ID.ORC_IDLE_SOUTH;
+					case WEST:
+					case NORTHWEST: return Sprite.ID.ORC_IDLE_WEST;
+					default:
+						throw new RuntimeException("Unknkown player direction "+this.playerDirection);
+				}
+			case WALKING:
+				switch(this.playerDirection) {
+					case NORTH: return Sprite.ID.ORC_WALK_NORTH;
+					case SOUTH: return Sprite.ID.ORC_WALK_SOUTH;
+					case WEST: return Sprite.ID.ORC_WALK_WEST;
+					case EAST: return Sprite.ID.ORC_WALK_EAST;
+					case NORTHWEST: return Sprite.ID.ORC_WALK_NORTHWEST;
+					case NORTHEAST: return Sprite.ID.ORC_WALK_NORTHEAST;
+					case SOUTHWEST: return Sprite.ID.ORC_WALK_SOUTHWEST;
+					case SOUTHEAST: return Sprite.ID.ORC_WALK_SOUTHEAST;
+					default:
+									throw new RuntimeException("Unknown player direction "+this.playerDirection);
+				}
+			default:
+				throw new RuntimeException("Unrecognised player status "+this.playerStatus);
+		}
 	}
 
 	private void drawImage(Graphics g, Sprite.ID s, int world_x, int world_y) {
@@ -173,10 +207,12 @@ public class View extends JPanel{
 		}
 	}
 
-	public void update(int playerX, int playerY, Direction dir, int crabX, int crabY) {
+	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY) {
 		playerXLoc = playerX;
 		playerYLoc = playerY;
-		curDir = dir;
+		playerDirection = dir;
+		playerStatus = status;
+
 		crabXLoc = crabX;
 		crabYLoc = crabY;
 		
