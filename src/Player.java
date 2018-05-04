@@ -1,14 +1,14 @@
 
 public class Player extends Interactable {
 	public static boolean hasLitter = false;
-	public LitterType litterType;
+	public Litter playerLitter;
 	
 	public Player(int xLoc, int yLoc, int rWidth, int rHeight) {
 		super(xLoc, yLoc, rWidth, rHeight);
 ;		this.setRelativeCollisionRect(40, 40, rWidth-80, rHeight-80);
 	}
 	
-	public boolean shouldCollectLitter(Litter l) {
+	/*public boolean shouldCollectLitter(Litter l) {
 		if(this.getCollidesWith(l) && !hasLitter) {
 			litterType = l.getType();
 			return true;
@@ -26,6 +26,7 @@ public class Player extends Interactable {
 			return false;
 		}
 	}
+	*/
 
 	public boolean hasLitter() {
 		return this.hasLitter;

@@ -29,6 +29,8 @@ public class Model
 	
 	int animalXIncr = 3;
 	int animalYIncr = 3;
+	
+	boolean spacePressed = false;
 
 	Direction curDir = Direction.EAST;
 	
@@ -132,6 +134,14 @@ public class Model
 			break;
 		
 		}
+	}
+	
+	public void spaceKeyPressed() {
+		this.spacePressed = true;
+	}
+	
+	public void spaceKeyReleased() {
+		this.spacePressed = false;
 	}
 	
 	public void updateLocation() {
@@ -241,9 +251,12 @@ public class Model
 	}
 	
 	private void checkCollision() {
-		for(Litter litter : Litter.litterSet) {
-			if(litter.getCollidesWith(this.myPlayer))
-				this.myPlayer.pickUpLitter(litter);
+		
+		if(!Player.hasLitter) {
+			for(Litter litter : Litter.litterSet) {
+				if(litter.getCollidesWith(this.myPlayer))
+					this.myPlayer.pickUpLitter(litter);
+			}
 		}
 		
 		for(int i = 0; i < 4; i++)

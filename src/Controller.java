@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.TimerTask;
 
+import javax.jws.WebParam.Mode;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Timer;
@@ -97,8 +98,8 @@ public class Controller implements KeyListener {
 			model.setPlayerAttributes(4, Direction.WEST, 10, 0);
 			view.setAnimation(Animation.WALKING);
 			break;
-		case KeyEvent.VK_P:
-			pressP = true;
+		case KeyEvent.VK_SPACE:
+			model.spaceKeyPressed();
 			break;
 		}
 	}
@@ -117,8 +118,8 @@ public class Controller implements KeyListener {
 		case KeyEvent.VK_J:
 			view.setAnimation(Animation.JUMP);
 			break;
-		case KeyEvent.VK_P:
-			pressP = false;
+		case KeyEvent.VK_SPACE:
+			model.spaceKeyReleased();
 			break;
 		}
 	}
