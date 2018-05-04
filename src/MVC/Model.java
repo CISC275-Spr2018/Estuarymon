@@ -61,8 +61,6 @@ public class Model
 		//fills plant array
 		for(int i = 0; i < 4; i++)
 		{//health,xloc,yoc
-			//System.out.println(winW - (winW/3));
-			//System.out.println((winH / 100) + count);
 			Plant.plants[i] = new Plant(plantHealth, WIDTH - (WIDTH/3), 50+(WIDTH / 90) + count);//sets location of plants
 			count = count + 200;
 		}
@@ -70,7 +68,7 @@ public class Model
 		// Fill animals collection (temporary)
 	}
 	
-
+	
 	//same method as updateLocationAndDirection()
 	public void updateModel()
 	{
@@ -170,10 +168,14 @@ public class Model
 		
 		for(int i = 0; i < 4; i++)
 		{
-			//add and health == 0
-			if(Plant.plants[i].health == 0 && Plant.plants[i].getCollidesWith(this.player))
+			System.out.println(Plant.plants[0].getCollidesWith(this.player));
+			if(Plant.plants[i].getCollidesWith(this.player))
 			{
-				this.player.growPlant(i);
+				//player.alterVelocity(0,0);
+;				if(Plant.plants[i].health == 0 && Plant.plants[i].getCollidesWith(this.player))
+				{
+					this.player.growPlant(i);
+				}
 			}
 		}
 		

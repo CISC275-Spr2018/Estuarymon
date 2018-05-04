@@ -30,7 +30,8 @@ class Sprite {
 		ORC_IDLE_WEST("orc/orc_idle_west.png", 165, 165, 4, 1),
 
 		CRAB("Animal/crab.png", 150, 100, 7, 5),
-		PLANT("MapObjects/azalea.png", 100, 100);
+		PLANT("MapObjects/azalea.png", 130, 130),
+		DECAY_PLANT("MapObjects/dazal.png", 120, 120);
 
 		private String fname;
 		private int worldWidth;

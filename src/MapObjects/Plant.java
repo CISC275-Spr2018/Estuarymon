@@ -9,7 +9,7 @@ public class Plant extends Interactable{
 	{
 		super(xLocation,yLocation,100,100);
 		this.health = health;
-		this.setRelativeCollisionRect(10, 10, 100, 100);
+		this.setRelativeCollisionRect(10, 10, 150, 150);
 	}
 
 	public void setHealth(int health) {

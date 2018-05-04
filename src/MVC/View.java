@@ -116,7 +116,14 @@ public class View extends JPanel{
 		drawImage(g, Sprite.ID.BACKGROUND, 0, 0);
 
 		for(Plant plant : Plant.plants) {
-			drawImage(g, Sprite.ID.PLANT, plant.getXLocation(), plant.getYLocation());
+			if(plant.health < 100 && plant.health != 0)
+			{
+				drawImage(g, Sprite.ID.DECAY_PLANT, plant.getXLocation(), plant.getYLocation());
+			}
+			else if(plant.health == 100)
+			{
+				drawImage(g, Sprite.ID.PLANT, plant.getXLocation(), plant.getYLocation());
+			}
 		}
 		
 		//traverse through litter set and draw them, had to make a copy of litter set everytime to avoid ConcurrentModificationExceptions.
@@ -131,13 +138,13 @@ public class View extends JPanel{
 
 		g.setColor(Color.RED);
 		g.setFont(new Font("TimesRoman", Font.BOLD, 25)); 
-		g.drawString(""+plant0H, 550, 100);//change to make it the spacing as the plant jlabels
-		g.drawString(""+plant1H, 550, 260);
-		g.drawString(""+plant2H, 550, 460);
-		g.drawString(""+plant3H, 550, 660);
+		//g.drawString(""+plant0H, 550, 100);//change to make it the spacing as the plant jlabels
+		//g.drawString(""+plant1H, 550, 260);
+		//g.drawString(""+plant2H, 550, 460);
+		//g.drawString(""+plant3H, 550, 660);
 		g.setColor(Color.PINK);
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
-		g.drawString(coords, 10, 20);
+		//g.drawString(coords, 10, 20);
 		drawImage(g, Sprite.ID.CRAB, crabXLoc, crabYLoc);
 		drawImage(g, getPlayerSprite(), playerXLoc, playerYLoc);
 		

@@ -111,6 +111,8 @@ public class Player extends Interactable {
 		this.addXLocation(this.speed*this.dx);
 		this.addYLocation(this.speed*this.dy);
 	}
+	
+	
 
 	public Direction getDirection() {
 		return this.direction;
