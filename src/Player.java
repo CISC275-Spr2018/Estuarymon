@@ -61,18 +61,6 @@ public class Player extends Interactable {
 			// left
 			if(dy < 0) {
 				// up
-				this.direction = Direction.NORTHEAST;
-			} else if(dy > 0) {
-				// down
-				this.direction = Direction.SOUTHEAST;
-			} else {
-				// horizontal
-				this.direction = Direction.EAST;
-			}
-		} else if(dx > 0) {
-			// right
-			if(dy < 0) {
-				// up
 				this.direction = Direction.NORTHWEST;
 			} else if(dy > 0) {
 				// down
@@ -80,6 +68,18 @@ public class Player extends Interactable {
 			} else {
 				// horizontal
 				this.direction = Direction.WEST;
+			}
+		} else if(dx > 0) {
+			// right
+			if(dy < 0) {
+				// up
+				this.direction = Direction.NORTHEAST;
+			} else if(dy > 0) {
+				// down
+				this.direction = Direction.SOUTHEAST;
+			} else {
+				// horizontal
+				this.direction = Direction.EAST;
 			}
 		} else {
 			// vertical
