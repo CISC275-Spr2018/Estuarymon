@@ -55,6 +55,45 @@ public class Player extends Interactable {
 		else if(this.dx > 1) this.dx = 1;
 		if(this.dy < -1) this.dy = -1;
 		else if(this.dy > 1) this.dy = 1;
+
+		// Fix direction
+		if(dx < 0) {
+			// left
+			if(dy < 0) {
+				// up
+				this.direction = Direction.NORTHEAST;
+			} else if(dy > 0) {
+				// down
+				this.direction = Direction.SOUTHEAST;
+			} else {
+				// horizontal
+				this.direction = Direction.EAST;
+			}
+		} else if(dx > 0) {
+			// right
+			if(dy < 0) {
+				// up
+				this.direction = Direction.NORTHWEST;
+			} else if(dy > 0) {
+				// down
+				this.direction = Direction.SOUTHWEST;
+			} else {
+				// horizontal
+				this.direction = Direction.WEST;
+			}
+		} else {
+			// vertical
+			if(dy < 0) {
+				// up
+				this.direction = Direction.NORTH;
+			} else if(dy > 0) {
+				// down
+				this.direction = Direction.SOUTH;
+			} else {
+				// horizontal
+				// DON'T MODIFY DIRECTION
+			}
+		}
 	}
 
 	public void move() {
