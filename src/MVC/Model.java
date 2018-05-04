@@ -1,6 +1,16 @@
+package MVC;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Random;
+
+import MapObjects.Animal;
+import MapObjects.Litter;
+import MapObjects.LitterType;
+import MapObjects.Plant;
+import MapObjects.Receptacle;
+import MapObjects.ReceptacleType;
+import Player.Player;
+
 import java.util.Iterator;
 
 /**

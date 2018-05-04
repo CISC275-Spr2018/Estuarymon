@@ -1,3 +1,9 @@
+package Player;
+import MapObjects.Interactable;
+import MapObjects.Litter;
+import MapObjects.LitterType;
+import MapObjects.Plant;
+import MapObjects.Receptacle;
 
 public class Player extends Interactable {
 	public static boolean hasLitter = false;

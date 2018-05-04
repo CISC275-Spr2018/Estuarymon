@@ -1,6 +1,7 @@
+package MapObjects;
 
 public class Plant extends Interactable{
-	int health;
+	public int health;
 	public static Plant [] plants = new Plant[4];
 	public static int randPlant = (int) Math.floor(Math.random() * 4);
 	

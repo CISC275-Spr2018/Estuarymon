@@ -1,3 +1,5 @@
+package MapObjects;
+
 /**Enum that holds all of the Receptacle types that appear in the game 
  * 
  * @author Juan Villacis 

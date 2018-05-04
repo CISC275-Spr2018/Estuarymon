@@ -1,3 +1,5 @@
+package MapObjects;
+import Player.Player;
 
 public class Receptacle extends Interactable{
 	
