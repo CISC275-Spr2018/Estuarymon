@@ -6,6 +6,7 @@ public class Player extends Interactable {
 	private int dy = 0;
 	private final int speed = 10;
 	private Direction direction = Direction.EAST;
+	private PlayerStatus status = PlayerStatus.IDLE;
 	
 	public Player(int xLoc, int yLoc, int rWidth, int rHeight) {
 		super(xLoc, yLoc, rWidth, rHeight);
@@ -51,12 +52,14 @@ public class Player extends Interactable {
 	public void alterVelocity(int ddx, int ddy) {
 		this.dx += ddx;
 		this.dy += ddy;
+		// Catch when set too high/low because of key repeating
 		if(this.dx < -1) this.dx = -1;
 		else if(this.dx > 1) this.dx = 1;
 		if(this.dy < -1) this.dy = -1;
 		else if(this.dy > 1) this.dy = 1;
 
-		// Fix direction
+		// Fix direction and status
+		this.status = PlayerStatus.WALKING;
 		if(dx < 0) {
 			// left
 			if(dy < 0) {
@@ -92,6 +95,8 @@ public class Player extends Interactable {
 			} else {
 				// horizontal
 				// DON'T MODIFY DIRECTION
+				// But do fix status.
+				this.status = PlayerStatus.IDLE;
 			}
 		}
 	}
@@ -103,5 +108,9 @@ public class Player extends Interactable {
 
 	public Direction getDirection() {
 		return this.direction;
+	}
+
+	public PlayerStatus getStatus() {
+		return this.status;
 	}
 }

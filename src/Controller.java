@@ -39,6 +39,7 @@ public class Controller implements KeyListener {
 			player.getXLocation(),
 			player.getYLocation(),
 			player.getDirection(),
+			player.getStatus(),
 			animal.getXLocation(),
 			animal.getYLocation());
 	}
