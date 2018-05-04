@@ -45,6 +45,8 @@ public class View extends JPanel{
 	private BufferedImage[] trashImgs = new BufferedImage[trashImgCount+1];
 	private BufferedImage[] recyclableImgs = new BufferedImage[recImgCount+1];
 	private Litter[] litterArr = new Litter[litterCount];
+
+	private Sprite orc = new Sprite("orc_idle_ewns.png", 1000, 1000);
 	
 	ArrayList<JLabel> plantImgs = new ArrayList<JLabel>();
 	
@@ -162,9 +164,13 @@ public class View extends JPanel{
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
 		g.drawString(coords, 10, 20);
 		g.drawImage(img[crabPicNum], crab.getXLocation(), crab.getYLocation(), crab.getImageWidth(), crab.getImageHeight(), this); //drawing the crab onto the game
-		drawImage(g, this.animation.getCurrentFrameForDirection(this.curDir), xloc, yLoc);
+		drawImage(g, this.orc, xloc, yLoc);
 		
 		
+	}
+
+	private void drawImage(Graphics g, Sprite s, int world_x, int world_y) {
+		drawImage(g, s.getImage((double) this.getWidth() / Controller.WORLD_WIDTH), world_x, world_y);
 	}
 
 	private void drawImage(Graphics g, BufferedImage image, int world_x, int world_y) {
