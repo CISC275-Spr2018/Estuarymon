@@ -1,3 +1,4 @@
+package MVC;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -25,6 +26,12 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import MVC.Sprite.ID;
+import MapObjects.Litter;
+import MapObjects.Plant;
+import Player.Direction;
+import Player.PlayerStatus;
 
 public class View extends JPanel{
 	private final static Dimension  screenDimension = Toolkit.getDefaultToolkit().getScreenSize();

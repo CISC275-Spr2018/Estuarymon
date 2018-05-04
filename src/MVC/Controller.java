@@ -1,3 +1,4 @@
+package MVC;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -7,6 +8,10 @@ import java.util.TimerTask;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Timer;
+
+import MapObjects.Animal;
+import MapObjects.Plant;
+import Player.Player;
 
 
 public class Controller implements KeyListener {
@@ -51,10 +56,10 @@ public class Controller implements KeyListener {
 		{
 			model.damagePlant();
 			//show plant health on screen
-			view.plant0H = Plant.plants[0].health;
-			view.plant1H = Plant.plants[1].health;
-			view.plant2H = Plant.plants[2].health;
-			view.plant3H = Plant.plants[3].health;
+			//view.plant0H = Plant.plants[0].health;
+			//view.plant1H = Plant.plants[1].health;
+			//view.plant2H = Plant.plants[2].health;
+			//view.plant3H = Plant.plants[3].health;
 		}
 	}
 	
