@@ -223,10 +223,11 @@ public class View extends JPanel{
 	 * @param status The Player's current status. 
 	 * @param crabX The Animal's X location
 	 * @param crabY The Animal's Y location
-	 * @param l The most recent Litter object picked up by the Player
+	 * @param playerPickedUp The most recent Litter object picked up by the Player
 	 * @param hasLitter Boolean value representing if the Player is currently holding a Litter object. 
+	 * @param animalEatenLitter The most recent Litter object eaten by the animal. 
 	 */
-	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter l,boolean hasLitter) {
+	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter) {
 		//Updating crab and player locations
 		playerXLoc = playerX;
 		playerYLoc = playerY;
@@ -236,9 +237,10 @@ public class View extends JPanel{
 		crabXLoc = crabX;
 		crabYLoc = crabY;
 		
-		//Remove litter parameter from HashMap so it does not get painted.
-		litterImgMap.remove(l);
-		this.pickedUpLitter = l;
+		//Remove both litter parameter from HashMap so it does not get painted.
+		litterImgMap.remove(playerPickedUp);
+		litterImgMap.remove(animalEatenLitter);
+		this.pickedUpLitter = playerPickedUp;
 		this.hasLitter = hasLitter;
 		frame.repaint();
 	}
