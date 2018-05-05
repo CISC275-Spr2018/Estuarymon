@@ -51,7 +51,7 @@ class ModelTest {
 	@Test
 	void testAnimalWallCollisionRight() {
 		Model model = new Model();
-		model.getAnimal().setXLocation(Controller.WORLD_WIDTH);
+		model.getAnimal().setXLocation(model.getWidth());
 		model.animalWallCollision();
 		assertTrue(model.getCrabDirection()==2);
 	}
@@ -67,7 +67,7 @@ class ModelTest {
 	@Test
 	void testAnimalWallCollisionBottom() {
 		Model model = new Model();
-		model.getAnimal().setYLocation(Controller.WORLD_HEIGHT);
+		model.getAnimal().setYLocation(model.getHeight());
 		model.animalWallCollision();
 		assertTrue(model.getCrabDirection()==3);
 	}
@@ -208,6 +208,39 @@ class ModelTest {
 		model.updatingAnimalLocation();
 		assertTrue(model.getAnimal().getYLocation()==model.getAnimalYIncr());
 	}
+	
+	@Test 
+	void testSpawnLitterXCoord() {
+		Model model = new Model();
+		Litter l = model.spawnLitter();
+		assertTrue(l.getXLocation() >=0 && l.getXLocation() <=(model.getWidth()-l.getWidth()));
+		Litter.litterSet.remove(l);
+	}
+	
+	@Test
+	void testSpawnLitterYCoord() {
+		Model model = new Model();
+		Litter l = model.spawnLitter();
+		assertTrue(l.getYLocation() >=0 && l.getYLocation() <=(model.getHeight()-l.getHeight()));
+		Litter.litterSet.remove(l);
+		
+	}
+	
+	@Test
+	void testGetPickedUpLitter() {
+			Model model = new Model();
+			model.getPlayer().setXLocation(1);
+			model.getPlayer().setYLocation(1);
+			model.spaceKeyPressed();
+			Litter l = new Litter();
+			l.setXLocation(1);
+			l.setYLocation(1);
+			Litter.litterSet.add(l);
+			model.testCheckColl();
+			assertTrue(model.getPickedUpLitter()==l);
+			Litter.litterSet.remove(l);
+	}
+	
 	
 	
 	

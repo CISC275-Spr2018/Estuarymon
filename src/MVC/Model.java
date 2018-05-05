@@ -78,24 +78,28 @@ public class Model
 		// Fill animals collection (temporary)
 	}
 	
-	
+
+	public static int getWidth() {
+		return WIDTH;
+	}
+
+
+
+
+	public static int getHeight() {
+		return HEIGHT;
+	}
+
+
+
+
 	public int getAnimalXIncr() {
 		return animalXIncr;
 	}
 
 
-	public void setAnimalXIncr(int animalXIncr) {
-		this.animalXIncr = animalXIncr;
-	}
-
-
 	public int getAnimalYIncr() {
 		return animalYIncr;
-	}
-
-
-	public void setAnimalYIncr(int animalYIncr) {
-		this.animalYIncr = animalYIncr;
 	}
 
 
@@ -230,10 +234,10 @@ public class Model
 		Random r = new Random();
 		Litter l = new Litter();
 		l.setType(LitterType.randomLitter());		
-		int litterXCord = r.nextInt((WIDTH-l.getWidth()));//generates random coordinates
-		int litterYCord = r.nextInt((HEIGHT-l.getHeight()));
-		l.setXLocation(litterXCord);//
-		l.setYLocation(litterYCord);
+		int litterXCoord = r.nextInt((WIDTH-l.getWidth()));//generates random coordinates
+		int litterYCoord = r.nextInt((HEIGHT-l.getHeight()));
+		l.setXLocation(litterXCoord);//
+		l.setYLocation(litterYCoord);
 		l.setImgID(Math.abs(r.nextInt()));
 		Litter.litterSet.add(l);//Adds them to hashset of litter, prevents exact duplicates in terms of coordinates.
 		System.out.println(l);
