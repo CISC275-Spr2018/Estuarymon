@@ -47,12 +47,13 @@ public class Model
 	String coords = "";
 
 	Receptacle tBin = new Receptacle(0,450,128,128,ReceptacleType.TRASHBIN);
-	Receptacle rBin = new Receptacle(0,580,128,128,ReceptacleType.RECYCLINGBIN);
+	private Receptacle rBin = new Receptacle(0,580,128,128,ReceptacleType.RECYCLINGBIN);
 	
 	Animal crab;
 	HashSet<Animal> animals;
 	
 	Litter pickedUp;
+	Litter animalEatenLitter;
 	
 	
 	
@@ -76,6 +77,79 @@ public class Model
 
 		// Fill animals collection (temporary)
 	}
+	
+	
+	public int getAnimalXIncr() {
+		return animalXIncr;
+	}
+
+
+	public void setAnimalXIncr(int animalXIncr) {
+		this.animalXIncr = animalXIncr;
+	}
+
+
+	public int getAnimalYIncr() {
+		return animalYIncr;
+	}
+
+
+	public void setAnimalYIncr(int animalYIncr) {
+		this.animalYIncr = animalYIncr;
+	}
+
+
+	/**Gets the Player of the game
+	 * 
+	 * @return Player object representing the Player in the game. 
+	 */
+	public Player getPlayer() {
+		return player;
+	}
+
+	/**Gets the Animal of the game
+	 * 
+	 * @return the Animal object representing the Animal in the game. 
+	 */
+	public Animal getAnimal() {
+		return crab;
+	}
+	
+	/**Gets the Litter most recently picked up by the Player
+	 * 
+	 * @return Litter object most recently picked up by the Player
+	 */
+	public Litter getPickedUpLitter() {
+		return this.pickedUp;
+	}
+	
+	public boolean getSpacePressed() {
+		return this.spacePressed;
+	}
+	
+	public int getCrabDirection() {
+		return this.crabDirection;
+	}
+	
+	public Litter getAnimalEatenLitter() {
+		return this.animalEatenLitter;
+	}
+	public Receptacle getRBin() {
+		return rBin;
+	}
+
+	public Receptacle getTBin() {
+		return tBin;
+	}
+	
+	public void setCrabDirection(int i) {
+		this.crabDirection = i;
+	}
+	
+	
+
+	
+	
 	
 
 	//same method as updateLocationAndDirection()
@@ -131,30 +205,6 @@ public class Model
 		}
 	}
 	
-	/**Gets the Player of the game
-	 * 
-	 * @return Player object representing the Player in the game. 
-	 */
-	public Player getPlayer() {
-		return player;
-	}
-
-	/**Gets the Animal of the game
-	 * 
-	 * @return the Animal object representing the Animal in the game. 
-	 */
-	public Animal getAnimal() {
-		return crab;
-	}
-	
-	/**Gets the Litter most recently picked up by the Player
-	 * 
-	 * @return Litter object most recently picked up by the Player
-	 */
-	public Litter getPickedUpLitter() {
-		return this.pickedUp;
-	}
-	
 	//damage plant every 10 seconds
 		public void damagePlant()
 		{
@@ -191,17 +241,20 @@ public class Model
 		
 	}
 
-	public void testCheckColl()
+	public boolean testCheckColl()
 	{
-		checkCollision();
+		return checkCollision();
 	}
 	
-	private void checkCollision() {
+	private boolean checkCollision() {
 		
 		if(!Player.hasLitter) {
 			for(Litter litter : new HashSet<Litter>(Litter.litterSet)) {
-				if(litter.getCollidesWith(this.player)&& spacePressed)
+				if(litter.getCollidesWith(this.player)) {
+					if(spacePressed)
 					this.pickedUp = this.player.pickUpLitter(litter);
+					return true;
+				}
 					
 			}
 		}
@@ -212,14 +265,21 @@ public class Model
 			if(Plant.plants[i].health == 0 && Plant.plants[i].getCollidesWith(this.player))
 			{
 				this.player.growPlant(i);
+				return true;
 			}
+			
 		}
 		
 		if(this.player.getHasLitter()) {
-			if(this.player.getCollidesWith(this.tBin))
+			if(this.player.getCollidesWith(this.tBin)) {
 				this.tBin.takeLitter(this.player);
-			if(this.player.getCollidesWith(this.rBin))
+				return true;
+			}	
+			if(this.player.getCollidesWith(this.rBin)) {
 				this.rBin.takeLitter(this.player);
+				return true;
+			}
+				
 		}
 
 		
@@ -232,11 +292,13 @@ public class Model
 			for(Animal animal : this.animals) {
 				if(litter.getCollidesWith(animal)) {
 					animal.eatLitter();
+					this.animalEatenLitter = litter;
 					litterIterator.remove();
+					return true;
 				}
 			}
 		}
+		return false;
 	}
-
 
 }

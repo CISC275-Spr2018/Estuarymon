@@ -46,7 +46,8 @@ public class Controller implements KeyListener {
 			model.getAnimal().getXLocation(),
 			model.getAnimal().getYLocation(),
 			model.getPickedUpLitter(),
-			model.getPlayer().getHasLitter());
+			model.getPlayer().getHasLitter(),
+			model.getAnimalEatenLitter());
 	}
 	
 	//plant stuff

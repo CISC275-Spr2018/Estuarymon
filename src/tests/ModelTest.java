@@ -3,9 +3,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import MVC.Controller;
 import MVC.Model;
 import MVC.View;
 import MapObjects.Animal;
+import MapObjects.Litter;
 import MapObjects.Plant;
 import Player.Direction;
 import Player.Player;
@@ -25,48 +27,202 @@ class ModelTest {
 	}
 	
 	@Test
-	void testCheckCollision() 
-	{
+	void testSpaceKeyPressed() {
+		Model model = new Model();
+		model.spaceKeyPressed();
+		assertTrue(model.getSpacePressed()==true);
+	}
+	
+	@Test
+	void testSpaceKeyRelease() {
+		Model model = new Model();
+		model.spaceKeyReleased();
+		assertTrue(model.getSpacePressed()==false);
+	}
+	
+	@Test
+	void testAnimalWallCollisionLeft() {
+		Model model = new Model();
+		model.getAnimal().setXLocation(0);
+		model.animalWallCollision();
+		assertTrue(model.getCrabDirection()==1);
+	}
+	
+	@Test
+	void testAnimalWallCollisionRight() {
+		Model model = new Model();
+		model.getAnimal().setXLocation(Controller.WORLD_WIDTH);
+		model.animalWallCollision();
+		assertTrue(model.getCrabDirection()==2);
+	}
+	
+	@Test
+	void testAnimalWallCollisionTop() {
+		Model model = new Model();
+		model.getAnimal().setYLocation(0);
+		model.animalWallCollision();
+		assertTrue(model.getCrabDirection()==4);
+	}
+	
+	@Test
+	void testAnimalWallCollisionBottom() {
+		Model model = new Model();
+		model.getAnimal().setYLocation(Controller.WORLD_HEIGHT);
+		model.animalWallCollision();
+		assertTrue(model.getCrabDirection()==3);
+	}
+	
+	@Test
+	void testPlayerLitterCollision() {
+		Model model = new Model();
+		model.getPlayer().setXLocation(1);
+		model.getPlayer().setYLocation(1);
+		Litter l = new Litter();
+		l.setXLocation(1);
+		l.setYLocation(1);
+		Litter.litterSet.add(l);
+		assertTrue(model.testCheckColl()==true);
+		Litter.litterSet.remove(l);
+	}
+	
+	@Test
+	void testPlayerLitterCollisionFalse() {
+		Model model = new Model();
+		model.getPlayer().setXLocation(1);
+		model.getPlayer().setYLocation(1);
+		Litter l = new Litter();
+		l.setXLocation(200);
+		l.setYLocation(200);
+		Litter.litterSet.add(l);
+		assertTrue(model.testCheckColl()==false);
+		Litter.litterSet.remove(l);
+	}
+	
+	@Test
+	void testPlayerPlantCollision() {
+		Model model = new Model();
 		Plant.plants[0].health = 0;
-		//model.myPlayer.xLocation = Plant.plants[0].xLocation;
-		//model.myPlayer.yLocation = Plant.plants[0].yLocation;
-		model.testCheckColl();
-		
+		model.getPlayer().setXLocation(Plant.plants[0].getXLocation()+10);
+		model.getPlayer().setYLocation(Plant.plants[0].getYLocation()-8);
+		assertTrue(model.testCheckColl()==true);
 	}
 	
 	@Test
-	void testGetX() {
-		//Model model = new Model(1,1,1,1,new Animal());
-		//assertTrue(model.getX()==0);
-				
+	void testPlayerPlantCollisionFalse() {
+		Model model = new Model();
+		Plant.plants[0].health = 0;
+		model.getPlayer().setXLocation(300);
+		model.getPlayer().setYLocation(300);
+		assertTrue(model.testCheckColl()==false);
 	}
 	
 	@Test
-	void testGetY() {
-		//Model model = new Model(1,1,1,1,new Animal());
-		//Player myPlayer = new Player(1,6,160,160);
-		//assertTrue(model.getY()==0);
+	void testPlayerTrashBinCollision() {
+		Model model = new Model();
+		model.getPlayer().hasLitter = true;
+		model.getPlayer().setXLocation(model.getTBin().getXLocation());
+		model.getPlayer().setYLocation(model.getTBin().getYLocation());
+		assertTrue(model.testCheckColl()==true);
 	}
 	
 	@Test
-	void testGetDirect() {
-		//Model testModel = new Model(1,1,1,1,new Animal());
-		//assertTrue(model.getDirect()==Direction.EAST);
+	void testPlayerTrashBinCollisionFalse() {
+		Model model = new Model();
+		model.getPlayer().hasLitter = true;
+		model.getPlayer().setXLocation(0);
+		model.getPlayer().setYLocation(0);
+		assertTrue(model.testCheckColl()==false);
 	}
 	
 	@Test
-	void testsetAttributes() {
-		//Model model = new Model(1,1,1,1,new Animal());
-		//model.setAttributes(0, Direction.NORTH, 80, 90);
-		//assertTrue((model.dir==0)&&(model.getDirect()==Direction.NORTH)&&(model.xIncr==80)&&(model.yIncr==90));
+	void testPlayerRecycleBinCollision() {
+		Model model = new Model();
+		model.getPlayer().hasLitter = true;
+		model.getPlayer().setXLocation(model.getRBin().getXLocation());
+		model.getPlayer().setYLocation(model.getRBin().getYLocation());
+		assertTrue(model.testCheckColl()==true);
 	}
 	
 	@Test 
-	void testStop() {
-		//Model model = new Model(1,1,1,1,new Animal());
-		//model.stop();
-		//assertTrue((model.xIncr==0)&&(model.yIncr==0));
+	void testAnimalLitterCollision() {
+		Model model = new Model();
+		model.getAnimal().setXLocation(50);
+		model.getAnimal().setYLocation(50);
+		Litter l = new Litter();
+		l.setXLocation(50);
+		l.setYLocation(50);
+		Litter.litterSet.add(l);
+		assertTrue(model.testCheckColl()==true);
+		Litter.litterSet.remove(l);
 	}
+	
+	@Test 
+	void testAnimalLitterCollisionFalse() {
+		Model model = new Model();
+		model.getAnimal().setXLocation(50);
+		model.getAnimal().setYLocation(50);
+		Litter l = new Litter();
+		l.setXLocation(300);
+		l.setYLocation(300);
+		Litter.litterSet.add(l);
+		assertTrue(model.testCheckColl()==false);
+		Litter.litterSet.remove(l);
+	}
+	
+	@Test
+	void testUpdatingAnimalLocationEast() {
+		Model model = new Model();
+		model.setCrabDirection(1);
+		model.getAnimal().setXLocation(0);
+		model.getAnimal().setYLocation(0);
+		model.updatingAnimalLocation();
+		assertTrue(model.getAnimal().getXLocation()==model.getAnimalXIncr());
+	}
+	
+	@Test
+	void testUpdatingAnimalLocationWest() {
+		Model model = new Model();
+		model.setCrabDirection(2);
+		model.getAnimal().setXLocation(3);
+		model.getAnimal().setYLocation(3);
+		model.updatingAnimalLocation();
+		assertTrue(model.getAnimal().getXLocation()==0);
+	}
+	
+	@Test
+	void testUpdatingAnimalLocationSouth() {
+		Model model = new Model();
+		model.setCrabDirection(3);
+		model.getAnimal().setXLocation(3);
+		model.getAnimal().setYLocation(3);
+		model.updatingAnimalLocation();
+		assertTrue(model.getAnimal().getYLocation()==0);
+	}
+	
+	@Test
+	void testUpdatingAnimalLocationNorth() {
+		Model model = new Model();
+		model.setCrabDirection(4);
+		model.getAnimal().setXLocation(0);
+		model.getAnimal().setYLocation(0);
+		model.updatingAnimalLocation();
+		assertTrue(model.getAnimal().getYLocation()==model.getAnimalYIncr());
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
+	
 	
 	
 	
