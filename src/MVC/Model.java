@@ -27,11 +27,14 @@ public class Model
 {
 	private static final int WIDTH = Controller.WORLD_WIDTH;
 	private static final int HEIGHT = Controller.WORLD_HEIGHT;
+	
 
 	Player player = new Player(0,0, 165,165);
 	
 	int animalXIncr = 3;
 	int animalYIncr = 3;
+	
+	boolean spacePressed = false;
 
 	int crabDirection = 3;
 	
@@ -48,6 +51,10 @@ public class Model
 	
 	Animal crab;
 	HashSet<Animal> animals;
+	
+	Litter pickedUp;
+	
+	
 	
 	public Model()
 	{
@@ -81,6 +88,14 @@ public class Model
 
 	}
 	
+	public void spaceKeyPressed() {
+		this.spacePressed = true;
+	}
+	
+	public void spaceKeyReleased() {
+		this.spacePressed = false;
+	}
+	
 	public void animalWallCollision() {
 		if(crab.getXLocation() <= 0) { //when the left wall is hit
 			System.out.println("hit left wall");
@@ -95,6 +110,8 @@ public class Model
 			crabDirection = 3;
 		}
 	}
+	
+	
 	
 	public void updatingAnimalLocation() {
 		switch(crabDirection) {
@@ -114,12 +131,28 @@ public class Model
 		}
 	}
 	
+	/**Gets the Player of the game
+	 * 
+	 * @return Player object representing the Player in the game. 
+	 */
 	public Player getPlayer() {
 		return player;
 	}
 
+	/**Gets the Animal of the game
+	 * 
+	 * @return the Animal object representing the Animal in the game. 
+	 */
 	public Animal getAnimal() {
 		return crab;
+	}
+	
+	/**Gets the Litter most recently picked up by the Player
+	 * 
+	 * @return Litter object most recently picked up by the Player
+	 */
+	public Litter getPickedUpLitter() {
+		return this.pickedUp;
 	}
 	
 	//damage plant every 10 seconds
@@ -139,18 +172,19 @@ public class Model
 			*/
 		}
 		
-	/**Generates a new Litter object with random x and y coordinates, as well as adds it to the HashSet Litter.litterSet
+	/**Generates a new Litter object with random x and y coordinates, as well as generates a random imgID for the object. 
 	 * @return the new Litter object created. 
 	 * 
 	 */
 	public Litter spawnLitter() {
-		Random coordGenerator = new Random();
+		Random r = new Random();
 		Litter l = new Litter();
 		l.setType(LitterType.randomLitter());		
-		int litterXCord = coordGenerator.nextInt((WIDTH-l.getWidth()));//generates random coordinates
-		int litterYCord = coordGenerator.nextInt((HEIGHT-l.getHeight()));
+		int litterXCord = r.nextInt((WIDTH-l.getWidth()));//generates random coordinates
+		int litterYCord = r.nextInt((HEIGHT-l.getHeight()));
 		l.setXLocation(litterXCord);//
 		l.setYLocation(litterYCord);
+		l.setImgID(Math.abs(r.nextInt()));
 		Litter.litterSet.add(l);//Adds them to hashset of litter, prevents exact duplicates in terms of coordinates.
 		System.out.println(l);
 		return l;
@@ -163,9 +197,13 @@ public class Model
 	}
 	
 	private void checkCollision() {
-		for(Litter litter : Litter.litterSet) {
-			if(litter.getCollidesWith(this.player))
-				this.player.pickUpLitter(litter);
+		
+		if(!Player.hasLitter) {
+			for(Litter litter : new HashSet<Litter>(Litter.litterSet)) {
+				if(litter.getCollidesWith(this.player)&& spacePressed)
+					this.pickedUp = this.player.pickUpLitter(litter);
+					
+			}
 		}
 		
 		for(int i = 0; i < 4; i++)
@@ -177,7 +215,7 @@ public class Model
 			}
 		}
 		
-		if(this.player.hasLitter()) {
+		if(this.player.getHasLitter()) {
 			if(this.player.getCollidesWith(this.tBin))
 				this.tBin.takeLitter(this.player);
 			if(this.player.getCollidesWith(this.rBin))
