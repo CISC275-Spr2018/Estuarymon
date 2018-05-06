@@ -1,12 +1,18 @@
+package MVC;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.TimerTask;
 
+import javax.jws.WebParam.Mode;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Timer;
+
+import MapObjects.Animal;
+import MapObjects.Plant;
+import Player.Player;
 
 
 public class Controller implements KeyListener {
@@ -22,7 +28,6 @@ public class Controller implements KeyListener {
 	private static final int DRAW_DELAY = 1000/30; // 30fps
 
 	//for alpha only
-	boolean pressP = false;
 	
 	private final Action stepAction = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
@@ -33,15 +38,16 @@ public class Controller implements KeyListener {
 	private void step() {
 		// increment the x and y coordinates, alter direction if necessary
 		model.updateModel();
-		Player player = model.getPlayer();
-		Animal animal = model.getAnimal();
-		view.update(
-			player.getXLocation(),
-			player.getYLocation(),
-			player.getDirection(),
-			player.getStatus(),
-			animal.getXLocation(),
-			animal.getYLocation(),
+		view.update(		
+			model.getPlayer().getXLocation(),
+			model.getPlayer().getYLocation(),
+			model.getPlayer().getDirection(),
+			model.getPlayer().getStatus(),
+			model.getAnimal().getXLocation(),
+			model.getAnimal().getYLocation(),
+			model.getPickedUpLitter(),
+			model.getPlayer().getHasLitter(),
+			model.getAnimalEatenLitter(),
 			model.getScore());
 	}
 	
@@ -51,23 +57,10 @@ public class Controller implements KeyListener {
 		public void run()
 		{
 			model.damagePlant();
-			//show plant health on screen
-			view.plant0H = Plant.plants[0].health;
-			view.plant1H = Plant.plants[1].health;
-			view.plant2H = Plant.plants[2].health;
-			view.plant3H = Plant.plants[3].health;
+
 		}
 	}
 	
-	class checkPlantTask extends TimerTask 
-	{
-		public void run()
-		{
-			//checkPlants();
-			//for alpha testing
-			view.coords = model.coords;
-		}
-	}
 	
 	
 	// run the simulation
@@ -82,7 +75,6 @@ public class Controller implements KeyListener {
 				stepTimer = new Timer(DRAW_DELAY, stepAction);
 				stepTimer.start();
 				taskTimer.scheduleAtFixedRate(new damagePlantTask(),500,1000);//damages plants every ten seconds
-				taskTimer.scheduleAtFixedRate(new checkPlantTask(),500,100);//evaluates plants with player every second
 				trashTimer.scheduleAtFixedRate(new TrashTask(), 0, 10000);
 			}
 		});
@@ -104,8 +96,8 @@ public class Controller implements KeyListener {
 		case KeyEvent.VK_LEFT:
 			model.getPlayer().alterVelocity(-1, 0);
 			break;
-		case KeyEvent.VK_P:
-			pressP = true;
+		case KeyEvent.VK_SPACE:
+			model.spaceKeyPressed();
 			break;
 		}
 	}
@@ -127,8 +119,8 @@ public class Controller implements KeyListener {
 		case KeyEvent.VK_LEFT:
 			model.getPlayer().alterVelocity(1, 0);
 			break;
-		case KeyEvent.VK_P:
-			pressP = false;
+		case KeyEvent.VK_SPACE:
+			model.spaceKeyReleased();
 			break;
 		}
 	}
@@ -139,19 +131,19 @@ public class Controller implements KeyListener {
 
 	}
 	
-	/**TimerTask subclass that handles the spawning of Litter object around the map at the set interval it was scheduled at. 
+	/**TimerTask subclass that handles the spawning of Litter object around the map at the set interval it was scheduled at by calling the appropriate Model to View communication.
 	 * 
 	 * @author Juan Villacis
 	 *
 	 */
 	class TrashTask extends TimerTask{
-		/**Method that psuedo-randomly chooses whether the new Litter object will be of Trash or Litter type, and calls the appropriate method in Model to generate its coordinates and in View to set its image.
+		/**Calls the view method that adds a Litter object to the HashMap of rendered Litter object. Its parameter is the Litter object the model method returns after creating a new Model object and setting its logical attributes. 
 		 * 
 		 * 
 		 */
 		public void run() {
 			
-			view.setLitterImage(model.spawnLitter());
+			view.addLitter(model.spawnLitter());
 			
 		
 		

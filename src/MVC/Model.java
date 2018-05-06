@@ -1,7 +1,16 @@
-import java.awt.event.KeyEvent;
+package MVC;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Iterator;
+import java.util.Random;
+
+import MapObjects.Animal;
+import MapObjects.Litter;
+import MapObjects.LitterType;
+import MapObjects.Plant;
+import MapObjects.Receptacle;
+import MapObjects.ReceptacleType;
+import Player.Direction;
+import Player.Player;
 
 /**
  * Model: Contains all the state and logic
@@ -17,9 +26,13 @@ public class Model
 {
 	private static final int WIDTH = Controller.WORLD_WIDTH;
 	private static final int HEIGHT = Controller.WORLD_HEIGHT;
+	
 
 	Player player = new Player(0,0, 165,165);
 	
+	boolean spacePressed = false;
+
+	int crabDirection = 3;
 	
 	//plantXloc = frameWidth - (frameWidth/3);
 	//plantYloc = (frameHeight / 100) + count;
@@ -30,7 +43,7 @@ public class Model
 	String coords = "";
 
 	Receptacle tBin = new Receptacle(0,450,128,128,ReceptacleType.TRASHBIN);
-	Receptacle rBin = new Receptacle(0,580,128,128,ReceptacleType.RECYCLINGBIN);
+	private Receptacle rBin = new Receptacle(0,580,128,128,ReceptacleType.RECYCLINGBIN);
 	
 	Animal crab;
 	HashSet<Animal> animals;
@@ -42,6 +55,11 @@ public class Model
 	boolean playerMove = true;
 	
 	private int score = 0;
+	
+	Litter pickedUp;
+	Litter animalEatenLitter;
+	
+	
 	
 	public Model()
 	{
@@ -65,6 +83,83 @@ public class Model
 	}
 	
 
+	public static int getWidth() {
+		return WIDTH;
+	}
+
+
+
+
+	public static int getHeight() {
+		return HEIGHT;
+	}
+
+
+
+
+	public int getAnimalXIncr() {
+		return animalXIncr;
+	}
+
+
+	public int getAnimalYIncr() {
+		return animalYIncr;
+	}
+
+
+	/**Gets the Player of the game
+	 * 
+	 * @return Player object representing the Player in the game. 
+	 */
+	public Player getPlayer() {
+		return player;
+	}
+
+	/**Gets the Animal of the game
+	 * 
+	 * @return the Animal object representing the Animal in the game. 
+	 */
+	public Animal getAnimal() {
+		return crab;
+	}
+	
+	/**Gets the Litter most recently picked up by the Player
+	 * 
+	 * @return Litter object most recently picked up by the Player
+	 */
+	public Litter getPickedUpLitter() {
+		return this.pickedUp;
+	}
+	
+	public boolean getSpacePressed() {
+		return this.spacePressed;
+	}
+	
+	public int getCrabDirection() {
+		return this.crabDirection;
+	}
+	
+	public Litter getAnimalEatenLitter() {
+		return this.animalEatenLitter;
+	}
+	public Receptacle getRBin() {
+		return rBin;
+	}
+
+	public Receptacle getTBin() {
+		return tBin;
+	}
+	
+	public void setCrabDirection(int i) {
+		this.crabDirection = i;
+	}
+	
+	
+
+	
+	
+	
+
 	//same method as updateLocationAndDirection()
 	public void updateModel()
 	{
@@ -72,6 +167,14 @@ public class Model
 		this.checkCollision();
 		updatingAnimalLocation();
 
+	}
+	
+	public void spaceKeyPressed() {
+		this.spacePressed = true;
+	}
+	
+	public void spaceKeyReleased() {
+		this.spacePressed = false;
 	}
 	
 	public void animalWallCollision() {
@@ -111,6 +214,8 @@ public class Model
 			crab.setDirection(Direction.SOUTHEAST);
 		}
 	}
+	
+	
 	
 	public void updatingAnimalLocation() {
 		//System.out.println(crab.getDirection().ordinal());
@@ -154,15 +259,7 @@ public class Model
 	public int getScore() {
 		return score;
 	}
-	
-	public Player getPlayer() {
-		return player;
-	}
 
-	public Animal getAnimal() {
-		return crab;
-	}
-	
 	//damage plant every 10 seconds
 		public void damagePlant()
 		{
@@ -180,33 +277,41 @@ public class Model
 			*/
 		}
 		
-	/**Generates a new Litter object with random x and y coordinates, as well as adds it to the HashSet Litter.litterSet
+	/**Generates a new Litter object with random x and y coordinates, as well as generates a random imgID for the object. 
 	 * @return the new Litter object created. 
 	 * 
 	 */
 	public Litter spawnLitter() {
-		Random coordGenerator = new Random();
+		Random r = new Random();
 		Litter l = new Litter();
 		l.setType(LitterType.randomLitter());		
-		int litterXCord = coordGenerator.nextInt((WIDTH-l.getWidth()));//generates random coordinates
-		int litterYCord = coordGenerator.nextInt((HEIGHT-l.getHeight()));
-		l.setXLocation(litterXCord);//
-		l.setYLocation(litterYCord);
+		int litterXCoord = r.nextInt((WIDTH-l.getWidth()));//generates random coordinates
+		int litterYCoord = r.nextInt((HEIGHT-l.getHeight()));
+		l.setXLocation(litterXCoord);//
+		l.setYLocation(litterYCoord);
+		l.setImgID(Math.abs(r.nextInt()));
 		Litter.litterSet.add(l);//Adds them to hashset of litter, prevents exact duplicates in terms of coordinates.
 		System.out.println(l);
 		return l;
 		
 	}
 
-	public void testCheckColl()
+	public boolean testCheckColl()
 	{
-		checkCollision();
+		return checkCollision();
 	}
 	
-	private void checkCollision() {
-		for(Litter litter : Litter.litterSet) {
-			if(litter.getCollidesWith(this.player))
-				this.player.pickUpLitter(litter);
+	private boolean checkCollision() {
+		
+		if(!Player.hasLitter) {
+			for(Litter litter : new HashSet<Litter>(Litter.litterSet)) {
+				if(litter.getCollidesWith(this.player)) {
+					if(spacePressed)
+					this.pickedUp = this.player.pickUpLitter(litter);
+					return true;
+				}
+					
+			}
 		}
 		
 		for(int i = 0; i < 4; i++)
@@ -216,18 +321,30 @@ public class Model
 			{
 				this.player.growPlant(i);
 				score += 10;
+				return true;
 			}
+			
 		}
 		
-		if(this.player.hasLitter()) {
+//		if(this.player.hasLitter()) {
+//			if(this.player.getCollidesWith(this.tBin)) {
+//				this.tBin.takeLitter(this.player);
+//				score += 10;
+//			}
+//			if(this.player.getCollidesWith(this.rBin)) {
+//				this.rBin.takeLitter(this.player);
+//				score += 10;
+//			}
+		if(this.player.getHasLitter()) {
 			if(this.player.getCollidesWith(this.tBin)) {
 				this.tBin.takeLitter(this.player);
-				score += 10;
-			}
+				return true;
+			}	
 			if(this.player.getCollidesWith(this.rBin)) {
 				this.rBin.takeLitter(this.player);
-				score += 10;
+				return true;
 			}
+				
 		}
 		
 		if(this.player.getCollidesWith(this.crab)) {
@@ -270,11 +387,13 @@ public class Model
 				if(litter.getCollidesWith(animal)) {
 					animal.eatLitter();
 					score -= 20;
+					this.animalEatenLitter = litter;
 					litterIterator.remove();
+					return true;
 				}
 			}
 		}
+		return false;
 	}
-
 
 }

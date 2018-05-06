@@ -1,3 +1,6 @@
+
+package MVC;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -12,11 +15,24 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Random;
+
+
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import MVC.Sprite.ID;
+import MapObjects.Litter;
+import MapObjects.Plant;
+import Player.Direction;
+import Player.PlayerStatus;
 
 public class View extends JPanel{
 	private final static Dimension  screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -34,11 +50,15 @@ public class View extends JPanel{
 	static int bCount;
 	
 	private static final int trashImgCount = 2;
-	private static final int recImgCount = 1;
+	private static final int recImgCount = 2;
 	private static final int litterCount = 20;
-	private BufferedImage[] trashImgs = new BufferedImage[trashImgCount+1];
-	private BufferedImage[] recyclableImgs = new BufferedImage[recImgCount+1];
+	private Sprite.ID[] trashImgs = new Sprite.ID[trashImgCount+1];
+	private Sprite.ID[] recyclableImgs = new Sprite.ID[recImgCount+1];
 	private Litter[] litterArr = new Litter[litterCount];
+	private Litter pickedUpLitter;
+	boolean hasLitter = false;
+	static ArrayList<ArrayList<Sprite.ID>> litterImgLists = new ArrayList<ArrayList<Sprite.ID>>();
+	static HashMap<Litter, Sprite.ID> litterImgMap = new HashMap<Litter, Sprite.ID>();
 
 	//these plants vars for alpha testing
 	int plant0H;
@@ -71,36 +91,39 @@ public class View extends JPanel{
 		super.paint(g);
 		Sprite.incrementFrameCounter();
 		drawImage(g, Sprite.ID.BACKGROUND, 0, 0);
+		
+		
 
-		for(Plant plant : Plant.plants) {
-			drawImage(g, Sprite.ID.PLANT, plant.getXLocation(), plant.getYLocation());
+		for(Plant plant : Plant.plants) 
+		{
+			if(plant.health < 100 && plant.health != 0)
+			{
+				drawImage(g, Sprite.ID.DECAY_PLANT, plant.getXLocation(), plant.getYLocation());
+			}
+			else if(plant.health == 100)
+			{
+				drawImage(g, Sprite.ID.PLANT, plant.getXLocation(), plant.getYLocation());
+			}
 		}
 		
 		//traverse through litter set and draw them, had to make a copy of litter set everytime to avoid ConcurrentModificationExceptions.
-		for(Litter l: new HashSet<Litter>(Litter.litterSet)) {
-			g.drawImage(l.getlitterImage(),
-				convertDimension(l.getXLocation()),
-				convertDimension(l.getYLocation()),
-				l.getHeight(),
-				l.getWidth(),
-				this);
+		for(Map.Entry<Litter, Sprite.ID>entry: new HashMap<Litter,Sprite.ID>(litterImgMap).entrySet()) {
+			drawImage(g,entry.getValue(),
+				convertDimension(entry.getKey().getXLocation()),
+				convertDimension(entry.getKey().getYLocation()));
+			
 		}
 
-		g.setColor(Color.RED);
-		g.setFont(new Font("TimesRoman", Font.BOLD, 25)); 
-		g.drawString(""+plant0H, 550, 100);//change to make it the spacing as the plant jlabels
-		g.drawString(""+plant1H, 550, 260);
-		g.drawString(""+plant2H, 550, 460);
-		g.drawString(""+plant3H, 550, 660);
-		g.setColor(Color.PINK);
-		g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
-		g.drawString(coords, 10, 20);
 		drawImage(g, Sprite.ID.CRAB, crabXLoc, crabYLoc);
 		drawImage(g, getPlayerSprite(), playerXLoc, playerYLoc);
 		drawImage(g, Sprite.ID.SCORESTAR, 900, 0);
 		drawString(g, Integer.toString(score), 50, 998, 65);
 	
-	//	g.drawString(Integer.toString(score), 773, 50);
+		drawImage(g, Sprite.ID.LITTERFRAME,0,0);
+		if(hasLitter) {
+			drawImage(g,getSpriteID(pickedUpLitter),10,10);
+		}
+
 		
 		
 	}
@@ -170,7 +193,22 @@ public class View extends JPanel{
 		}
 	}
 
-	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY, int score) {
+	
+	/**Updates the View based on parameters given by Model.
+	 * Updates the Player's and Crab's x and y location, as well as stops the most recent Litter object the player picked up from being rendered on the ground.
+	 * 
+	 * @param playerX The Player's X location
+	 * @param playerY The Player's Y location
+	 * @param dir The current Direction of the Player. 
+	 * @param status The Player's current status. 
+	 * @param crabX The Animal's X location
+	 * @param crabY The Animal's Y location
+	 * @param playerPickedUp The most recent Litter object picked up by the Player
+	 * @param hasLitter Boolean value representing if the Player is currently holding a Litter object. 
+	 * @param animalEatenLitter The most recent Litter object eaten by the animal. 
+	 */
+	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score) {
+		//Updating crab and player locations
 		playerXLoc = playerX;
 		playerYLoc = playerY;
 		playerDirection = dir;
@@ -181,23 +219,45 @@ public class View extends JPanel{
 		
 		this.score = score;
 		
+		//Remove both litter parameter from HashMap so it does not get painted.
+		litterImgMap.remove(playerPickedUp);
+		litterImgMap.remove(animalEatenLitter);
+		this.pickedUpLitter = playerPickedUp;
+		this.hasLitter = hasLitter;
 		frame.repaint();
 	}
 	
-	/**Sets the Litter object to a randomly selected image that is appropriate for its LitterType
+	/**Adds a Litter object to the other Litter objects being rendered on the View
 	 * 
-	 * @param t The Litter object the image will be set for.
+	 * @param t The Litter object that will be added for rendering.
 	 */
+
 	//don't worry about this
-	public void setLitterImage(Litter l) {
-		switch(l.getType()){
-		case TRASH:
-			l.setlitterImage(trashImgs[(int)(Math.random()*trashImgs.length)]);
-			break;
-		case RECYCLABLE:
-			l.setlitterImage(recyclableImgs[(int)(Math.random()*recyclableImgs.length)]);
-		}
+//	public void setLitterImage(Litter l) {
+//		switch(l.getType()){
+//		case TRASH:
+//			l.setlitterImage(trashImgs[(int)(Math.random()*trashImgs.length)]);
+//			break;
+//		case RECYCLABLE:
+//			l.setlitterImage(recyclableImgs[(int)(Math.random()*recyclableImgs.length)]);
+//		}
+
+	public void addLitter(Litter l) {
+		Sprite.ID curSpriteID = getSpriteID(l);
+		litterImgMap.put(l, curSpriteID);
 		
+		
+	}
+	
+	/**Chooses a Sprite ID to represent a Litter object.
+	 * The type of Litter image is chosen using the Litter's enum attribute that represents type, specific image chosen is done using the Litter object's imgID
+	 * 
+	 * @param l the Litter object whose Sprite ID will be chosen.
+	 * @return Sprite ID representing the parameter. 
+	 */
+	public Sprite.ID getSpriteID(Litter l) {
+		ArrayList<Sprite.ID> litterImgList = litterImgLists.get(l.getType().getID());
+		return litterImgList.get(l.getImgID()%(litterImgList.size()));
 	}
 	
 	
@@ -205,11 +265,16 @@ public class View extends JPanel{
 	 * 
 	 */
 	public void preloadLitterImgs() {
-		trashImgs[0] = loadImg("bananaSkin");
-		trashImgs[1] = loadImg("CompostA");
+		ArrayList<Sprite.ID> trashImgList = new ArrayList<Sprite.ID>();
+		trashImgList.add(Sprite.ID.BANANAPEEL);
+		trashImgList.add(Sprite.ID.APPLE);
+		litterImgLists.add(trashImgList);
 		
-		recyclableImgs[0] = loadImg("Soda-Can");
-		recyclableImgs[1] = loadImg("paper");
+		
+		ArrayList<Sprite.ID> recyclableImgList = new ArrayList<Sprite.ID>();
+		recyclableImgList.add(Sprite.ID.SODACAN);
+		recyclableImgList.add(Sprite.ID.PAPER);
+		litterImgLists.add(recyclableImgList);
 		
 		
 	}

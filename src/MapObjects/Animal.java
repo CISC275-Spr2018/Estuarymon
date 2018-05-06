@@ -1,8 +1,5 @@
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
+package MapObjects;
+import Player.Direction;
 
 public class Animal extends Interactable {
 

@@ -1,54 +1,65 @@
+package MapObjects;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import java.util.HashSet;
-/**
- * Abstract class that is inherited by any Litter subclasses (for now Trash and Recyclable)
- * Contains a static HashSet litterSet where all Litter objects active in the game are stored. 
+/**Class of the Litter objects that spawn periodically around the map. 
+ * A subclass of Interactable
+ * 
  * @author Juan Villacis
+ * 
  * 
  *
  */
 public class Litter extends Interactable implements Serializable {
 	
-	BufferedImage litterImage;
+	int imgID;
+	int imgIndex;
 	LitterType lType;
 	
 	public static HashSet<Litter> litterSet = new HashSet<Litter>();
 	
-	/** Constructor for all Litter objects. Width and height are set at 40 and the collision rectangle at 40x40
+	/** Constructor for all Litter objects. Width and height are set at 60 and the collision rectangle at 60X60
 	 *
 	 */
 	public Litter() {
-		super(0,0,40,40);
-		this.setRelativeCollisionRect(10, 10, 40, 40);
+		super(0,0,60,60);
+		this.setRelativeCollisionRect(10, 10, 60, 60);
 		
 	}
 	
-	/**Method that sets the BufferedImage that View displays to represent the Litter object 
-	 * @param li the BufferedImage that will represent the Litter object in game. 
+	/**Method that sets the imgID of a Litter object that is used to map the object to an appropriate Litter Sprite in View. 
+	 * @param i that will represent the imgID of the Litter object in game. 
 	 */
-	public void setlitterImage(BufferedImage li) {
-		this.litterImage = li;
+	public void setImgID(int i) {
+		this.imgID= i;
 	}
 	
-	/**Method that returns the BufferedImage that represents the Litter object 
-	 * @return The BufferedImage that represents the Litter object  
+	/**Method that returns the imgID that is used to map the litter object to its Sprite in View.
+	 * @return The imgID of this Litter object. 
 	 */
-	public BufferedImage getlitterImage() {
-		return this.litterImage;
+	public int getImgID() {
+		return this.imgID;
 	}
 	
+	/**Sets this Litter object's lType attribute that represents the kind of Litter it is.
+	 * 
+	 * @param lt A value of the Enum LitterType that will represent the kind of Litter of this object. 
+	 */
 	public void setType(LitterType lt) {
 		this.lType = lt;
 	}
 	
+	/**Returns this Litter object's lType attribute that represents the kind of Litter it is. 
+	 * 
+	 * @return An value of the Enum LitterType
+	 */
 	public LitterType getType() {
 		return this.lType;
 	}
 	
 	@Override
 	public String toString() {
-		return this.lType.getName() + " at x:" + this.xLocation + " y:" + this.yLocation;
+		return "litter" + " at x:" + this.xLocation + " y:" + this.yLocation;
 	}
 	
 	

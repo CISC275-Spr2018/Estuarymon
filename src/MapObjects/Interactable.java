@@ -1,3 +1,4 @@
+package MapObjects;
 import java.awt.Rectangle;
 
 public class Interactable {

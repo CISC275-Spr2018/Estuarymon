@@ -1,6 +1,7 @@
+package MapObjects;
 
 public class Plant extends Interactable{
-	int health;
+	public int health;
 	public static Plant [] plants = new Plant[4];
 	public static int randPlant = (int) Math.floor(Math.random() * 4);
 	
@@ -8,7 +9,7 @@ public class Plant extends Interactable{
 	{
 		super(xLocation,yLocation,100,100);
 		this.health = health;
-		this.setRelativeCollisionRect(10, 10, 100, 100);
+		this.setRelativeCollisionRect(10, 10, 200, 200);
 	}
 
 	public void setHealth(int health) {

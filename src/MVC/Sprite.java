@@ -1,3 +1,4 @@
+package MVC;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
 import java.io.File;
@@ -30,7 +31,14 @@ class Sprite {
 
 		CRAB("Animal/crab.png", 150, 100, 7, 5),
 		SCORESTAR("MapObjects/FlatIcon-074.png", 100, 100),
-		PLANT("MapObjects/azalea.png", 100, 100);
+		LITTERFRAME("MapObjects/litterbox.png", 75,75),
+		PLANT("MapObjects/azalea.png", 100, 100),
+		DECAY_PLANT("MapObjects/dazal.png", 100, 100),
+		BANANAPEEL("MapObjects/bananaSkin.png",40,40),
+		SODACAN("MapObjects/Soda-Can.png",40,40),
+		PAPER("MapObjects/paper.png",40,40),
+		APPLE("MapObjects/CompostA.png",50,50);
+		
 
 		private String fname;
 		private int worldWidth;
