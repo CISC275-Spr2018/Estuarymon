@@ -7,27 +7,25 @@ public class Player extends Interactable {
 	private final int speed = 10;
 	private Direction direction = Direction.EAST;
 	private PlayerStatus status = PlayerStatus.IDLE;
-	
+
 	public Player(int xLoc, int yLoc, int rWidth, int rHeight) {
 		super(xLoc, yLoc, rWidth, rHeight);
-		this.setRelativeCollisionRect(40, 40, rWidth-80, rHeight-80);
+		this.setRelativeCollisionRect(40, 40, rWidth - 80, rHeight - 80);
 	}
-	
+
 	public boolean shouldCollectLitter(Litter l) {
-		if(this.getCollidesWith(l) && !hasLitter) {
+		if (this.getCollidesWith(l) && !hasLitter) {
 			litterType = l.getType();
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
-	
+
 	public boolean shouldDepositLitter(Receptacle r) {
-		if(this.getCollidesWith(r) && hasLitter && r.getType().ordinal() == litterType.ordinal()) {
+		if (this.getCollidesWith(r) && hasLitter && r.getType().ordinal() == litterType.ordinal()) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -38,13 +36,13 @@ public class Player extends Interactable {
 
 	public void pickUpLitter(Litter l) {
 		// TODO
-		System.out.println("Player pick up litter "+l.toString());
+		System.out.println("Player pick up litter " + l.toString());
 	}
-	
+
 	public void growPlant(int i) {
 		// TODO
 		System.out.println("Plant!");
-		//restore health and pick new plant
+		// restore health and pick new plant
 		Plant.plants[i].health = 100;
 		Plant.randPlant = (int) Math.floor(Math.random() * 4);
 	}
@@ -53,31 +51,35 @@ public class Player extends Interactable {
 		this.dx += ddx;
 		this.dy += ddy;
 		// Catch when set too high/low because of key repeating
-		if(this.dx < -1) this.dx = -1;
-		else if(this.dx > 1) this.dx = 1;
-		if(this.dy < -1) this.dy = -1;
-		else if(this.dy > 1) this.dy = 1;
+		if (this.dx < -1)
+			this.dx = -1;
+		else if (this.dx > 1)
+			this.dx = 1;
+		if (this.dy < -1)
+			this.dy = -1;
+		else if (this.dy > 1)
+			this.dy = 1;
 
 		// Fix direction and status
 		this.status = PlayerStatus.WALKING;
-		if(dx < 0) {
+		if (dx < 0) {
 			// left
-			if(dy < 0) {
+			if (dy < 0) {
 				// up
 				this.direction = Direction.NORTHWEST;
-			} else if(dy > 0) {
+			} else if (dy > 0) {
 				// down
 				this.direction = Direction.SOUTHWEST;
 			} else {
 				// horizontal
 				this.direction = Direction.WEST;
 			}
-		} else if(dx > 0) {
+		} else if (dx > 0) {
 			// right
-			if(dy < 0) {
+			if (dy < 0) {
 				// up
 				this.direction = Direction.NORTHEAST;
-			} else if(dy > 0) {
+			} else if (dy > 0) {
 				// down
 				this.direction = Direction.SOUTHEAST;
 			} else {
@@ -86,10 +88,10 @@ public class Player extends Interactable {
 			}
 		} else {
 			// vertical
-			if(dy < 0) {
+			if (dy < 0) {
 				// up
 				this.direction = Direction.NORTH;
-			} else if(dy > 0) {
+			} else if (dy > 0) {
 				// down
 				this.direction = Direction.SOUTH;
 			} else {
@@ -101,9 +103,14 @@ public class Player extends Interactable {
 		}
 	}
 
-	public void move() {
-		this.addXLocation(this.speed*this.dx);
-		this.addYLocation(this.speed*this.dy);
+	public void move(boolean playerMove) {
+		if (playerMove) {
+			this.addXLocation(this.speed * this.dx);
+			this.addYLocation(this.speed * this.dy);
+		} else {
+			this.addXLocation(0);
+			this.addYLocation(0);
+		}
 	}
 
 	public Direction getDirection() {

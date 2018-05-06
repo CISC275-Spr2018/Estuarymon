@@ -41,7 +41,8 @@ public class Controller implements KeyListener {
 			player.getDirection(),
 			player.getStatus(),
 			animal.getXLocation(),
-			animal.getYLocation());
+			animal.getYLocation(),
+			model.getScore());
 	}
 	
 	//plant stuff

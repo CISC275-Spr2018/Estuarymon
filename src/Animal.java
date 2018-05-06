@@ -6,30 +6,33 @@ import javax.imageio.ImageIO;
 
 public class Animal extends Interactable {
 
-	Direction curDir = Direction.SOUTHEAST;
-	private static int imageHeight = 120;
-	private static int imageWidth = 140;
+	private Direction curDir;
+	private int speed = 1;
+
+	private static int imageHeight = 70;
+	private static int imageWidth = 90;
 
 	public Animal() {
-		super(200, 400, imageHeight ,imageWidth);
-		this.setRelativeCollisionRect(15, 15, 90, 110); //this is for the collision detection
+		super(200, 400, imageHeight, imageWidth);
+		this.setRelativeCollisionRect(15, 15, 90, 110); // this is for the collision detection
+		curDir = Direction.NORTHWEST;
 		// curDir = Direction.WEST;
 	}
 
-	 public Direction getDirection() {
-	 return curDir;
-	 }
-	
-	 public void setDirection(Direction direction) {
-	 this.curDir = direction;
-	 }
-	
-	public void updateXCoordinate(int x) {
-		this.setXLocation(this.getXLocation() - x);
+	public Direction getDirection() {
+		return curDir;
 	}
 
-	public void updateYCoordinate(int y) {
-		this.setYLocation(this.getYLocation() - y);
+	public void setDirection(Direction direction) {
+		this.curDir = direction;
+	}
+
+	public int getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(int speed) {
+		this.speed = speed;
 	}
 
 	public void eatLitter() {

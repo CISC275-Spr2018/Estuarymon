@@ -1,26 +1,18 @@
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.swing.Box;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -54,6 +46,8 @@ public class View extends JPanel{
 	int plant2H;
 	int plant3H;
 	String coords = "";
+	
+	private int score = 0;
 	public View() {	
 
 		frame.setFocusable(true);
@@ -103,6 +97,11 @@ public class View extends JPanel{
 		g.drawString(coords, 10, 20);
 		drawImage(g, Sprite.ID.CRAB, crabXLoc, crabYLoc);
 		drawImage(g, getPlayerSprite(), playerXLoc, playerYLoc);
+		drawImage(g, Sprite.ID.SCORESTAR, 900, 0);
+		drawString(g, Integer.toString(score), 50, 998, 65);
+	
+	//	g.drawString(Integer.toString(score), 773, 50);
+		
 		
 	}
  //looks like this method just looks at the status of the player 
@@ -147,6 +146,14 @@ public class View extends JPanel{
 			convertDimension(world_y),
 			this);
 	}
+	
+	private void drawString(Graphics g, String word, int width, int XPos, int YPos) {
+		int stringLength = (int) g.getFontMetrics().getStringBounds(word, g).getWidth();
+		int start = width/2 - stringLength/2;
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("TimesRoman", Font.BOLD, 25));
+		g.drawString(word, start + XPos, YPos);
+	}
 
 	// convertDimension: converts a dimension from world coordinates to pixel coordinates
 	private int convertDimension(int world_dimension) {
@@ -163,7 +170,7 @@ public class View extends JPanel{
 		}
 	}
 
-	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY) {
+	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY, int score) {
 		playerXLoc = playerX;
 		playerYLoc = playerY;
 		playerDirection = dir;
@@ -171,6 +178,8 @@ public class View extends JPanel{
 
 		crabXLoc = crabX;
 		crabYLoc = crabY;
+		
+		this.score = score;
 		
 		frame.repaint();
 	}

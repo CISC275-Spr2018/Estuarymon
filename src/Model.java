@@ -20,10 +20,6 @@ public class Model
 
 	Player player = new Player(0,0, 165,165);
 	
-	int animalXIncr = 3;
-	int animalYIncr = 3;
-
-	int crabDirection = 3;
 	
 	//plantXloc = frameWidth - (frameWidth/3);
 	//plantYloc = (frameHeight / 100) + count;
@@ -38,6 +34,14 @@ public class Model
 	
 	Animal crab;
 	HashSet<Animal> animals;
+
+	
+	int animalXIncr = 4;
+	int animalYIncr = 4;
+	
+	boolean playerMove = true;
+	
+	private int score = 0;
 	
 	public Model()
 	{
@@ -64,95 +68,91 @@ public class Model
 	//same method as updateLocationAndDirection()
 	public void updateModel()
 	{
-		this.player.move();
+		this.player.move(playerMove);
 		this.checkCollision();
-		//animalWallCollision();
 		updatingAnimalLocation();
 
 	}
 	
 	public void animalWallCollision() {
 		if(crab.getXLocation() <= 0 && crab.getDirection() == Direction.WEST) { //when the left wall is hit
-			System.out.println("hit left wall");
 			crab.setDirection(Direction.EAST);
 		}else if(crab.getXLocation() >= WIDTH - 400 && crab.getDirection() == Direction.EAST) { //when the right wall is hit
-			System.out.println("hit right wall");
 			crab.setDirection(Direction.WEST);
 		}
 		
-		else if(crab.getYLocation() <= 0 && crab.getDirection() == Direction.SOUTH) { //when the top wall is hit
-			System.out.println("hit top wall");
+		else if(crab.getYLocation() <= 0 && crab.getDirection() == Direction.NORTH) { //when the top wall is hit
 			crab.setDirection(Direction.SOUTH);
-		}else if(crab.getYLocation() >= HEIGHT - 170 && crab.getDirection() == Direction.NORTH) { //when the bottom wall is hit
+		}else if(crab.getYLocation() >= HEIGHT - 170 && crab.getDirection() == Direction.SOUTH) { //when the bottom wall is hit
 			crab.setDirection(Direction.NORTH);
 		}
 		
 		else if(crab.getXLocation() >= WIDTH - 400 && crab.getDirection() == Direction.NORTHEAST) { //when the right wall is hit
-			System.out.println("code 1");
 			crab.setDirection(Direction.NORTHWEST);
 		}else if(crab.getXLocation() >= WIDTH - 400 && crab.getDirection() == Direction.SOUTHEAST) { //when the right wall is hit
-			System.out.println("code 2");
 			crab.setDirection(Direction.SOUTHWEST);
 		}
 		
-		else if(crab.getYLocation() + crab.getHeight() <= 0  && crab.getDirection() == Direction.NORTHEAST) { //when the top wall is hit
-			System.out.println("code 3");
+		else if(crab.getYLocation() <= 0  && crab.getDirection() == Direction.NORTHEAST) { //when the top wall is hit
 			crab.setDirection(Direction.SOUTHEAST);
 		}else if(crab.getYLocation() <= 0  && crab.getDirection() == Direction.NORTHWEST) { //when the top wall is hit
-			System.out.println("code 4");
 			crab.setDirection(Direction.SOUTHWEST);
 		}
 		
-		else if(crab.getYLocation() + crab.getWidth() >= HEIGHT - 170 && crab.getDirection() == Direction.SOUTHEAST) { //when the bottom wall is hit
-			System.out.println("code 5");
+		else if(crab.getYLocation() >= HEIGHT - 170 && crab.getDirection() == Direction.SOUTHEAST) { //when the bottom wall is hit
 			crab.setDirection(Direction.NORTHEAST);
 		}else if(crab.getYLocation() >= HEIGHT - 170 && crab.getDirection() == Direction.SOUTHWEST) { //when the bottom wall is hit
-			System.out.println("code 6");
 			crab.setDirection(Direction.NORTHWEST);
 		}
 		
 		else if(crab.getXLocation() <= 0 && crab.getDirection() == Direction.NORTHWEST) { //when the left wall is hit
-			System.out.println("code 7");
 			crab.setDirection(Direction.NORTHEAST);
-		}else if(crab.getXLocation() <= 0 && crab.getDirection() == Direction.SOUTHEAST) { //when the left wall is hit
-			System.out.println("code 8");
-			crab.setDirection(Direction.NORTHWEST);
+		}else if(crab.getXLocation() <= 0 && crab.getDirection() == Direction.SOUTHWEST) { //when the left wall is hit
+			crab.setDirection(Direction.SOUTHEAST);
 		}
 	}
 	
 	public void updatingAnimalLocation() {
-		System.out.println(crab.getDirection().ordinal());
+		//System.out.println(crab.getDirection().ordinal());
 		switch(crab.getDirection().ordinal()) {
-		case 1: //going east 
-			crab.setXLocation(crab.getXLocation()+animalXIncr);
-			break;
-		case 3: //going west 
-			crab.setXLocation(crab.getXLocation()-animalXIncr);
-			break;
 		case 0: //going north
 			crab.setYLocation(crab.getYLocation()-animalYIncr);
+			break;
+		case 1: //going east 
+			crab.setXLocation(crab.getXLocation()+animalXIncr);
 			break;
 		case 2: //going south
 			crab.setYLocation(crab.getYLocation()+animalYIncr);
 			break;
-		case 5: //going northeast
+		case 3: //going west 
+			crab.setXLocation(crab.getXLocation()-animalXIncr);
+			break;
+		case 4: //going northeast
 			crab.setYLocation(crab.getYLocation()-animalYIncr);
 			crab.setXLocation(crab.getXLocation()+animalXIncr);
 			break;
-		case 6: //going northwest
+		case 5: //going northwest
+			System.out.println("in 6");
 			crab.setYLocation(crab.getYLocation()-animalYIncr);
 			crab.setXLocation(crab.getXLocation()-animalXIncr);
 			break;
-		case 7: //going southeast
+		case 6: //going southeast
 			crab.setYLocation(crab.getYLocation()+animalYIncr);
 			crab.setXLocation(crab.getXLocation()+animalXIncr);
 			break;
-		case 8: //going southwest
+		case 7: //going southwest
 			crab.setYLocation(crab.getYLocation()+animalYIncr);
 			crab.setXLocation(crab.getXLocation()-animalXIncr);
 			break;
+		default:
+			crab.setXLocation(0);
+			crab.setYLocation(0);
 		
 		}
+	}
+	
+	public int getScore() {
+		return score;
 	}
 	
 	public Player getPlayer() {
@@ -215,18 +215,48 @@ public class Model
 			if(Plant.plants[i].health == 0 && Plant.plants[i].getCollidesWith(this.player))
 			{
 				this.player.growPlant(i);
+				score += 10;
 			}
 		}
 		
 		if(this.player.hasLitter()) {
-			if(this.player.getCollidesWith(this.tBin))
+			if(this.player.getCollidesWith(this.tBin)) {
 				this.tBin.takeLitter(this.player);
-			if(this.player.getCollidesWith(this.rBin))
+				score += 10;
+			}
+			if(this.player.getCollidesWith(this.rBin)) {
 				this.rBin.takeLitter(this.player);
+				score += 10;
+			}
 		}
 		
 		if(this.player.getCollidesWith(this.crab)) {
-			System.out.println("player hit crab");
+			playerMove = false;
+			animalXIncr = 6;// * crab.getSpeed();
+			animalYIncr = 6;// * crab.getSpeed();
+			score -= 5;
+			if(player.getDirection() == Direction.EAST) {
+				crab.setDirection(Direction.EAST);
+			}else if(player.getDirection() == Direction.WEST) {
+				crab.setDirection(Direction.WEST);
+			}else if(player.getDirection() == Direction.NORTH) {
+				crab.setDirection(Direction.NORTH);
+			}else if(player.getDirection() == Direction.SOUTH) {
+				crab.setDirection(Direction.SOUTH);
+			}else if(player.getDirection() == Direction.NORTHEAST) {
+				crab.setDirection(Direction.NORTHEAST);
+			}else if(player.getDirection() == Direction.NORTHWEST) {
+				crab.setDirection(Direction.NORTHWEST);
+			}else if(player.getDirection() == Direction.SOUTHWEST) {
+				crab.setDirection(Direction.SOUTHWEST);
+			}else if(player.getDirection() == Direction.SOUTHEAST) {
+				crab.setDirection(Direction.SOUTHEAST);
+			}	
+			
+		}else {
+			playerMove = true;
+			animalXIncr = 4;// * crab.getSpeed();
+			animalYIncr = 4;// * crab.getSpeed();
 		}
 
 		animalWallCollision();
@@ -239,6 +269,7 @@ public class Model
 			for(Animal animal : this.animals) {
 				if(litter.getCollidesWith(animal)) {
 					animal.eatLitter();
+					score -= 20;
 					litterIterator.remove();
 				}
 			}

@@ -29,6 +29,7 @@ class Sprite {
 		ORC_IDLE_WEST("orc/orc_idle_west.png", 165, 165, 4, 1),
 
 		CRAB("Animal/crab.png", 150, 100, 7, 5),
+		SCORESTAR("MapObjects/FlatIcon-074.png", 100, 100),
 		PLANT("MapObjects/azalea.png", 100, 100);
 
 		private String fname;
