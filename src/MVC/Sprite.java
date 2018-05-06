@@ -32,6 +32,7 @@ class Sprite {
 		CRAB("Animal/crab.png", 150, 100, 7, 5),
 		LITTERFRAME("MapObjects/litterbox.png", 75,75),
 		PLANT("MapObjects/azalea.png", 100, 100),
+		DECAY_PLANT("MapObjects/dazal.png", 100, 100),
 		BANANAPEEL("MapObjects/bananaSkin.png",40,40),
 		SODACAN("MapObjects/Soda-Can.png",40,40),
 		PAPER("MapObjects/paper.png",40,40),
