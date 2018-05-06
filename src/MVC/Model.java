@@ -16,11 +16,11 @@ import Player.Player;
  * Model: Contains all the state and logic
  * Does not contain anything about images or graphics, must ask view for that
  *
- * has methods to
- *  detect collision with boundaries
- * decide next direction
- * provide direction
- * provide location
+ *@author Juan Villacis
+ *@author Matthew Gargano 
+ *@author Hunter Suchyj
+ *@author Kalloyan Stoyanov 
+ *@author Zack Klodnicki 
  **/
 public class Model
 {
@@ -60,7 +60,13 @@ public class Model
 	Litter animalEatenLitter;
 	
 	
-	
+	/**
+	 * Constructor for the model class. Adds a new animal as well as 4 Plants to the screen
+	 * 
+	 * @param None
+	 * @return New Model object. 
+	 * 
+	 */
 	public Model()
 	{
 		this.crab = new Animal();
@@ -82,26 +88,46 @@ public class Model
 		// Fill animals collection (temporary)
 	}
 	
-
+	/**
+	 * Returns the width of the Model. 
+	 * 
+	 * @param None
+	 * @return The width of the model.
+	 */
 	public static int getWidth() {
 		return WIDTH;
 	}
 
 
 
-
+	/**
+	 * Returns the height of the Model.
+	 * 
+	 * @param None. 
+	 * @return The height of the Model. 
+	 */
 	public static int getHeight() {
 		return HEIGHT;
 	}
 
 
 
-
+	/**
+	 * Returns the X increment of the animal.
+	 * 
+	 * @param None. 
+	 * @return The X increment of the animal.
+	 */
 	public int getAnimalXIncr() {
 		return animalXIncr;
 	}
 
-
+	/**
+	 * Returns the Y increment of the animal.
+	 * 
+	 * @param None. 
+	 * @return The Y increment of the animal.
+	 */
 	public int getAnimalYIncr() {
 		return animalYIncr;
 	}
@@ -109,57 +135,85 @@ public class Model
 
 	/**Gets the Player of the game
 	 * 
+	 * @param None.
 	 * @return Player object representing the Player in the game. 
 	 */
 	public Player getPlayer() {
 		return player;
 	}
 
-	/**Gets the Animal of the game
+	/**
+	 * Gets the Animal of the game.
 	 * 
+	 * @param None.
 	 * @return the Animal object representing the Animal in the game. 
 	 */
 	public Animal getAnimal() {
 		return crab;
 	}
 	
-	/**Gets the Litter most recently picked up by the Player
+	/**
+	 * Gets the Litter most recently picked up by the Player.
+	 * This will either be the Litter object the player is currently holding, or the last Litter object the player picked up if they are not currently holding one.
 	 * 
+	 * @param None. 
 	 * @return Litter object most recently picked up by the Player
 	 */
 	public Litter getPickedUpLitter() {
 		return this.pickedUp;
 	}
 	
+	/**
+	 * Returns the spacePressed boolean of the Model, which tells whether or not the space key is currently being pressed. 
+	 * 
+	 * @param None. 
+	 * @return The spacePressed boolean. True if the spaceKey is currently being pressed, false otherwise. 
+	 */
 	public boolean getSpacePressed() {
 		return this.spacePressed;
 	}
 	
+	/**
+	 * Returns the current Direction the Animal in the game is moving. 
+	 * 
+	 * @param None.
+	 * @return Direction of the Animal.
+	 */
 	public int getCrabDirection() {
 		return this.crabDirection;
 	}
 	
+	/**
+	 * Returns the Litter object most recently eaten by the Animal.
+	 * 
+	 * 
+	 * @param None.
+	 * @return Litter object most recently eaten by the Animal.
+	 */
 	public Litter getAnimalEatenLitter() {
 		return this.animalEatenLitter;
 	}
+	
+	/**
+	 * Returns the RecyclingBin Receptacle in the game. 
+	 * 
+	 * @param None. 
+	 * @return The RecyclingBin Receptacle. 
+	 */
 	public Receptacle getRBin() {
 		return rBin;
 	}
-
+	
+	/**
+	 * Returns the TrashBin Receptacle in the game. 
+	 * 
+	 * @param None. 
+	 * @return The TrashBin Receptacle. 
+	 */
 	public Receptacle getTBin() {
 		return tBin;
 	}
 	
-	public void setCrabDirection(int i) {
-		this.crabDirection = i;
-	}
-	
-	
-
-	
-	
-	
-
 	//same method as updateLocationAndDirection()
 	public void updateModel()
 	{
@@ -169,10 +223,22 @@ public class Model
 
 	}
 	
+	/**
+	 * Method called when the space key is pressed. Sets the spacePressed boolean value to true;
+	 * 
+	 * @param None.
+	 * @return None.
+	 * 
+	 */
 	public void spaceKeyPressed() {
 		this.spacePressed = true;
 	}
 	
+	/**Method called when the space key is released. Sets the spacePressed boolean value to false;
+	 * @param None.
+	 * @return None.
+	 * 
+	 */
 	public void spaceKeyReleased() {
 		this.spacePressed = false;
 	}
@@ -237,7 +303,7 @@ public class Model
 			crab.setXLocation(crab.getXLocation()+animalXIncr);
 			break;
 		case 5: //going northwest
-			System.out.println("in 6");
+			//System.out.println("in 6");
 			crab.setYLocation(crab.getYLocation()-animalYIncr);
 			crab.setXLocation(crab.getXLocation()-animalXIncr);
 			break;
@@ -256,16 +322,22 @@ public class Model
 		}
 	}
 	
+	/**
+	 * Returns the current score of the game. 
+	 * 
+	 * @param None. 
+	 * @return Current score of the game. 
+	 * 
+	 */
 	public int getScore() {
 		return score;
 	}
 
-	//damage plant every 10 seconds
 	/**
 	 * Method called to decrement plant health by the plantdamage integer value
 	 * 
-	 * @param
-	 * @return
+	 * @param None
+	 * @return None
 	 */
 		public void damagePlant()
 		{
@@ -276,8 +348,12 @@ public class Model
 
 		}
 		
-	/**Generates a new Litter object with random x and y coordinates, as well as generates a random imgID for the object. 
-	 * @return the new Litter object created. 
+	/**
+	 * Generates a new Litter object with random x and y coordinates, as well as generates a random imgID for the object. 
+	 * Adds the newly created Litter object to the static Litter.litterSet
+	 * 
+	 * @param None
+	 * @return The new Litter object created. 
 	 * 
 	 */
 	public Litter spawnLitter() {
@@ -319,21 +395,12 @@ public class Model
 			if(Plant.plants[i].health == 0 && Plant.plants[i].getCollidesWith(this.player))
 			{
 				this.player.growPlant(i);
-				score += 10;
+				changeScore(10);
 				return true;
 			}
 			
 		}
 		
-//		if(this.player.hasLitter()) {
-//			if(this.player.getCollidesWith(this.tBin)) {
-//				this.tBin.takeLitter(this.player);
-//				score += 10;
-//			}
-//			if(this.player.getCollidesWith(this.rBin)) {
-//				this.rBin.takeLitter(this.player);
-//				score += 10;
-//			}
 		if(this.player.getHasLitter()) {
 			if(this.player.getCollidesWith(this.tBin)) {
 				this.tBin.takeLitter(this.player);
@@ -349,8 +416,7 @@ public class Model
 		if(this.player.getCollidesWith(this.crab)) {
 			playerMove = false;
 			animalXIncr = 6;// * crab.getSpeed();
-			animalYIncr = 6;// * crab.getSpeed();
-			score -= 5;
+			animalYIncr = 6;// * crab.getSpeed()
 			if(player.getDirection() == Direction.EAST) {
 				crab.setDirection(Direction.EAST);
 			}else if(player.getDirection() == Direction.WEST) {
@@ -385,7 +451,7 @@ public class Model
 			for(Animal animal : this.animals) {
 				if(litter.getCollidesWith(animal)) {
 					animal.eatLitter();
-					score -= 20;
+					changeScore(-20);
 					this.animalEatenLitter = litter;
 					litterIterator.remove();
 					return true;
@@ -393,6 +459,20 @@ public class Model
 			}
 		}
 		return false;
+	}
+	
+	/**Method to change the game's score.
+	 * 
+	 * @param i The amount of points to be added (positive integer) or subtracted (negative integer) from the score. 
+	 * @return None. 
+	 */
+	public void changeScore(int i) {
+		if(this.score + i < 0) {
+			this.score = 0;
+		}
+		else {
+			this.score += i;
+		}
 	}
 
 }

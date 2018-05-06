@@ -131,15 +131,17 @@ public class Controller implements KeyListener {
 
 	}
 	
-	/**TimerTask subclass that handles the spawning of Litter object around the map at the set interval it was scheduled at by calling the appropriate Model to View communication.
+	/**
+	 * TimerTask subclass that handles the spawning of Litter object around the map at the set interval it was scheduled at by calling the appropriate Model to View communication.
 	 * 
-	 * @author Juan Villacis
 	 *
 	 */
 	class TrashTask extends TimerTask{
-		/**Calls the view method that adds a Litter object to the HashMap of rendered Litter object. Its parameter is the Litter object the model method returns after creating a new Model object and setting its logical attributes. 
+		/**
+		 * Calls the view method that adds a Litter object to the HashMap of rendered Litter object. Its parameter is the Litter object the model method returns after creating a new Model object and setting its logical attributes. 
 		 * 
-		 * 
+		 * @param None
+		 * @return None
 		 */
 		public void run() {
 			
