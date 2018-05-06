@@ -208,22 +208,19 @@ public class Model
 		
 		}
 	}
-	
-	//damage plant every 10 seconds
+	/**
+	 * Method called to decrement plant health by the plantdamage integer value
+	 * 
+	 * @param
+	 * @return
+	 */
 		public void damagePlant()
 		{
-			//System.out.println(randPlant);
 			if(Plant.plants[Plant.randPlant].getHealth() > 0)
 			{
-				//deletePlant = 4;//dont delete a plant, no switch case for 4
 				Plant.plants[Plant.randPlant].health = Plant.plants[Plant.randPlant].health - plantDamage;
 			}
-			/*
-			else if(Plant.plants[Plant.randPlant].getHealth() == 0)
-			{
-				//add in if we want more than one plant to die at onceS
-			}
-			*/
+
 		}
 		
 	/**Generates a new Litter object with random x and y coordinates, as well as generates a random imgID for the object. 
