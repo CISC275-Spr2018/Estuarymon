@@ -46,8 +46,8 @@ public class Model
 	
 	String coords = "";
 
-	Receptacle tBin = new Receptacle(0,Receptacle.trashYpos,128,128,ReceptacleType.TRASHBIN);
-	private Receptacle rBin = new Receptacle(0,Receptacle.recyclingYpos,128,128,ReceptacleType.RECYCLINGBIN);
+	Receptacle tBin = new Receptacle(128,128,ReceptacleType.TRASHBIN);
+	private Receptacle rBin = new Receptacle(128,128,ReceptacleType.RECYCLINGBIN);
 	
 	static boolean trashVictory = false;
 	static boolean recycleVictory = false;

@@ -108,24 +108,24 @@ public class View extends JPanel{
 		Sprite.incrementFrameCounter();
 		drawImage(g, Sprite.ID.BACKGROUND, 0, 0);
 		if(Model.trashVictory) {
-		drawImage(g,Sprite.ID.TRASHGLOW,0,450);
+		drawImage(g,Sprite.ID.TRASHGLOW,0,Receptacle.trashYpos);
 			if((tGlowCount += 1)%13 <1) {
 				Model.trashVictory = false;
 			}
 			System.out.println(tGlowCount);
 		}
 		else {
-			drawImage(g,Sprite.ID.TRASHBIN,0,450);
+			drawImage(g,Sprite.ID.TRASHBIN,0,Receptacle.trashYpos);
 		}
 		if(Model.recycleVictory) {
-			drawImage(g,Sprite.ID.RECYCLEGLOW,0,580);
+			drawImage(g,Sprite.ID.RECYCLEGLOW,0,Receptacle.recyclingYpos);
 				if((rGlowCount += 1)%13 <1) {
 					Model.recycleVictory = false;
 				}
 				System.out.println(rGlowCount);
 		}		
 		else {
-		drawImage(g,Sprite.ID.RECYCLEBIN,0,580);
+		drawImage(g,Sprite.ID.RECYCLEBIN,0,Receptacle.recyclingYpos);
 		}
 		
 		
