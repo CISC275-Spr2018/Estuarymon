@@ -25,7 +25,7 @@ doc: doc/generated
 
 doc/generated: $(JAVAFILES)
 	mkdir -p doc
-	javadoc -d doc -cp /usr/share/junit5/ $(JAVAFILES)
+	javadoc -private -d doc -cp /usr/share/junit5/ $(JAVAFILES)
 	touch doc/generated
 
 .PHONY: viewdoc
