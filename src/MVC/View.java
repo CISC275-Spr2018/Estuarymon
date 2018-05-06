@@ -137,10 +137,7 @@ public class View extends JPanel{
 		
 		//traverse through litter set and draw them, had to make a copy of litter set everytime to avoid ConcurrentModificationExceptions.
 		for(Map.Entry<Litter, Sprite.ID>entry: new HashMap<Litter,Sprite.ID>(litterImgMap).entrySet()) {
-			drawImage(g,entry.getValue(),
-				convertDimension(entry.getKey().getXLocation()),
-				convertDimension(entry.getKey().getYLocation()));
-			
+			drawImage(g,entry.getValue(), entry.getKey().getXLocation(), entry.getKey().getYLocation());
 		}
 
 		drawImage(g, Sprite.ID.CRAB, crabXLoc, crabYLoc);
