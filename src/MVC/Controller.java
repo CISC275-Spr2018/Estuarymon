@@ -38,7 +38,7 @@ public class Controller implements KeyListener {
 	private void step() {
 		// increment the x and y coordinates, alter direction if necessary
 		model.updateModel();
-		view.update(
+		view.update(		
 			model.getPlayer().getXLocation(),
 			model.getPlayer().getYLocation(),
 			model.getPlayer().getDirection(),
@@ -47,7 +47,8 @@ public class Controller implements KeyListener {
 			model.getAnimal().getYLocation(),
 			model.getPickedUpLitter(),
 			model.getPlayer().getHasLitter(),
-			model.getAnimalEatenLitter());
+			model.getAnimalEatenLitter(),
+			model.getScore());
 	}
 	
 	//plant stuff
