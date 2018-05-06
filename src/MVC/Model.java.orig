@@ -76,6 +76,10 @@ public class Model
 		// Fill animals collection (temporary)
 	}
 	
+<<<<<<< HEAD
+	
+=======
+
 	public static int getWidth() {
 		return WIDTH;
 	}
@@ -153,6 +157,7 @@ public class Model
 	
 	
 
+>>>>>>> master
 	//same method as updateLocationAndDirection()
 	public void updateModel()
 	{
@@ -265,11 +270,16 @@ public class Model
 			System.out.println(Plant.plants[0].getCollidesWith(this.player));
 			if(Plant.plants[i].getCollidesWith(this.player))
 			{
+<<<<<<< HEAD
 				//player.alterVelocity(0,0);
 ;				if(Plant.plants[i].health == 0 && Plant.plants[i].getCollidesWith(this.player))
 				{
 					this.player.growPlant(i);
 				}
+=======
+				this.player.growPlant(i);
+				return true;
+>>>>>>> master
 			}
 			
 		}

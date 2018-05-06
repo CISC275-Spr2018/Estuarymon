@@ -31,7 +31,14 @@ class Sprite {
 
 		CRAB("Animal/crab.png", 150, 100, 7, 5),
 		PLANT("MapObjects/azalea.png", 130, 130),
-		DECAY_PLANT("MapObjects/dazal.png", 120, 120);
+		DECAY_PLANT("MapObjects/dazal.png", 120, 120),
+		LITTERFRAME("MapObjects/litterbox.png", 75,75),
+		BANANAPEEL("MapObjects/bananaSkin.png",40,40),
+		SODACAN("MapObjects/Soda-Can.png",40,40),
+		PAPER("MapObjects/paper.png",40,40),
+		APPLE("MapObjects/CompostA.png",50,50);
+		
+
 
 		private String fname;
 		private int worldWidth;

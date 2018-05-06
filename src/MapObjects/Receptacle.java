@@ -10,7 +10,7 @@ public class Receptacle extends Interactable{
 		this.setRelativeCollisionRect(0, 0, rWidth, rHeight);
 	}
 	public void takeLitter(Player p) {
-		System.out.println("Receptable "+ rType.getName() + " take litter!");
+		//System.out.println("Receptable "+ rType.getName() + " take litter!");
 		// You can do something like:
 		/*
 		if(p.getLitterType().isInstance(this)) {

@@ -10,19 +10,19 @@ import java.util.Random;
  *
  */
 public enum LitterType {
-	TRASH("trash"),
-	RECYCLABLE("recyclable");
+	TRASH(0),
+	RECYCLABLE(1);
 	
 	private static final LitterType[] VALUES = LitterType.values();
 	public static final int LENGTH = VALUES.length;
 	private static final Random RANDOM = new Random();
 	
-	private String name = null;
-	private LitterType(String s) {
-		name = s;
+	private int id = 0;
+	private LitterType(int i) {
+		id = i;
 	}
-	public String getName() {
-		return name;
+	public int getID() {
+		return id;
 	}
 	
 	/**Generates a random value from this enumerated type
