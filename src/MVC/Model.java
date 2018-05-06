@@ -46,8 +46,12 @@ public class Model
 	
 	String coords = "";
 
-	Receptacle tBin = new Receptacle(0,450,128,128,ReceptacleType.TRASHBIN);
-	private Receptacle rBin = new Receptacle(0,580,128,128,ReceptacleType.RECYCLINGBIN);
+	Receptacle tBin = new Receptacle(0,Receptacle.trashYpos,128,128,ReceptacleType.TRASHBIN);
+	private Receptacle rBin = new Receptacle(0,Receptacle.recyclingYpos,128,128,ReceptacleType.RECYCLINGBIN);
+	
+	static boolean trashVictory = false;
+	static boolean recycleVictory = false;
+
 	
 	Animal crab;
 	HashSet<Animal> animals;
@@ -275,12 +279,16 @@ public class Model
 		}
 		
 		if(this.player.getHasLitter()) {
-			if(this.player.getCollidesWith(this.tBin)) {
+			if(this.player.getCollidesWith(this.tBin) && this.pickedUp.getType() == LitterType.TRASH) {
 				this.tBin.takeLitter(this.player);
+				System.out.println("DEPOSITED TRASH");
+				trashVictory = true;
 				return true;
 			}	
-			if(this.player.getCollidesWith(this.rBin)) {
+			if(this.player.getCollidesWith(this.rBin) && this.pickedUp.getType() == LitterType.RECYCLABLE) {
 				this.rBin.takeLitter(this.player);
+				System.out.println("DEPOSITED RECYCLABLE");
+				recycleVictory = true;
 				return true;
 			}
 				

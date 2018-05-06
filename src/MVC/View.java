@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,6 +33,7 @@ import javax.swing.JPanel;
 import MVC.Sprite.ID;
 import MapObjects.Litter;
 import MapObjects.Plant;
+import MapObjects.Receptacle;
 import Player.Direction;
 import Player.PlayerStatus;
 
@@ -59,33 +61,18 @@ public class View extends JPanel{
 	boolean hasLitter = false;
 	static ArrayList<ArrayList<Sprite.ID>> litterImgLists = new ArrayList<ArrayList<Sprite.ID>>();
 	static HashMap<Litter, Sprite.ID> litterImgMap = new HashMap<Litter, Sprite.ID>();
-
 	//these plants vars for alpha testing
 	int plant0H;
 	int plant1H;
 	int plant2H;
 	int plant3H;
 	String coords = "";
-
+	
+	int tGlowCount = 0;
+	int rGlowCount = 0;
 	public View() {
 		preloadLitterImgs();
 		
-		
-		JLabel trashBin = new JLabel();
-		ImageIcon trashIcon = new ImageIcon("images/MapObjects/garbage.png");
-		Image trashImg = trashIcon.getImage();
-		Image secondTrashImg = trashImg.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH) ;
-		trashBin.setIcon(new ImageIcon(secondTrashImg));
-		trashBin.setBounds(0,450,100,100);
-		//frame.getContentPane().add(trashBin);
-		
-		JLabel recycleBin = new JLabel();
-		ImageIcon recycleIcon = new ImageIcon("images/MapObjects/recycling-bin.png");
-		Image recycleImg = recycleIcon.getImage();
-		Image secondRecycleImg = recycleImg.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH) ;
-		recycleBin.setIcon(new ImageIcon(secondRecycleImg));
-		recycleBin.setBounds(0,580,100,100);
-		//frame.getContentPane().add(recycleBin);
 				
 		frame.setFocusable(true);
 		frame.setLayout(new GridBagLayout());
@@ -120,9 +107,28 @@ public class View extends JPanel{
 		super.paint(g);
 		Sprite.incrementFrameCounter();
 		drawImage(g, Sprite.ID.BACKGROUND, 0, 0);
+		if(Model.trashVictory) {
+		drawImage(g,Sprite.ID.TRASHGLOW,0,450);
+			if((tGlowCount += 1)%13 <1) {
+				Model.trashVictory = false;
+			}
+			System.out.println(tGlowCount);
+		}
+		else {
+			drawImage(g,Sprite.ID.TRASHBIN,0,450);
+		}
+		if(Model.recycleVictory) {
+			drawImage(g,Sprite.ID.RECYCLEGLOW,0,580);
+				if((rGlowCount += 1)%13 <1) {
+					Model.recycleVictory = false;
+				}
+				System.out.println(rGlowCount);
+		}		
+		else {
+		drawImage(g,Sprite.ID.RECYCLEBIN,0,580);
+		}
 		
 		
-
 		for(Plant plant : Plant.plants) {
 			drawImage(g, Sprite.ID.PLANT, plant.getXLocation(), plant.getYLocation());
 		}
