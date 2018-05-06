@@ -69,6 +69,7 @@ public class View extends JPanel{
 	
 	private int score = 0;
 	public View() {	
+		preloadLitterImgs();
 
 		frame.setFocusable(true);
 		frame.setLayout(new GridBagLayout());
@@ -114,7 +115,7 @@ public class View extends JPanel{
 		drawImage(g, Sprite.ID.CRAB, crabXLoc, crabYLoc);
 		drawImage(g, getPlayerSprite(), playerXLoc, playerYLoc);
 		drawImage(g, Sprite.ID.SCORESTAR, 900, 0);
-		drawString(g, Integer.toString(score), 50, 998, 65);
+		drawString(g, Integer.toString(score), 100, 900, 65);
 	
 		drawImage(g, Sprite.ID.LITTERFRAME,0,0);
 		if(hasLitter) {
@@ -168,11 +169,11 @@ public class View extends JPanel{
 	}
 	
 	private void drawString(Graphics g, String word, int width, int XPos, int YPos) {
-		int stringLength = (int) g.getFontMetrics().getStringBounds(word, g).getWidth();
-		int start = width/2 - stringLength/2;
-		g.setColor(Color.BLACK);
 		g.setFont(new Font("TimesRoman", Font.BOLD, 25));
-		g.drawString(word, start + XPos, YPos);
+		int stringLength = (int) g.getFontMetrics().getStringBounds(word, g).getWidth();
+		int start = convertDimension(width)/2 - stringLength/2;
+		g.setColor(Color.BLACK);
+		g.drawString(word, start + convertDimension(XPos), convertDimension(YPos));
 	}
 
 	// convertDimension: converts a dimension from world coordinates to pixel coordinates

@@ -255,18 +255,21 @@ public class Model
 		
 		}
 	}
-	
-	public int getScore() {
-		return score;
-	}
-
-	//damage plant every 10 seconds
+<<<<<<< HEAD
 	/**
 	 * Method called to decrement plant health by the plantdamage integer value
 	 * 
 	 * @param
 	 * @return
 	 */
+=======
+	
+	public int getScore() {
+		return score;
+	}
+
+	//damage plant every 10 seconds
+>>>>>>> master
 		public void damagePlant()
 		{
 			if(Plant.plants[Plant.randPlant].getHealth() > 0)
