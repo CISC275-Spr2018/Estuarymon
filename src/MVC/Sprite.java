@@ -30,6 +30,7 @@ class Sprite {
 		ORC_IDLE_WEST("orc/orc_idle_west.png", 165, 165, 4, 1),
 
 		CRAB("Animal/crab.png", 150, 100, 7, 5),
+		SCORESTAR("MapObjects/FlatIcon-074.png", 100, 100),
 		LITTERFRAME("MapObjects/litterbox.png", 75,75),
 		PLANT("MapObjects/azalea.png", 100, 100),
 		DECAY_PLANT("MapObjects/dazal.png", 100, 100),
