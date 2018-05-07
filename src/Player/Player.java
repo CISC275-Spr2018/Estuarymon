@@ -157,6 +157,16 @@ public class Player extends Interactable {
 	}
 	
 	/**
+	 * Method that sets the Direction of this Player object
+	 *  
+	 * @param d The new Direction of the Player
+	 * @return None. 
+	 */
+	public void setDirection(Direction d) {
+		this.direction = d;
+	}
+	
+	/**
 	 * Returns the current status of the Player. 
 	 * 
 	 * @param None. 

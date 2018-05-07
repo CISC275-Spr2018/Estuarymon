@@ -170,6 +170,16 @@ public class Model {
 	}
 	
 	/**
+	 * Setter for pickedUp Litter object. Testing purposes only. 
+	 * 
+	 * @param l the Litter object pickedUp will be set to
+	 * @return none. 
+	 */
+	public void setPickedUpLitter(Litter l) {
+		this.pickedUp = l;
+	}
+	
+	/**
 	 * Returns the spacePressed boolean of the Model, which tells whether or not the space key is currently being pressed. 
 	 * 
 	 * @param None. 
@@ -178,17 +188,6 @@ public class Model {
 	public boolean getSpacePressed() {
 		return this.spacePressed;
 	}
-	
-	/**
-	 * Returns the current Direction the Animal in the game is moving. 
-	 * 
-	 * @param None.
-	 * @return Direction of the Animal.
-	 */
-	public int getCrabDirection() {
-		return this.crabDirection;
-	}
-	
 	
 	/**
 	 * Returns the Litter object most recently eaten by the Animal.
