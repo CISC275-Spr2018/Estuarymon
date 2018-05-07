@@ -8,12 +8,26 @@ import java.awt.Rectangle;
  *
  */
 public class Interactable {
+	/** X location */
 	int xLocation;
+	/** Y location */
 	int yLocation;
+	/** Width */
 	int width;
+	/** Height */
 	int height;
+	/** Rectangle used for collisions. */
 	private Rectangle relativeCollisionBox;
 	
+	/** 
+	 * Constructor for Interactable. Sets basic attributes about location (x, y coordinates), and dimensions (width and height)
+	 * 
+	 * @param x X location of the Interactable
+	 * @param y Y location of the Interactable
+	 * @param width Width of the Interactable.
+	 * @param height Height of the Interactable. 
+	 * @return a new Interactable object with the specified coordinates and dimensions. 
+	 */
 	public Interactable(int x, int y, int width, int height) {
 		this.xLocation = x;
 		this.yLocation = y;
@@ -39,18 +53,42 @@ public class Interactable {
 		return this.getCollisionRect().intersects(other.getCollisionRect());
 	}
 	
+	/**
+	 * Returns the height of the Interactable 
+	 * 
+	 * @param None
+	 * @return The height of the Interactable
+	 */
 	public int getHeight() {
 		return this.height;
 	}
 	
+	/**
+	 * Returns the width of the Interactable 
+	 * 
+	 * @param None. 
+	 * @return The width of the Interactable. 
+	 */
 	public int getWidth() {
 		return this.width;
 	}
 	
+	/**
+	 * Sets the xLocation attribute of the Interactable. 
+	 * 
+	 * @param x The x location
+	 * @return None. 
+	 */
 	public void setXLocation(int x) {
 		this.xLocation = x;
 	}
 	
+	/**
+	 * Sets the yLocation attribute of the Interactable. 
+	 * 
+	 * @param y The y location 
+	 * @return None. 
+	 */
 	public void setYLocation(int y) {
 		this.yLocation = y;
 	}
@@ -63,10 +101,22 @@ public class Interactable {
 		this.yLocation += dy;
 	}
 	
+	/**
+	 * Returns the x location of this Interactable object. 
+	 * 
+	 * @param None. 
+	 * @return The x location. 
+	 */
 	public int getXLocation() {
 		return this.xLocation;
 	}
 	
+	/**
+	 * Returns the y location of this Interactable object.
+	 * 
+	 * @param None. 
+	 * @return the Y location. 
+	 */
 	public int getYLocation() {
 		return this.yLocation;
 	}

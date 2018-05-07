@@ -38,9 +38,16 @@ import Player.PlayerStatus;
  * View: Contains everything about graphics and images
  * Know size of screen, which images to load etc
  *
+ *@author Zack Klodnicki 
+ *@author Juan Villacis
+ *
  *
  **/
 public class View extends JPanel{
+	/** The width of the game world */
+	public static final int WORLD_WIDTH = 1000;
+	/** The height of the game world */
+	public static final int WORLD_HEIGHT = 1000;
 	/** The dimensions of the computer screen, in pixels. */
 	private final static Dimension  screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
 	/** The height of the computer screen, in pixels. */
@@ -108,14 +115,18 @@ public class View extends JPanel{
 	}
 	
 	/** Adds a key listener to the associated JFrame 
+	 * 
 	 *  @param listener The listener to add
+	 *  @return None. 
 	 */
 	public void setKeyListener(KeyListener listener) {
 		frame.addKeyListener(listener);
 	}
 	
 	/** Paints this view
+	 * 
 	 * @param g The {@link java.awt.Graphics} object to use for painting
+	 * @return None. 
 	 */
 	public void paint(Graphics g) {
 		super.paint(g);
@@ -179,6 +190,8 @@ public class View extends JPanel{
 	}
 
 	/** Determines which {@link Sprite.ID} to use to render the player. Determines this based on the player's {@link #playerStatus status} and {@link #playerDirection direction}.
+	 * 
+	 * @param None. 
 	 *  @return The appropriate {@link Sprite.ID} to use to render the player
 	 */
 	private Sprite.ID getPlayerSprite() {
@@ -219,11 +232,12 @@ public class View extends JPanel{
 	 *  @param s The {@link Sprite.ID} to use to retrieve the {@link BufferedImage} to draw.
 	 *  @param world_x The x-coordinate of the {@link Sprite.ID} to draw, in <em>world</em> coordinates.
 	 *  @param world_y The y-coordinate of the {@link Sprite.ID} to draw, in <em>world</em> coordinates.
+	 *  @return None. 
 	 */
 	private void drawImage(Graphics g, Sprite.ID s, int world_x, int world_y) {
 		g.drawImage(
 			Sprite.getImage(s,
-			(double) this.getWidth() / Controller.WORLD_WIDTH),
+			(double) this.getWidth() / WORLD_WIDTH),
 			convertDimension(world_x),
 			convertDimension(world_y),
 			this);
@@ -245,14 +259,17 @@ public class View extends JPanel{
 	}
 
 	/** Converts a dimension (i.e.&nbsp;half of a coordinate) from the <em>world</em> coordinate system to the <em>pixel</em> coordinate system.
+	 * 
 	 *  @param world_dimension The dimension (i.e. half of a coordinate) to convert, in the <em>world</em> coordinate system.
 	 *  @return The same dimension as the parameter, in the <em>pixel</em> coordinate system.
 	 */
 	private int convertDimension(int world_dimension) {
-		return (int) ((double) world_dimension / Controller.WORLD_WIDTH * this.getWidth());
+		return (int) ((double) world_dimension / WORLD_WIDTH * this.getWidth());
 	}
 
 	/** Returns the largest possible square that can fit in the layout. Note that {@link Dimension} in this case is a duple of a width and a height, as opposed to the terminology "dimension" used in {@link #convertDimension}.
+	 * 
+	 * @param 
 	 *  @return The largest possible square that can fit in the layout
 	 */
 	@Override
@@ -281,6 +298,7 @@ public class View extends JPanel{
 	 * @param hasLitter Boolean value representing if the Player is currently holding a Litter object. 
 	 * @param animalEatenLitter The most recent Litter object eaten by the animal. 
 	 * @param score Current score of the game. 
+	 * @return None. 
 	 */
 	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score) {
 		//Updating crab and player locations
@@ -305,6 +323,7 @@ public class View extends JPanel{
 	/**Adds a Litter object to the other Litter objects being rendered on the View
 	 * 
 	 * @param l The Litter object that will be added for rendering.
+	 * @return None. 
 	 */
 	public void addLitter(Litter l) {
 		Sprite.ID curSpriteID = getSpriteID(l);
@@ -328,6 +347,7 @@ public class View extends JPanel{
 	
 	/**
 	 * Loads in the different Litter images to be used in the game. 
+	 * 
 	 * 
 	 * @param None. 
 	 * @return None. 

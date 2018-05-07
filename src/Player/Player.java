@@ -12,13 +12,25 @@ import MapObjects.Receptacle;
  *
  */
 public class Player extends Interactable {
+	/** Boolean that determines whether the Player is currently holding a peice of Litter*/
 	public static boolean hasLitter = false;
 	private int dx = 0;
 	private int dy = 0;
+	/** Speed of the player */
 	private final int speed = 10;
+	/** Direction enum representing the current Player's direction. */
 	private Direction direction = Direction.EAST;
+	/** PlayerStatus enum representing the current Player's status */
 	private PlayerStatus status = PlayerStatus.IDLE;
-
+	
+	/** Constructor for a new Player. Sets initial coordinates of the player, as well as its dimensions and the collision Rectangle for it. 
+	 * 
+	 * @param xLoc Initial x location of the Player. 
+	 * @param yLoc Initial y location of the Player.
+	 * @param rWidth Width of the Player. 
+	 * @param rHeight Height of the Player
+	 * @return a new Player object with the specified dimensions and coordinates. 
+	 */
 	public Player(int xLoc, int yLoc, int rWidth, int rHeight) {
 		super(xLoc, yLoc, rWidth, rHeight);
 		this.setRelativeCollisionRect(40, 40, rWidth - 80, rHeight - 80);
@@ -44,19 +56,26 @@ public class Player extends Interactable {
 //		}
 //	}
 //	
+	/**
+	 * Sets the dx attribute of the Player. Used for movement and collision detection. 
+	 * 
+	 * @param dx the Dx attribute of the Player. 
+	 * @return None. 
+	 */
 	public void setDx(int dx) {
 		this.dx = dx;
 	}
 	
 	/**Returns a boolean depending on whether or not this player is currently holding a Litter object that needs to be disposed of. 
 	 * 
+	 * @param None
 	 * @return True if the player is holding a peice of Litter, false otherwise. 
 	 */
 	public boolean getHasLitter() {
 		return this.hasLitter;
 	}
 	
-	/**"Picks up" a Litter object the Player is colliding with. 
+	/**"Picks up" a Litter object the Player is colliding with. Removes the Litter from the Litter hashSet and sets Player.hasLitter to true 
 	 * 
 	 * @param l The Litter object being picked up 
 	 * @return The Litter object being picked up
@@ -72,6 +91,7 @@ public class Player extends Interactable {
 	 * Method that restores a plants health as well as chooses a new plant to start fading. 
 	 * 
 	 * @param i The index in the plant array of the plant to be replanted. 
+	 * @return None. 
 	 */
 	public void growPlant(int i) {
 		// TODO

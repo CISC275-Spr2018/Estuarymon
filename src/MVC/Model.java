@@ -29,8 +29,8 @@ import Player.Player;
  *@author Zack Klodnicki 
  **/
 public class Model {
-	private static final int WIDTH = Controller.WORLD_WIDTH;
-	private static final int HEIGHT = Controller.WORLD_HEIGHT;
+	private static int WIDTH;
+	private static int HEIGHT;
 	
 	Player player = new Player(0,0, 165,165);
 	
@@ -68,18 +68,21 @@ public class Model {
 	/**
 	 * Constructor for the Model. It creates a new animal and initializes a hashset
 	 * of animals just in case more than one animal is wanted in the game. Then the
-	 * animal is added to the hashset.Adds 4 plants to the screen as well. 
+	 * animal is added to the hashset. Adds 4 Plants to the screen as well. 
 	 *
 	 * 
 	 * 
-	 * @param None
-	 * @return New Model object. 
+	 * @param width Width of the model. 
+	 * @param height Height of the model. 
+	 * @return New Model object with the specified dimensions. 
 	 * 
 	 */
-	public Model() {
+	public Model(int width, int height) {
 		this.crab = new Animal();
 		animals = new HashSet<Animal>();
 		animals.add(crab);
+		this.HEIGHT = height;
+		this.WIDTH = width;
 		
 		int count = 0;
 		//fills plant array
@@ -221,7 +224,12 @@ public class Model {
 		return tBin;
 	}
 	
-	//same method as updateLocationAndDirection()
+	/**
+	 * Method that updates the Model by calling methods to move the Player and Animal, as well as check collisions between various game objects. 
+	 * 
+	 * @param None. 
+	 * @return None. 
+	 */
 	public void updateModel() {
 		this.player.move(playerMove);
 		this.checkCollision();
@@ -241,6 +249,7 @@ public class Model {
 	}
 	
 	/**Method called when the space key is released. Sets the spacePressed boolean value to false;
+	 * 
 	 * @param None.
 	 * @return None.
 	 * 
@@ -384,7 +393,7 @@ public class Model {
 			Random r = new Random();
 			Litter l = new Litter();
 			l.setType(LitterType.randomLitter());
-			int litterXCoord = r.nextInt((WIDTH - l.getWidth()));// generates random coordinates
+			int litterXCoord = r.nextInt((WIDTH - l.getWidth())-(rBin.getXLocation()+rBin.getWidth())) + rBin.getXLocation() + rBin.getWidth();// generates random coordinates
 			int litterYCoord = r.nextInt((HEIGHT - l.getHeight()));
 			l.setXLocation(litterXCoord);//
 			l.setYLocation(litterYCoord);
@@ -406,10 +415,14 @@ public class Model {
 	 * direction as the player, and the score is decreased. In addition, the crab
 	 * speeds up while the player is colliding with it to give it the effect that it
 	 * is scared. If the crab collides with a piece of trash or recycling, the piece
-	 * of trash or recycling is removed and the score is decreased.
+	 * of trash or recycling is removed and the score is decreased. 
+	 * If a Player does not have Litter such that Player.hasLitter is false, this method will check for collisions with Litter object on the ground
+	 * If a Player has a Litter object such that Player.hasLitter is true, this method will check if the Player is colliding with a Receptacle, 
+	 * check if that Receptacle is the correct one to deposit the current Litter in, and call the appropriate methods to deposit Litter if it is. 
+	 * Also checks if Player and any of the Plants on screen are colliding. If they are and the plant has no health, the appropriate methods are called to regrow the Plant. 
 	 * 
 	 * @param empty
-	 * @return boolean for testing purposes
+	 * @return boolean for testing purposes. True if 
 	 */
 	private boolean checkCollision() {
 
