@@ -12,8 +12,13 @@ public class Receptacle extends Interactable{
 	ReceptacleType rType;
 	public static int trashYpos = 450;
 	public static int recyclingYpos = 680;
-	/** Constructor for Receptacle objects. The x coordinate is set to 0, the y coordinate is set according to the type of receptacle.
+	/** 
+	 * Constructor for Receptacle objects. The x coordinate is set to 0, the y coordinate is set according to the type of receptacle.
 	 * The height and width are determined. 
+	 * 
+	 * @param rWidth The width of the Receptacle object. 
+	 * @param rHeight the height of the Receptacle object
+	 * @param rType Enum value corresponding to the Receptacle type. 
 	 *
 	 */
 	public Receptacle(int rWidth, int rHeight, ReceptacleType rType) {

@@ -34,6 +34,12 @@ import MapObjects.Receptacle;
 import Player.Direction;
 import Player.PlayerStatus;
 
+/**
+ * View: Contains everything about graphics and images
+ * Know size of screen, which images to load etc
+ *
+ *
+ **/
 public class View extends JPanel{
 	private final static Dimension  screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
 	private final static double screenHeight = screenDimension.getHeight();
@@ -71,6 +77,12 @@ public class View extends JPanel{
 	int rGlowCount = 0;
 	
 	private int score = 0;
+	/**
+	 * Constructor for View object, adds JFrame containing the game world to the screen.
+	 * 
+	 * @param None
+	 * @return new View object. 
+	 */
 	public View() {
 		preloadLitterImgs();
 				
@@ -215,6 +227,7 @@ public class View extends JPanel{
 	
 	/**Updates the View based on parameters given by Model.
 	 * Updates the Player's and Crab's x and y location, as well as stops the most recent Litter object the player picked up from being rendered on the ground.
+	 * Also updates the game's score. 
 	 * 
 	 * @param playerX The Player's X location
 	 * @param playerY The Player's Y location
@@ -225,6 +238,7 @@ public class View extends JPanel{
 	 * @param playerPickedUp The most recent Litter object picked up by the Player
 	 * @param hasLitter Boolean value representing if the Player is currently holding a Litter object. 
 	 * @param animalEatenLitter The most recent Litter object eaten by the animal. 
+	 * @param score Current score of the game. 
 	 */
 	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score) {
 		//Updating crab and player locations
@@ -250,17 +264,6 @@ public class View extends JPanel{
 	 * 
 	 * @param t The Litter object that will be added for rendering.
 	 */
-
-	//don't worry about this
-//	public void setLitterImage(Litter l) {
-//		switch(l.getType()){
-//		case TRASH:
-//			l.setlitterImage(trashImgs[(int)(Math.random()*trashImgs.length)]);
-//			break;
-//		case RECYCLABLE:
-//			l.setlitterImage(recyclableImgs[(int)(Math.random()*recyclableImgs.length)]);
-//		}
-
 	public void addLitter(Litter l) {
 		Sprite.ID curSpriteID = getSpriteID(l);
 		litterImgMap.put(l, curSpriteID);
@@ -268,7 +271,8 @@ public class View extends JPanel{
 		
 	}
 	
-	/**Chooses a Sprite ID to represent a Litter object.
+	/**
+	 * Chooses a Sprite ID to represent a Litter object.
 	 * The type of Litter image is chosen using the Litter's enum attribute that represents type, specific image chosen is done using the Litter object's imgID
 	 * 
 	 * @param l the Litter object whose Sprite ID will be chosen.
@@ -280,8 +284,11 @@ public class View extends JPanel{
 	}
 	
 	
-	/**Loads in the different Litter images to be used in the game. 
+	/**
+	 * Loads in the different Litter images to be used in the game. 
 	 * 
+	 * @param None. 
+	 * @return None. 
 	 */
 	public void preloadLitterImgs() {
 		ArrayList<Sprite.ID> trashImgList = new ArrayList<Sprite.ID>();
@@ -295,34 +302,8 @@ public class View extends JPanel{
 		recyclableImgList.add(Sprite.ID.PAPER);
 		litterImgLists.add(recyclableImgList);
 		
-		
 	}
 	
-	/**Reads in an image file, and creates a corresponding BufferedImage
-	 * 
-	 * @param File name of the image without the file extension (ie: .png)
-	 * @return Buffered image corresponding to the image file.
-	 * @throws IOException if the image file cannot be found based on the name given. 
-	 */
-	protected BufferedImage loadImg(String name) {
-		try {
-			return ImageIO.read(new File("images/MapObjects/"+name+".png"));
-		} catch(IOException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-		return null;
-	}
 
 }
 
-
-/**
- * View: Contains everything about graphics and images
- * Know size of world, which images to load etc
- *
- * has methods to
- * provide boundaries
- * use proper images for direction
- * load images for all direction (an image should only be loaded once!!! why?)
- **/

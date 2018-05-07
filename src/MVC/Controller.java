@@ -34,7 +34,12 @@ public class Controller implements KeyListener {
 			step();
 		}
 	};
-
+	/**
+	 * Method that updates the Model and changes the view based on the Model.
+	 * 
+	 * @param None
+	 * @return None.
+	 */
 	private void step() {
 		// increment the x and y coordinates, alter direction if necessary
 		model.updateModel();
@@ -51,9 +56,20 @@ public class Controller implements KeyListener {
 			model.getScore());
 	}
 	
-	//plant stuff
+	/**
+	 * TimerTask that handles damaging plants in a certain interval. 
+	 * 
+	 * @author Hunter Suchyj
+	 *
+	 */
 	class damagePlantTask extends TimerTask 
 	{
+		/**
+		 * Method that calls the model method to damage the plant. 
+		 * 
+		 * @param None
+		 * @return None. 
+		 */
 		public void run()
 		{
 			model.damagePlant();
@@ -63,7 +79,12 @@ public class Controller implements KeyListener {
 	
 	
 	
-	// run the simulation
+	/**
+	 * Method that creates a new Model and View, and starts the game. Also creates taskTimers for spawning Litter and damaging Plants. 
+	 * 
+	 * @param None. 
+	 * @return None. 
+	 */
 	public void start() {
 		view = new View();
 		view.setKeyListener(this);
@@ -79,8 +100,15 @@ public class Controller implements KeyListener {
 			}
 		});
 	}
-
+	
+	
 	@Override
+	/**
+	 * Method that listens gets keyboard input and calls the appropriate model method depending on what key is pressed.
+	 * 
+	 * @param e The KeyEvent of the key pressed. 
+	 * @return None. 
+	 */
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 		switch(key) {
@@ -101,8 +129,14 @@ public class Controller implements KeyListener {
 			break;
 		}
 	}
-
+	
+	
 	@Override
+	/**
+	 * Method called when a key is released and calls the appropriate Model methods depending on what key was pressed. 
+	 * 
+	 * @param e KeyEvent that corresponds to the key released.
+	 */
 	public void keyReleased(KeyEvent e) {
 		int key = e.getKeyCode();
 
@@ -125,21 +159,19 @@ public class Controller implements KeyListener {
 		}
 	}
 
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-
-	}
 	
-	/**TimerTask subclass that handles the spawning of Litter object around the map at the set interval it was scheduled at by calling the appropriate Model to View communication.
+	
+	/**
+	 * TimerTask subclass that handles the spawning of Litter object around the map at the set interval it was scheduled at by calling the appropriate Model to View communication.
 	 * 
-	 * @author Juan Villacis
 	 *
 	 */
 	class TrashTask extends TimerTask{
-		/**Calls the view method that adds a Litter object to the HashMap of rendered Litter object. Its parameter is the Litter object the model method returns after creating a new Model object and setting its logical attributes. 
+		/**
+		 * Calls the view method that adds a Litter object to the HashMap of rendered Litter object. Its parameter is the Litter object the model method returns after creating a new Model object and setting its logical attributes. 
 		 * 
-		 * 
+		 * @param None
+		 * @return None
 		 */
 		public void run() {
 			
@@ -149,5 +181,13 @@ public class Controller implements KeyListener {
 		
 			
 		}
+	}
+
+
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
