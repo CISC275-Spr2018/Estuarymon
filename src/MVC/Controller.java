@@ -41,8 +41,12 @@ public class Controller implements KeyListener {
 			step();
 		}
 	};
-
-	/** Updates the Model and then updates the View to reflect the new properties of the Model. */
+	/**
+	 * Method that updates the Model and changes the view based on the Model.
+	 * 
+	 * @param None
+	 * @return None.
+	 */
 	private void step() {
 		// increment the x and y coordinates, alter direction if necessary
 		model.updateModel();
@@ -59,10 +63,20 @@ public class Controller implements KeyListener {
 			model.getScore());
 	}
 	
-	/** When run, simply calls the Model's {@link Model#damagePlant} method. */
+	/**
+	 * TimerTask that handles damaging plants in a certain interval. 
+	 * 
+	 * @author Hunter Suchyj
+	 *
+	 */
 	class damagePlantTask extends TimerTask 
 	{
-		/** Simply calls the Model's {@link Model#damagePlant} method. */
+		/**
+		 * Method that calls the model method to damage the plant. 
+		 * 
+		 * @param None
+		 * @return None. 
+		 */
 		public void run()
 		{
 			model.damagePlant();
@@ -70,7 +84,12 @@ public class Controller implements KeyListener {
 		}
 	}
 	
-	/** Starts the simulation */
+	/**
+	 * Method that creates a new Model and View, and starts the game. Also creates taskTimers for spawning Litter and damaging Plants. 
+	 * 
+	 * @param None. 
+	 * @return None. 
+	 */
 	public void start() {
 		view = new View();
 		view.setKeyListener(this);
@@ -145,15 +164,18 @@ public class Controller implements KeyListener {
 
 	}
 	
-	/**TimerTask subclass that handles the spawning of Litter object around the map at the set interval it was scheduled at by calling the appropriate Model to View communication.
+	
+	/**
+	 * TimerTask subclass that handles the spawning of Litter object around the map at the set interval it was scheduled at by calling the appropriate Model to View communication.
 	 * 
-	 * @author Juan Villacis
 	 *
 	 */
 	class TrashTask extends TimerTask{
-		/**Calls the view method that adds a Litter object to the HashMap of rendered Litter object. Its parameter is the Litter object the model method returns after creating a new Model object and setting its logical attributes. 
+		/**
+		 * Calls the view method that adds a Litter object to the HashMap of rendered Litter object. Its parameter is the Litter object the model method returns after creating a new Model object and setting its logical attributes. 
 		 * 
-		 * 
+		 * @param None
+		 * @return None
 		 */
 		public void run() {
 			

@@ -34,6 +34,12 @@ import MapObjects.Receptacle;
 import Player.Direction;
 import Player.PlayerStatus;
 
+/**
+ * View: Contains everything about graphics and images
+ * Know size of screen, which images to load etc
+ *
+ *
+ **/
 public class View extends JPanel{
 	/** The dimensions of the computer screen, in pixels. */
 	private final static Dimension  screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -274,7 +280,7 @@ public class View extends JPanel{
 	 * @param playerPickedUp The most recent Litter object picked up by the Player
 	 * @param hasLitter Boolean value representing if the Player is currently holding a Litter object. 
 	 * @param animalEatenLitter The most recent Litter object eaten by the animal. 
-	 * @param score The current game score.
+	 * @param score Current score of the game. 
 	 */
 	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score) {
 		//Updating crab and player locations
@@ -307,7 +313,8 @@ public class View extends JPanel{
 		
 	}
 	
-	/**Chooses a Sprite ID to represent a Litter object.
+	/**
+	 * Chooses a Sprite ID to represent a Litter object.
 	 * The type of Litter image is chosen using the Litter's enum attribute that represents type, specific image chosen is done using the Litter object's imgID
 	 * 
 	 * @param l the Litter object whose Sprite ID will be chosen.
@@ -319,8 +326,11 @@ public class View extends JPanel{
 	}
 	
 	
-	/**Loads in the different Litter images to be used in the game. 
+	/**
+	 * Loads in the different Litter images to be used in the game. 
 	 * 
+	 * @param None. 
+	 * @return None. 
 	 */
 	public void preloadLitterImgs() {
 		ArrayList<Sprite.ID> trashImgList = new ArrayList<Sprite.ID>();
@@ -334,34 +344,8 @@ public class View extends JPanel{
 		recyclableImgList.add(Sprite.ID.PAPER);
 		litterImgLists.add(recyclableImgList);
 		
-		
 	}
 	
-	/**Reads in an image file, and creates a corresponding BufferedImage
-	 * 
-	 * @param File name of the image without the file extension (ie: .png)
-	 * @return Buffered image corresponding to the image file.
-	 * @throws IOException if the image file cannot be found based on the name given. 
-	 */
-	protected BufferedImage loadImg(String name) {
-		try {
-			return ImageIO.read(new File("images/MapObjects/"+name+".png"));
-		} catch(IOException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-		return null;
-	}
 
 }
 
-
-/**
- * View: Contains everything about graphics and images
- * Know size of world, which images to load etc
- *
- * has methods to
- * provide boundaries
- * use proper images for direction
- * load images for all direction (an image should only be loaded once!!! why?)
- **/

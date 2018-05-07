@@ -17,8 +17,16 @@ import Player.Player;
  * Model: Contains all the state and logic Does not contain anything about
  * images or graphics, must ask {@link View} for that
  *
- * has methods to detect collision with boundaries decide next direction provide
- * direction provide location
+ * has methods to
+ *  detect collision with boundaries
+ * decide next direction
+ * provide direction
+ * provide location
+ *@author Juan Villacis
+ *@author Matthew Gargano 
+ *@author Hunter Suchyj
+ *@author Kalloyan Stoyanov 
+ *@author Zack Klodnicki 
  **/
 public class Model {
 	/** The world width, copied from Controller for convenience */
@@ -114,24 +122,28 @@ public class Model {
 	/**
 	 * Gets the Player of the game
 	 * 
-	 * @return Player object representing the Player in the game.
+	 * @param None.
+	 * @return Player object representing the Player in the game. 
 	 */
 	public Player getPlayer() {
 		return player;
 	}
 
 	/**
-	 * Gets the Animal of the game
+	 * Gets the Animal of the game.
 	 * 
-	 * @return the Animal object representing the Animal in the game.
+	 * @param None.
+	 * @return the Animal object representing the Animal in the game. 
 	 */
 	public Animal getAnimal() {
 		return crab;
 	}
-
+	
 	/**
-	 * Gets the Litter most recently picked up by the Player
+	 * Gets the Litter most recently picked up by the Player.
+	 * This will either be the Litter object the player is currently holding, or the last Litter object the player picked up if they are not currently holding one.
 	 * 
+	 * @param None. 
 	 * @return Litter object most recently picked up by the Player
 	 */
 	public Litter getPickedUpLitter() {
@@ -143,13 +155,6 @@ public class Model {
 	 */
 	public boolean getSpacePressed() {
 		return this.spacePressed;
-	}
-
-	/** Gets {@link #crab}'s current movement direction
-	 *  @return {@link #crab}'s current movement direction
-	 */
-	public int getCrabDirection() {
-		return this.crabDirection;
 	}
 
 	/** Gets the {@link Litter} most recently eaten by an {@link Animal}.
@@ -172,14 +177,6 @@ public class Model {
 	public Receptacle getTBin() {
 		return tBin;
 	}
-
-	/** Sets {@link #crab}'s direction.
-	 *  @param i The new direction for {@link #crab} to move.
-	 */
-	public void setCrabDirection(int i) {
-		this.crabDirection = i;
-	}
-			
 	/** Advances the Model by one frame. 
 	 *  Moves {@link #player}, checks for collisions, runs collision handlers, and moves the {@link #animals}. 
 	 *  Should be called once per expected screen frame. */
@@ -191,12 +188,22 @@ public class Model {
 		
 	}
 	
-	/** Signals that the space key was pressed down */
+	/**
+	 * Method called when the space key is pressed. Sets the spacePressed boolean value to true;
+	 * 
+	 * @param None.
+	 * @return None.
+	 * 
+	 */
 	public void spaceKeyPressed() {
 		this.spacePressed = true;
 	}
 	
-	/** Signals that the space key was released */
+	/**Method called when the space key is released. Sets the spacePressed boolean value to false;
+	 * @param None.
+	 * @return None.
+	 * 
+	 */
 	public void spaceKeyReleased() {
 		this.spacePressed = false;
 	}
@@ -282,7 +289,6 @@ public class Model {
 			crab.setXLocation(crab.getXLocation() + animalXIncr);
 			break;
 		case 5: // going northwest
-			System.out.println("in 6");
 			crab.setYLocation(crab.getYLocation() - animalYIncr);
 			crab.setXLocation(crab.getXLocation() - animalXIncr);
 			break;
@@ -385,7 +391,7 @@ public class Model {
 			// add and health == 0
 			if (Plant.plants[i].health == 0 && Plant.plants[i].getCollidesWith(this.player)) {
 				this.player.growPlant(i);
-				score += 10;
+				changeScore(10);
 				return true;
 			}
 
@@ -394,13 +400,15 @@ public class Model {
 		if(this.player.getHasLitter()) {
 			if(this.player.getCollidesWith(this.tBin) && this.pickedUp.getType() == LitterType.TRASH) {
 				this.tBin.takeLitter(this.player);
-				//System.out.println("DEPOSITED TRASH");
+				System.out.println("DEPOSITED TRASH");
+				changeScore(10);
 				trashVictory = true;
 				return true;
 			}	
 			if(this.player.getCollidesWith(this.rBin) && this.pickedUp.getType() == LitterType.RECYCLABLE) {
 				this.rBin.takeLitter(this.player);
-				//System.out.println("DEPOSITED RECYCLABLE");
+				System.out.println("DEPOSITED RECYCLABLE");
+				changeScore(10);
 				recycleVictory = true;
 				return true;
 			}
@@ -409,9 +417,8 @@ public class Model {
 
 		if (this.player.getCollidesWith(this.crab)) {
 			playerMove = false;
-			animalXIncr = 6;
-			animalYIncr = 6;
-			score -= 5;
+			animalXIncr = 6;// * crab.getSpeed();
+			animalYIncr = 6;// * crab.getSpeed()
 			if (player.getDirection() == Direction.EAST) {
 				crab.setDirection(Direction.EAST);
 			} else if (player.getDirection() == Direction.WEST) {
@@ -444,7 +451,7 @@ public class Model {
 			Litter litter = litterIterator.next();
 			for (Animal animal : this.animals) {
 				if (litter.getCollidesWith(animal)) {
-					score -= 20;
+					changeScore(-20);
 					this.animalEatenLitter = litter;
 					litterIterator.remove();
 					return true;
@@ -452,6 +459,20 @@ public class Model {
 			}
 		}
 		return false;
+	}
+	
+	/**Method to change the game's score.
+	 * 
+	 * @param i The amount of points to be added (positive integer) or subtracted (negative integer) from the score. 
+	 * @return None. 
+	 */
+	public void changeScore(int i) {
+		if(this.score + i < 0) {
+			this.score = 0;
+		}
+		else {
+			this.score += i;
+		}
 	}
 
 }

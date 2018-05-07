@@ -63,9 +63,10 @@ public class Player extends Interactable {
 		Litter.litterSet.remove(l);
 		return l;
 	}
-
-	/** Restores the health of the plant associated with the given index, picks a new plant to deteriorate.
-	 *  @param i The index of the plant to restore
+	/**
+	 * Method that restores a plants health as well as chooses a new plant to start fading. 
+	 * 
+	 * @param i The index in the plant array of the plant to be replanted. 
 	 */
 	public void growPlant(int i) {
 		System.out.println("Plant!");
@@ -144,7 +145,6 @@ public class Player extends Interactable {
 		this.addXLocation(SPEED * this.dx);
 		this.addYLocation(SPEED * this.dy);
 	}
-
 	/** Gets the current {@link #direction} of the Player
 	 *  @return The current {@link #direction} of the Player
 	 */
