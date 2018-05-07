@@ -72,9 +72,13 @@ public class Sprite {
 		PAPER("MapObjects/paper.png",40,40),
 		/** A eaten apple */
 		APPLE("MapObjects/CompostA.png",50,50),
+		/** A trash bin */
 		TRASHBIN("MapObjects/garbage.png",128,128),
+		/** A glowing trash bin */
 		TRASHGLOW("MapObjects/glow-trash.png", 128,128),
+		/** A recycle bin */
 		RECYCLEBIN("MapObjects/recycling-bin.png",128,128),
+		/** A glowing recycle bin */
 		RECYCLEGLOW("MapObjects/recyclegreen.png",128,128);
 		
 		// These values are set to the enum instances. When a Sprite object is instantiated, it copies these values.

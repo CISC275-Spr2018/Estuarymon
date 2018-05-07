@@ -78,13 +78,17 @@ public class View extends JPanel{
 	/** The current score of the game */
 	private int score = 0;
 
+	/** The number of frames that the trash bin has been glowing */
 	private int tGlowCount = 0;
+	/** The number of frames that the recycle bin has been glowing */
 	private int rGlowCount = 0;
 
 	/** Creates a new View, places it in a new JPanel, arranges everything, and makes it visible. */
 	public View() {	
+		// Prepare for rendering litters
 		preloadLitterImgs();
 				
+		// Set up the JFrame
 		frame.setFocusable(true);
 		frame.setLayout(new GridBagLayout());
 		frame.setUndecorated(true);
