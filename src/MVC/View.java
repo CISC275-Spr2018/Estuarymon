@@ -1,4 +1,3 @@
-
 package MVC;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -31,6 +30,7 @@ import javax.swing.JPanel;
 import MVC.Sprite.ID;
 import MapObjects.Litter;
 import MapObjects.Plant;
+import MapObjects.Receptacle;
 import Player.Direction;
 import Player.PlayerStatus;
 
@@ -59,7 +59,7 @@ public class View extends JPanel{
 	boolean hasLitter = false;
 	static ArrayList<ArrayList<Sprite.ID>> litterImgLists = new ArrayList<ArrayList<Sprite.ID>>();
 	static HashMap<Litter, Sprite.ID> litterImgMap = new HashMap<Litter, Sprite.ID>();
-
+	
 	//these plants vars for alpha testing
 	int plant0H;
 	int plant1H;
@@ -67,10 +67,13 @@ public class View extends JPanel{
 	int plant3H;
 	String coords = "";
 	
+	int tGlowCount = 0;
+	int rGlowCount = 0;
+	
 	private int score = 0;
-	public View() {	
+	public View() {
 		preloadLitterImgs();
-
+				
 		frame.setFocusable(true);
 		frame.setLayout(new GridBagLayout());
 		frame.setUndecorated(true);
@@ -82,9 +85,9 @@ public class View extends JPanel{
 		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.setVisible(true);
 	}
-	
-	
-	public void setKeyListener(KeyListener listener) {
+
+
+		public void setKeyListener(KeyListener listener) {
 		frame.addKeyListener(listener);
 	}
 	
@@ -93,8 +96,27 @@ public class View extends JPanel{
 		Sprite.incrementFrameCounter();
 		drawImage(g, Sprite.ID.BACKGROUND, 0, 0);
 		
+		if(Model.trashVictory) {
+		drawImage(g,Sprite.ID.TRASHGLOW,0,Receptacle.trashYpos);
+			if((tGlowCount += 1)%13 <1) {
+				Model.trashVictory = false;
+			}
+			System.out.println(tGlowCount);
+		}
+		else {
+			drawImage(g,Sprite.ID.TRASHBIN,0,Receptacle.trashYpos);
+		}
+		if(Model.recycleVictory) {
+			drawImage(g,Sprite.ID.RECYCLEGLOW,0,Receptacle.recyclingYpos);
+				if((rGlowCount += 1)%13 <1) {
+					Model.recycleVictory = false;
+				}
+				System.out.println(rGlowCount);
+		}		
+		else {
+		drawImage(g,Sprite.ID.RECYCLEBIN,0,Receptacle.recyclingYpos);
+		}
 		
-
 		for(Plant plant : Plant.plants) 
 		{
 			if(plant.health < 100 && plant.health != 0)
@@ -121,11 +143,11 @@ public class View extends JPanel{
 		if(hasLitter) {
 			drawImage(g,getSpriteID(pickedUpLitter),10,10);
 		}
-
 		
+	
 		
 	}
- //looks like this method just looks at the status of the player 
+	//looks like this method just looks at the status of the player 
 	private Sprite.ID getPlayerSprite() {
 		switch(this.playerStatus) {
 			case IDLE:
@@ -175,7 +197,7 @@ public class View extends JPanel{
 		g.setColor(Color.BLACK);
 		g.drawString(word, start + convertDimension(XPos), convertDimension(YPos));
 	}
-
+	
 	// convertDimension: converts a dimension from world coordinates to pixel coordinates
 	private int convertDimension(int world_dimension) {
 		return (int) ((double) world_dimension / Controller.WORLD_WIDTH * this.getWidth());
@@ -190,7 +212,6 @@ public class View extends JPanel{
 			return new Dimension(parent.width, parent.width);
 		}
 	}
-
 	
 	/**Updates the View based on parameters given by Model.
 	 * Updates the Player's and Crab's x and y location, as well as stops the most recent Litter object the player picked up from being rendered on the ground.
