@@ -23,23 +23,26 @@ import Player.Player;
 public class Model {
 	private static final int WIDTH = Controller.WORLD_WIDTH;
 	private static final int HEIGHT = Controller.WORLD_HEIGHT;
-
-	Player player = new Player(0, 0, 165, 165);
-
+	
+	Player player = new Player(0,0, 165,165);
+	
 	boolean spacePressed = false;
 
 	int crabDirection = 3;
-
-	// plantXloc = frameWidth - (frameWidth/3);
-	// plantYloc = (frameHeight / 100) + count;
-
+	
+	//plantXloc = frameWidth - (frameWidth/3);
+	//plantYloc = (frameHeight / 100) + count;
+	
 	int plantDamage = 10;
 	int plantHealth = 100;
-
+	
 	String coords = "";
 
-	Receptacle tBin = new Receptacle(0, 450, 128, 128, ReceptacleType.TRASHBIN);
-	private Receptacle rBin = new Receptacle(0, 580, 128, 128, ReceptacleType.RECYCLINGBIN);
+	Receptacle tBin = new Receptacle(128,128,ReceptacleType.TRASHBIN);
+	private Receptacle rBin = new Receptacle(128,128,ReceptacleType.RECYCLINGBIN);
+	
+	static boolean trashVictory = false;
+	static boolean recycleVictory = false;
 
 	Animal crab;
 	HashSet<Animal> animals;
@@ -53,7 +56,7 @@ public class Model {
 
 	Litter pickedUp;
 	Litter animalEatenLitter;
-
+	
 	/**
 	 * Constructor for the Model. It creates a new animal and initializes a hashset
 	 * of animals just in case more than one animal is wanted in the game. Then the
@@ -64,24 +67,24 @@ public class Model {
 		this.crab = new Animal();
 		animals = new HashSet<Animal>();
 		animals.add(crab);
-
+		
 		int count = 0;
-		// fills plant array
-		for (int i = 0; i < 4; i++) {// health,xloc,yoc
-										// System.out.println(winW - (winW/3));
-										// System.out.println((winH / 100) + count);
-			Plant.plants[i] = new Plant(plantHealth, WIDTH - (WIDTH / 3), 50 + (WIDTH / 90) + count);// sets location of
-																										// plants
+		//fills plant array
+		for(int i = 0; i < 4; i++)
+		{//health,xloc,yoc
+			//System.out.println(winW - (winW/3));
+			//System.out.println((winH / 100) + count);
+			Plant.plants[i] = new Plant(plantHealth, WIDTH - (WIDTH/3), 50+(WIDTH / 90) + count);//sets location of plants
 			count = count + 200;
 		}
 
 		// Fill animals collection (temporary)
 	}
-
+	
 	public static int getWidth() {
 		return WIDTH;
 	}
-
+	
 	public static int getHeight() {
 		return HEIGHT;
 	}
@@ -158,23 +161,23 @@ public class Model {
 	public void setCrabDirection(int i) {
 		this.crabDirection = i;
 	}
-
-	// same method as updateLocationAndDirection()
+			
+	//same method as updateLocationAndDirection()
 	public void updateModel() {
 		this.player.move(playerMove);
 		this.checkCollision();
 		updatingAnimalLocation();
-
+		
 	}
-
+	
 	public void spaceKeyPressed() {
 		this.spacePressed = true;
 	}
-
+	
 	public void spaceKeyReleased() {
 		this.spacePressed = false;
 	}
-
+	
 	/**
 	 * Method that checks whether the crab has hit a wall. If the crab has hit a
 	 * wall it also checks to see what the direction of the crab was, so that it can
@@ -228,7 +231,7 @@ public class Model {
 			crab.setDirection(Direction.SOUTHEAST);
 		}
 	}
-
+	
 	/**
 	 * Method that updates the x and y coordinates of the crab depending on its
 	 * current direction.
@@ -285,48 +288,48 @@ public class Model {
 	public int getScore() {
 		return score;
 	}
-
+	
 	// damage plant every 10 seconds
-	/**
-	 * Method called to decrement plant health by the plantdamage integer value
-	 * 
-	 * @param
-	 * @return
-	 */
-	public void damagePlant() {
-		if (Plant.plants[Plant.randPlant].getHealth() > 0) {
-			Plant.plants[Plant.randPlant].health = Plant.plants[Plant.randPlant].health - plantDamage;
+		/**
+		 * Method called to decrement plant health by the plantdamage integer value
+		 * 
+		 * @param
+		 * @return
+		 */
+		public void damagePlant() {
+			if (Plant.plants[Plant.randPlant].getHealth() > 0) {
+				Plant.plants[Plant.randPlant].health = Plant.plants[Plant.randPlant].health - plantDamage;
+			}
+
 		}
+		
+		/**
+		 * Generates a new Litter object with random x and y coordinates, as well as
+		 * generates a random imgID for the object.
+		 * 
+		 * @return the new Litter object created.
+		 * 
+		 */
+		public Litter spawnLitter() {
+			Random r = new Random();
+			Litter l = new Litter();
+			l.setType(LitterType.randomLitter());
+			int litterXCoord = r.nextInt((WIDTH - l.getWidth()));// generates random coordinates
+			int litterYCoord = r.nextInt((HEIGHT - l.getHeight()));
+			l.setXLocation(litterXCoord);//
+			l.setYLocation(litterYCoord);
+			l.setImgID(Math.abs(r.nextInt()));
+			Litter.litterSet.add(l);// Adds them to hashset of litter, prevents exact duplicates in terms of
+									// coordinates.
+			System.out.println(l);
+			return l;
 
-	}
-
-	/**
-	 * Generates a new Litter object with random x and y coordinates, as well as
-	 * generates a random imgID for the object.
-	 * 
-	 * @return the new Litter object created.
-	 * 
-	 */
-	public Litter spawnLitter() {
-		Random r = new Random();
-		Litter l = new Litter();
-		l.setType(LitterType.randomLitter());
-		int litterXCoord = r.nextInt((WIDTH - l.getWidth()));// generates random coordinates
-		int litterYCoord = r.nextInt((HEIGHT - l.getHeight()));
-		l.setXLocation(litterXCoord);//
-		l.setYLocation(litterYCoord);
-		l.setImgID(Math.abs(r.nextInt()));
-		Litter.litterSet.add(l);// Adds them to hashset of litter, prevents exact duplicates in terms of
-								// coordinates.
-		System.out.println(l);
-		return l;
-
-	}
+		}
 
 	public boolean testCheckColl() {
 		return checkCollision();
 	}
-
+	
 	/**
 	 * Method that deals with all the various collisions in the game. If the player
 	 * collides with the crab, the player is slowed down, the crab goes in the same
@@ -360,17 +363,21 @@ public class Model {
 			}
 
 		}
-
-		if (this.player.getHasLitter()) {
-			if (this.player.getCollidesWith(this.tBin)) {
+		
+		if(this.player.getHasLitter()) {
+			if(this.player.getCollidesWith(this.tBin) && this.pickedUp.getType() == LitterType.TRASH) {
 				this.tBin.takeLitter(this.player);
+				//System.out.println("DEPOSITED TRASH");
+				trashVictory = true;
 				return true;
-			}
-			if (this.player.getCollidesWith(this.rBin)) {
+			}	
+			if(this.player.getCollidesWith(this.rBin) && this.pickedUp.getType() == LitterType.RECYCLABLE) {
 				this.rBin.takeLitter(this.player);
+				//System.out.println("DEPOSITED RECYCLABLE");
+				recycleVictory = true;
 				return true;
 			}
-
+				
 		}
 
 		if (this.player.getCollidesWith(this.crab)) {

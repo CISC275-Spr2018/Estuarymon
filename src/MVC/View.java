@@ -1,4 +1,3 @@
-
 package MVC;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -31,6 +30,7 @@ import javax.swing.JPanel;
 import MVC.Sprite.ID;
 import MapObjects.Litter;
 import MapObjects.Plant;
+import MapObjects.Receptacle;
 import Player.Direction;
 import Player.PlayerStatus;
 
@@ -78,10 +78,13 @@ public class View extends JPanel{
 	/** The current score of the game */
 	private int score = 0;
 
+	private int tGlowCount = 0;
+	private int rGlowCount = 0;
+
 	/** Creates a new View, places it in a new JPanel, arranges everything, and makes it visible. */
 	public View() {	
 		preloadLitterImgs();
-
+				
 		frame.setFocusable(true);
 		frame.setLayout(new GridBagLayout());
 		frame.setUndecorated(true);
@@ -110,6 +113,28 @@ public class View extends JPanel{
 		Sprite.incrementFrameCounter();
 		// Draw the background
 		drawImage(g, Sprite.ID.BACKGROUND, 0, 0);
+		
+		// Draw receptacles
+		if(Model.trashVictory) {
+			drawImage(g,Sprite.ID.TRASHGLOW,0,Receptacle.trashYpos);
+			if((tGlowCount += 1)%13 <1) {
+				Model.trashVictory = false;
+			}
+			System.out.println(tGlowCount);
+		}
+		else {
+			drawImage(g,Sprite.ID.TRASHBIN,0,Receptacle.trashYpos);
+		}
+		if(Model.recycleVictory) {
+			drawImage(g,Sprite.ID.RECYCLEGLOW,0,Receptacle.recyclingYpos);
+			if((rGlowCount += 1)%13 <1) {
+				Model.recycleVictory = false;
+			}
+			System.out.println(rGlowCount);
+		}		
+		else {
+			drawImage(g,Sprite.ID.RECYCLEBIN,0,Receptacle.recyclingYpos);
+		}
 		
 		// Draw all plants
 		for(Plant plant : Plant.plants) 
@@ -229,7 +254,6 @@ public class View extends JPanel{
 			return new Dimension(parent.width, parent.width);
 		}
 	}
-
 	
 	/**Updates the View based on the given parameters.
 	 * Updates the player's location, direction, and status. 
