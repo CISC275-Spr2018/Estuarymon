@@ -1,4 +1,4 @@
 bin
-doc
+doc/generated
 *.swp
 *.swo
