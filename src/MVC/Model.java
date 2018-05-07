@@ -489,4 +489,21 @@ public class Model {
 		}
 	}
 
+
+	/** Gets the width of the Model */
+	public int getWidth() {
+		return WIDTH;
+	}
+
+	/** Gets the height of the Model */
+	public int getHeight() {
+		return HEIGHT;
+	}
+
+	/** Sets the last picked up litter to the parameter
+	 *  @param l The new Litter
+	 */
+	public void setPickedUpLitter(Litter l) {
+		this.pickedUp = l;
+	}
 }

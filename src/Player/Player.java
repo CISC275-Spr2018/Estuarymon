@@ -160,4 +160,11 @@ public class Player extends Interactable {
 	public PlayerStatus getStatus() {
 		return this.status;
 	}
+
+	/** Change the player's direction to the parameter
+	 *  @param d The new direction
+	 */
+	public void setDirection(Direction d) {
+		this.direction = d;
+	}
 }
