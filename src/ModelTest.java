@@ -66,7 +66,7 @@ class ModelTest {
 	
 	@Test
 	void testCrabMotion() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		Animal crab = model.getAnimal();
 		
 		

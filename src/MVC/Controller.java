@@ -14,17 +14,25 @@ import MapObjects.Animal;
 import MapObjects.Plant;
 import Player.Player;
 
-
+/**
+ * Controller class that handles creating Model and View, as well as communication needed between the two. 
+ * Contains TimerTasks for the various events in the game. 
+ * 
+ * @author Zack Klodnicki 
+ *
+ */
 public class Controller implements KeyListener {
-	public static final int WORLD_WIDTH = 1000;
-	public static final int WORLD_HEIGHT = 1000;
+	/** The Model of the game */
 	private Model model;
+	/** The View of the game */
 	private View view;
+	/** The Timer that handles stepping through the game*/
 	private Timer stepTimer;
-	
+	/** Timer that calls the appropriate methods to damage plants */
 	java.util.Timer taskTimer = new java.util.Timer();
+	/** Timer that calls the appropriate methods to spawn Litter */
 	java.util.Timer trashTimer = new java.util.Timer();
-
+	
 	private static final int DRAW_DELAY = 1000/30; // 30fps
 
 	//for alpha only
@@ -88,7 +96,7 @@ public class Controller implements KeyListener {
 	public void start() {
 		view = new View();
 		view.setKeyListener(this);
-		model = new Model();
+		model = new Model(View.WORLD_HEIGHT, View.WORLD_WIDTH);
 		
 		
 		EventQueue.invokeLater(new Runnable() {
@@ -136,6 +144,7 @@ public class Controller implements KeyListener {
 	 * Method called when a key is released and calls the appropriate Model methods depending on what key was pressed. 
 	 * 
 	 * @param e KeyEvent that corresponds to the key released.
+	 * @return None. 
 	 */
 	public void keyReleased(KeyEvent e) {
 		int key = e.getKeyCode();
