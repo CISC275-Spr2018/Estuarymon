@@ -41,51 +41,60 @@ import Player.PlayerStatus;
  *
  **/
 public class View extends JPanel{
+	/** The dimensions of the computer screen, in pixels. */
 	private final static Dimension  screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
+	/** The height of the computer screen, in pixels. */
 	private final static double screenHeight = screenDimension.getHeight();
+	/** The width of the computer screen, in pixels. */
 	private final static double screenWidth = screenDimension.getWidth();
+	/** The JFrame housing this View. */
 	JFrame frame = new JFrame();
-	private static int playerXLoc = 0; //player x location
-	private static int playerYLoc = 0; //player y location
+	/** The x location of the player in world coordinates */
+	private static int playerXLoc = 0;
+	/** The y location of the player in world coordinates */
+	private static int playerYLoc = 0;
+	/** The status of the player, i.e.&nbdp;idle, moving, etc. */
 	private static PlayerStatus playerStatus = PlayerStatus.IDLE;
+	/** The x location of the crab in world coordinates */
 	private static int crabXLoc = 200;
+	/** The y location of the crab in world coordinates */
 	private static int crabYLoc = 400;
 	
+	/** The current direction of the player */
 	private static Direction playerDirection = Direction.EAST;
+	/** The background color of the screen */
 	private static final Color BACKGROUND_COLOR = Color.GRAY;
-	static int bCount;
 	
+	/** The number of distinct trash sprites */
 	private static final int trashImgCount = 2;
+	/** The number of distinct recyclable sprites */
 	private static final int recImgCount = 2;
-	private static final int litterCount = 20;
-	private Sprite.ID[] trashImgs = new Sprite.ID[trashImgCount+1];
-	private Sprite.ID[] recyclableImgs = new Sprite.ID[recImgCount+1];
-	private Litter[] litterArr = new Litter[litterCount];
-	private Litter pickedUpLitter;
-	boolean hasLitter = false;
-	static ArrayList<ArrayList<Sprite.ID>> litterImgLists = new ArrayList<ArrayList<Sprite.ID>>();
-	static HashMap<Litter, Sprite.ID> litterImgMap = new HashMap<Litter, Sprite.ID>();
+	/** The number of distinct litter sprites */
+	private static final int litterCount = trashImgCount + recImgCount;
+	/** The litter currently being help by the player, or null. */
+	private Litter pickedUpLitter = null;
+	/** Whether the player is holding on to litter */
+	private boolean hasLitter = false;
 	
-	//these plants vars for alpha testing
-	int plant0H;
-	int plant1H;
-	int plant2H;
-	int plant3H;
-	String coords = "";
-	
-	int tGlowCount = 0;
-	int rGlowCount = 0;
-	
+	/** A list containing lists of litter sprite ids. Organized into how they may be deposited, i.e. trash vs. recyclable. */
+	private static ArrayList<ArrayList<Sprite.ID>> litterImgLists = new ArrayList<ArrayList<Sprite.ID>>();
+	/** Contains all Litter objects to be rendered onscreen, maps them to a Sprite.ID. */
+	private static HashMap<Litter, Sprite.ID> litterImgMap = new HashMap<Litter, Sprite.ID>();
+
+	/** The current score of the game */
 	private int score = 0;
-	/**
-	 * Constructor for View object, adds JFrame containing the game world to the screen.
-	 * 
-	 * @param None
-	 * @return new View object. 
-	 */
-	public View() {
+
+	/** The number of frames that the trash bin has been glowing */
+	private int tGlowCount = 0;
+	/** The number of frames that the recycle bin has been glowing */
+	private int rGlowCount = 0;
+
+	/** Creates a new View, places it in a new JPanel, arranges everything, and makes it visible. */
+	public View() {	
+		// Prepare for rendering litters
 		preloadLitterImgs();
 				
+		// Set up the JFrame
 		frame.setFocusable(true);
 		frame.setLayout(new GridBagLayout());
 		frame.setUndecorated(true);
@@ -97,19 +106,27 @@ public class View extends JPanel{
 		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.setVisible(true);
 	}
-
-
-		public void setKeyListener(KeyListener listener) {
+	
+	/** Adds a key listener to the associated JFrame 
+	 *  @param listener The listener to add
+	 */
+	public void setKeyListener(KeyListener listener) {
 		frame.addKeyListener(listener);
 	}
 	
+	/** Paints this view
+	 * @param g The {@link java.awt.Graphics} object to use for painting
+	 */
 	public void paint(Graphics g) {
 		super.paint(g);
+		// Increment animations to the next frame
 		Sprite.incrementFrameCounter();
+		// Draw the background
 		drawImage(g, Sprite.ID.BACKGROUND, 0, 0);
 		
+		// Draw receptacles
 		if(Model.trashVictory) {
-		drawImage(g,Sprite.ID.TRASHGLOW,0,Receptacle.trashYpos);
+			drawImage(g,Sprite.ID.TRASHGLOW,0,Receptacle.trashYpos);
 			if((tGlowCount += 1)%13 <1) {
 				Model.trashVictory = false;
 			}
@@ -120,22 +137,23 @@ public class View extends JPanel{
 		}
 		if(Model.recycleVictory) {
 			drawImage(g,Sprite.ID.RECYCLEGLOW,0,Receptacle.recyclingYpos);
-				if((rGlowCount += 1)%13 <1) {
-					Model.recycleVictory = false;
-				}
-				System.out.println(rGlowCount);
+			if((rGlowCount += 1)%13 <1) {
+				Model.recycleVictory = false;
+			}
+			System.out.println(rGlowCount);
 		}		
 		else {
-		drawImage(g,Sprite.ID.RECYCLEBIN,0,Receptacle.recyclingYpos);
+			drawImage(g,Sprite.ID.RECYCLEBIN,0,Receptacle.recyclingYpos);
 		}
 		
+		// Draw all plants
 		for(Plant plant : Plant.plants) 
 		{
-			if(plant.health < 100 && plant.health != 0)
+			if(plant.health < 100 && plant.health != 0) // If decaying...
 			{
 				drawImage(g, Sprite.ID.DECAY_PLANT, plant.getXLocation(), plant.getYLocation());
 			}
-			else if(plant.health == 100)
+			else if(plant.health == 100) // If fully alive...
 			{
 				drawImage(g, Sprite.ID.PLANT, plant.getXLocation(), plant.getYLocation());
 			}
@@ -146,20 +164,23 @@ public class View extends JPanel{
 			drawImage(g,entry.getValue(), entry.getKey().getXLocation(), entry.getKey().getYLocation());
 		}
 
+		// Draw the crab
 		drawImage(g, Sprite.ID.CRAB, crabXLoc, crabYLoc);
+		// Draw the player
 		drawImage(g, getPlayerSprite(), playerXLoc, playerYLoc);
+		// Draw the score
 		drawImage(g, Sprite.ID.SCORESTAR, 900, 0);
 		drawString(g, Integer.toString(score), 100, 900, 65);
-	
+		// Draw the litter in the box
 		drawImage(g, Sprite.ID.LITTERFRAME,0,0);
 		if(hasLitter) {
 			drawImage(g,getSpriteID(pickedUpLitter),10,10);
 		}
-		
-	
-		
 	}
-	//looks like this method just looks at the status of the player 
+
+	/** Determines which {@link Sprite.ID} to use to render the player. Determines this based on the player's {@link #playerStatus status} and {@link #playerDirection direction}.
+	 *  @return The appropriate {@link Sprite.ID} to use to render the player
+	 */
 	private Sprite.ID getPlayerSprite() {
 		switch(this.playerStatus) {
 			case IDLE:
@@ -172,7 +193,7 @@ public class View extends JPanel{
 					case SOUTHWEST: return Sprite.ID.ORC_IDLE_SOUTH;
 					case WEST:
 					case NORTHWEST: return Sprite.ID.ORC_IDLE_WEST;
-					default:
+					default: // Unknown player direction
 						throw new RuntimeException("Unknkown player direction "+this.playerDirection);
 				}
 			case WALKING:
@@ -185,14 +206,20 @@ public class View extends JPanel{
 					case NORTHEAST: return Sprite.ID.ORC_WALK_NORTHEAST;
 					case SOUTHWEST: return Sprite.ID.ORC_WALK_SOUTHWEST;
 					case SOUTHEAST: return Sprite.ID.ORC_WALK_SOUTHEAST;
-					default:
-									throw new RuntimeException("Unknown player direction "+this.playerDirection);
+					default: // Unknown player direction
+						throw new RuntimeException("Unknown player direction "+this.playerDirection);
 				}
-			default:
+			default: // Unknown player status
 				throw new RuntimeException("Unrecognised player status "+this.playerStatus);
 		}
 	}
 
+	/** Renders a {@link Sprite.ID} onto the given Graphics by consuming <em>world</em> coordinates. Does all conversions necessary to render at the correct pixel coordinates.
+	 *  @param g The {@link Graphics} object to use for painting.
+	 *  @param s The {@link Sprite.ID} to use to retrieve the {@link BufferedImage} to draw.
+	 *  @param world_x The x-coordinate of the {@link Sprite.ID} to draw, in <em>world</em> coordinates.
+	 *  @param world_y The y-coordinate of the {@link Sprite.ID} to draw, in <em>world</em> coordinates.
+	 */
 	private void drawImage(Graphics g, Sprite.ID s, int world_x, int world_y) {
 		g.drawImage(
 			Sprite.getImage(s,
@@ -202,6 +229,13 @@ public class View extends JPanel{
 			this);
 	}
 	
+	/** Draws a string centered in the specified horizontal line by consuming <em>world</em> coordinates.
+	 *  @param g The {@link Graphics} object to use for painting.
+	 *  @param word The text to render.
+	 *  @param width The length of the line on which to render the text
+	 *  @param XPos the x-coordinate of the left endpoint of the line, in <em>world</em> coordinates.
+	 *  @param YPos the y-coordinate of the left endpoint of the line, in <em>world</em> coordinates.
+	 */
 	private void drawString(Graphics g, String word, int width, int XPos, int YPos) {
 		g.setFont(new Font("TimesRoman", Font.BOLD, 25));
 		int stringLength = (int) g.getFontMetrics().getStringBounds(word, g).getWidth();
@@ -209,12 +243,18 @@ public class View extends JPanel{
 		g.setColor(Color.BLACK);
 		g.drawString(word, start + convertDimension(XPos), convertDimension(YPos));
 	}
-	
-	// convertDimension: converts a dimension from world coordinates to pixel coordinates
+
+	/** Converts a dimension (i.e.&nbsp;half of a coordinate) from the <em>world</em> coordinate system to the <em>pixel</em> coordinate system.
+	 *  @param world_dimension The dimension (i.e. half of a coordinate) to convert, in the <em>world</em> coordinate system.
+	 *  @return The same dimension as the parameter, in the <em>pixel</em> coordinate system.
+	 */
 	private int convertDimension(int world_dimension) {
 		return (int) ((double) world_dimension / Controller.WORLD_WIDTH * this.getWidth());
 	}
 
+	/** Returns the largest possible square that can fit in the layout. Note that {@link Dimension} in this case is a duple of a width and a height, as opposed to the terminology "dimension" used in {@link #convertDimension}.
+	 *  @return The largest possible square that can fit in the layout
+	 */
 	@Override
 	public Dimension getPreferredSize() {
 		Dimension parent = this.getParent().getSize();
@@ -225,16 +265,18 @@ public class View extends JPanel{
 		}
 	}
 	
-	/**Updates the View based on parameters given by Model.
-	 * Updates the Player's and Crab's x and y location, as well as stops the most recent Litter object the player picked up from being rendered on the ground.
-	 * Also updates the game's score. 
+	/**Updates the View based on the given parameters.
+	 * Updates the player's location, direction, and status. 
+	 * Updates the crab's position. 
+	 * Updates the most recently held {@link Litter}, whether the player is currently holding a {@link Litter}, and the most recent {@link Litter} eaten by the animal.
+	 * Updates the current game score.
 	 * 
-	 * @param playerX The Player's X location
-	 * @param playerY The Player's Y location
+	 * @param playerX The Player's X-location in <em>world</em> coordinates.
+	 * @param playerY The Player's Y-location in <em>world</em> coordinates.
 	 * @param dir The current Direction of the Player. 
 	 * @param status The Player's current status. 
-	 * @param crabX The Animal's X location
-	 * @param crabY The Animal's Y location
+	 * @param crabX The Animal's X-location in <em>world</em> coordinates.
+	 * @param crabY The Animal's Y-location in <em>world</em> coordinates.
 	 * @param playerPickedUp The most recent Litter object picked up by the Player
 	 * @param hasLitter Boolean value representing if the Player is currently holding a Litter object. 
 	 * @param animalEatenLitter The most recent Litter object eaten by the animal. 
@@ -262,7 +304,7 @@ public class View extends JPanel{
 	
 	/**Adds a Litter object to the other Litter objects being rendered on the View
 	 * 
-	 * @param t The Litter object that will be added for rendering.
+	 * @param l The Litter object that will be added for rendering.
 	 */
 	public void addLitter(Litter l) {
 		Sprite.ID curSpriteID = getSpriteID(l);
