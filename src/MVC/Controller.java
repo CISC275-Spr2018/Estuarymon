@@ -14,27 +14,35 @@ import MapObjects.Animal;
 import MapObjects.Plant;
 import Player.Player;
 
-
+/** Manages interfacing {@link View} and {@link Model}, as well as managing timed loops. */
 public class Controller implements KeyListener {
+	/** The width of the world in <em>world</em> coordinates */
 	public static final int WORLD_WIDTH = 1000;
+	/** The height of the world in <em>world</em> coordinates */
 	public static final int WORLD_HEIGHT = 1000;
+	/** The instance of {@link Model}. */
 	private Model model;
+	/** The instance of {@link View}. */
 	private View view;
+	/** The main loop timer */
 	private Timer stepTimer;
 	
-	java.util.Timer taskTimer = new java.util.Timer();
-	java.util.Timer trashTimer = new java.util.Timer();
+	/** A timer used to damage the plants, runs {@link damagePlantTask}*/
+	private java.util.Timer taskTimer = new java.util.Timer();
+	/** A timer used to spawn litter, runs {@link TrashTask} */
+	private java.util.Timer trashTimer = new java.util.Timer();
 
+	/** The delay between game frames */
 	private static final int DRAW_DELAY = 1000/30; // 30fps
 
-	//for alpha only
-	
+	/** The Action to run every frame. Simply calls the {@link #step} method. */
 	private final Action stepAction = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
 			step();
 		}
 	};
 
+	/** Updates the Model and then updates the View to reflect the new properties of the Model. */
 	private void step() {
 		// increment the x and y coordinates, alter direction if necessary
 		model.updateModel();
@@ -51,9 +59,10 @@ public class Controller implements KeyListener {
 			model.getScore());
 	}
 	
-	//plant stuff
+	/** When run, simply calls the Model's {@link Model#damagePlant} method. */
 	class damagePlantTask extends TimerTask 
 	{
+		/** Simply calls the Model's {@link Model#damagePlant} method. */
 		public void run()
 		{
 			model.damagePlant();
@@ -61,9 +70,7 @@ public class Controller implements KeyListener {
 		}
 	}
 	
-	
-	
-	// run the simulation
+	/** Starts the simulation */
 	public void start() {
 		view = new View();
 		view.setKeyListener(this);
@@ -80,6 +87,8 @@ public class Controller implements KeyListener {
 		});
 	}
 
+	/** Changes the player's velocity according to the arrow keys being pressed, or marks that the space key is pressed down.
+	 *  @param e The KeyEvent containing the key that way pressed. */
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
@@ -102,6 +111,8 @@ public class Controller implements KeyListener {
 		}
 	}
 
+	/** Changes the player's velocity according to the arrow keys being released, or mark that the space key is no longer pressed down.
+	 *  @param e The KeyEvent containing the key that was released. */
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int key = e.getKeyCode();
@@ -125,6 +136,9 @@ public class Controller implements KeyListener {
 		}
 	}
 
+	/** Does nothing
+	 *  @param e Ignored
+	 */
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
