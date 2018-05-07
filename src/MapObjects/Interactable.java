@@ -1,6 +1,12 @@
 package MapObjects;
 import java.awt.Rectangle;
 
+/**
+ * Highest class in the Game object Heirarchy. Contains basic attributes for location and dimensions, as well as collision detection.
+ * 
+ * @author Zack Klodnicki
+ *
+ */
 public class Interactable {
 	int xLocation;
 	int yLocation;

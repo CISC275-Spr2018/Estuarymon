@@ -5,6 +5,12 @@ import MapObjects.LitterType;
 import MapObjects.Plant;
 import MapObjects.Receptacle;
 
+/**
+ * Player class that represents the player in the game. Extends the Interactable class. 
+ * 
+ * @author Juan Villacis 
+ *
+ */
 public class Player extends Interactable {
 	public static boolean hasLitter = false;
 	private int dx = 0;
@@ -62,7 +68,11 @@ public class Player extends Interactable {
 		Litter.litterSet.remove(l);
 		return l;
 	}
-
+	/**
+	 * Method that restores a plants health as well as chooses a new plant to start fading. 
+	 * 
+	 * @param i The index in the plant array of the plant to be replanted. 
+	 */
 	public void growPlant(int i) {
 		// TODO
 		System.out.println("Plant!");
@@ -136,11 +146,22 @@ public class Player extends Interactable {
 			this.addYLocation(0);
 		}
 	}
-
+	/**
+	 * Returns the current Direction of the Player. 
+	 * 
+	 * @param None. 
+	 * @return The enum value corresponding to the direction of the player. 
+	 */
 	public Direction getDirection() {
 		return this.direction;
 	}
-
+	
+	/**
+	 * Returns the current status of the Player. 
+	 * 
+	 * @param None. 
+	 * @return The enum value corresponding to the status of the player. 
+	 */
 	public PlayerStatus getStatus() {
 		return this.status;
 	}

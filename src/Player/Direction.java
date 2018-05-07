@@ -1,6 +1,11 @@
 package Player;
 
-
+/**
+ * Enum for Direction of the player. 
+ * 
+ * @author Juan Villacis
+ *
+ */
 public enum Direction {
 
 	NORTH("north"),

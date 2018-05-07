@@ -189,6 +189,7 @@ public class Model {
 		return this.crabDirection;
 	}
 	
+	
 	/**
 	 * Returns the Litter object most recently eaten by the Animal.
 	 * 
@@ -437,13 +438,15 @@ public class Model {
 		if(this.player.getHasLitter()) {
 			if(this.player.getCollidesWith(this.tBin) && this.pickedUp.getType() == LitterType.TRASH) {
 				this.tBin.takeLitter(this.player);
-				//System.out.println("DEPOSITED TRASH");
+				System.out.println("DEPOSITED TRASH");
+				changeScore(10);
 				trashVictory = true;
 				return true;
 			}	
 			if(this.player.getCollidesWith(this.rBin) && this.pickedUp.getType() == LitterType.RECYCLABLE) {
 				this.rBin.takeLitter(this.player);
-				//System.out.println("DEPOSITED RECYCLABLE");
+				System.out.println("DEPOSITED RECYCLABLE");
+				changeScore(10);
 				recycleVictory = true;
 				return true;
 			}

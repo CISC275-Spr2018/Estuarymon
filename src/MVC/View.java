@@ -77,6 +77,12 @@ public class View extends JPanel{
 	int rGlowCount = 0;
 	
 	private int score = 0;
+	/**
+	 * Constructor for View object, adds JFrame containing the game world to the screen.
+	 * 
+	 * @param None
+	 * @return new View object. 
+	 */
 	public View() {
 		preloadLitterImgs();
 				

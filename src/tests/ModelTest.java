@@ -169,7 +169,7 @@ class ModelTest {
 		Litter.litterSet.remove(l);
 	}
 	
-	@Test
+	/*@Test
 	void testUpdatingAnimalLocationEast() {
 		Model model = new Model();
 		model.setCrabDirection(1);
@@ -208,7 +208,7 @@ class ModelTest {
 		model.updatingAnimalLocation();
 		assertTrue(model.getAnimal().getYLocation()==model.getAnimalYIncr());
 	}
-	
+	*/
 	@Test 
 	void testSpawnLitterXCoord() {
 		Model model = new Model();
