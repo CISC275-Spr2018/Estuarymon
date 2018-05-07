@@ -3,7 +3,7 @@ import Player.Player;
 /**Class of the Receptacles in which the Litter objects are placed into. 
  * A subclass of Interactable
  * 
- * 
+ * @author Matthew Gargano
  * 
  * 
  *
@@ -23,13 +23,14 @@ public class Receptacle extends Interactable{
 	}
 	/**Method that removes Litter from the player object 
 	 * @param p the player Object interacting with the receptacle 
+	 * @return
 	 */
 	public void takeLitter(Player p) {
 		Player.hasLitter = false;
 	}
 	/** Method that returns the ReceptacleType
 	 *
-	 * 
+	 * @param
 	 * @return ReceptacleType of the Receptacle
 	 */
 	public ReceptacleType getType() {
