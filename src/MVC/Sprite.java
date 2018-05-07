@@ -173,7 +173,7 @@ public class Sprite {
 	}
 
 	/** Ensures that the image is loaded from disk. Will only load from disk once on a single Sprite instance. 
-	 *  Stores the image in {link #source}.
+	 *  Stores the image in {@link #source}.
 	 */
 	private void loadSource() {
 		// If we've already loaded, then do nothing.
@@ -262,6 +262,7 @@ public class Sprite {
 	}
 
 	/** Retrieve the correctly scaled image according to the scaleFactor, loading from disk if necessary, scaling if necessary, and tiling if necessary.
+	 *  @return The correct sized BufferedImage
 	 *  @param scaleFactor The ratio of the size of the View to the size of the World, as in {@link #getImage(Sprite.ID, double)}
 	 *  @see #getImage(Sprite.ID, double)
 	 */
