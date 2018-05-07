@@ -16,10 +16,6 @@ import Player.Player;
 
 /** Manages interfacing {@link View} and {@link Model}, as well as managing timed loops. */
 public class Controller implements KeyListener {
-	/** The width of the world in <em>world</em> coordinates */
-	public static final int WORLD_WIDTH = 1000;
-	/** The height of the world in <em>world</em> coordinates */
-	public static final int WORLD_HEIGHT = 1000;
 	/** The instance of {@link Model}. */
 	private Model model;
 	/** The instance of {@link View}. */
@@ -93,7 +89,7 @@ public class Controller implements KeyListener {
 	public void start() {
 		view = new View();
 		view.setKeyListener(this);
-		model = new Model();
+		model = new Model(View.WORLD_HEIGHT, View.WORLD_WIDTH);
 		
 		
 		EventQueue.invokeLater(new Runnable() {

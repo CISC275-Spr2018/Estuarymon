@@ -46,13 +46,14 @@ public class Player extends Interactable {
 
 	/**Returns a boolean depending on whether or not this player is currently holding a Litter object that needs to be disposed of. 
 	 * 
+	 * @param None
 	 * @return True if the player is holding a peice of Litter, false otherwise. 
 	 */
 	public boolean getHasLitter() {
 		return this.hasLitter;
 	}
 	
-	/**"Picks up" a Litter object the Player is colliding with.
+	/**"Picks up" a Litter object the Player is colliding with. Removes the Litter from the Litter hashSet and sets Player.hasLitter to true 
 	 * 
 	 * @param l The Litter object being picked up 
 	 * @return The Litter object being picked up
@@ -67,6 +68,7 @@ public class Player extends Interactable {
 	 * Method that restores a plants health as well as chooses a new plant to start fading. 
 	 * 
 	 * @param i The index in the plant array of the plant to be replanted. 
+	 * @return None. 
 	 */
 	public void growPlant(int i) {
 		System.out.println("Plant!");

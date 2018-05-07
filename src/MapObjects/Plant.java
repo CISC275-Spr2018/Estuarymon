@@ -1,6 +1,7 @@
 package MapObjects;
 /**
  * Represents a plant object
+ * 
  * @author Hunter
  *
  */
@@ -35,7 +36,7 @@ public class Plant extends Interactable{
 	/**Gets health of plant object
 	 * 
 	 * @param 
-	 * @return
+	 * @return The Plant's health 
 	 */
 	public int getHealth()
 	{
