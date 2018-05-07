@@ -5,67 +5,45 @@ import MapObjects.LitterType;
 import MapObjects.Plant;
 import MapObjects.Receptacle;
 
-/**
- * Player class that represents the player in the game. Extends the Interactable class. 
- * 
- * @author Juan Villacis 
- *
- */
+/** A user-controlled character that can move around the screen and interact with other map objects */
 public class Player extends Interactable {
-	/** Boolean that determines whether the Player is currently holding a peice of Litter*/
+	/** Whether the Player is carrying {@link Litter}. */
 	public static boolean hasLitter = false;
+	/** Horizontal movement direction. 
+	 *  <code>-1</code> for moving left,
+	 *  <code>0</code> for horizontally stable (initial value),
+	 *  <code>1</code> for moving right.
+	 */
 	private int dx = 0;
+	/** Vertical movement direction.
+	 *  <code>-1</code> for moving up,
+	 *  <code>0</code> for vertically stable (initial value),
+	 *  <code>1</code> for moving down.
+	 */
 	private int dy = 0;
-	/** Speed of the player */
-	private final int speed = 10;
-	/** Direction enum representing the current Player's direction. */
+	/** Movement speed */
+	private static final int SPEED = 10;
+	/** Movement direction.
+	 *  Gets recalculated when {@link #dx} and {@link #dy} are changed to match their behaviour. Initial value is EAST.
+	 */
 	private Direction direction = Direction.EAST;
-	/** PlayerStatus enum representing the current Player's status */
+	/** Player status, i.e.&nbsp;IDLE or WALKING, etc.
+	 *  Gets recalculated when {@link #dx} and {@link #dy} are changed to match their behaviour. Initial value is IDLE.
+	 */
 	private PlayerStatus status = PlayerStatus.IDLE;
-	
-	/** Constructor for a new Player. Sets initial coordinates of the player, as well as its dimensions and the collision Rectangle for it. 
-	 * 
-	 * @param xLoc Initial x location of the Player. 
-	 * @param yLoc Initial y location of the Player.
-	 * @param rWidth Width of the Player. 
-	 * @param rHeight Height of the Player
-	 * @return a new Player object with the specified dimensions and coordinates. 
+
+	/** Create a player with the given position and size, and sets up the collision box.
+	 *  @param xLoc The x-location of the Player
+	 *  @param yLoc The y-location of the Player
+	 *  @param rWidth The width of the Player
+	 *  @param rHeight The height of the Player
 	 */
 	public Player(int xLoc, int yLoc, int rWidth, int rHeight) {
 		super(xLoc, yLoc, rWidth, rHeight);
+		// Set collision rectangle, 40px padding on each side
 		this.setRelativeCollisionRect(40, 40, rWidth - 80, rHeight - 80);
 	}
 
-//	public boolean shouldCollectLitter(Litter l) {
-//		if (this.getCollidesWith(l) && !hasLitter) {
-//	
-//	public boolean shouldCollectLitter(Litter l) {
-//		if(this.getCollidesWith(l) && !hasLitter) {
-//			litterType = l.getType();
-//			return true;
-//		} else {
-//			return false;
-//		}
-//	}
-
-//	public boolean shouldDepositLitter(Receptacle r) {
-//		if (this.getCollidesWith(r) && hasLitter && r.getType().ordinal() == litterType.ordinal()) {
-//			return true;
-//		} else {
-//			return false;
-//		}
-//	}
-//	
-	/**
-	 * Sets the dx attribute of the Player. Used for movement and collision detection. 
-	 * 
-	 * @param dx the Dx attribute of the Player. 
-	 * @return None. 
-	 */
-	public void setDx(int dx) {
-		this.dx = dx;
-	}
-	
 	/**Returns a boolean depending on whether or not this player is currently holding a Litter object that needs to be disposed of. 
 	 * 
 	 * @param None
@@ -81,7 +59,6 @@ public class Player extends Interactable {
 	 * @return The Litter object being picked up
 	 */
 	public Litter pickUpLitter(Litter l) {
-		// TODO
 		System.out.println("Player pick up litter " + l.toString());
 		this.hasLitter = true;
 		Litter.litterSet.remove(l);
@@ -94,13 +71,20 @@ public class Player extends Interactable {
 	 * @return None. 
 	 */
 	public void growPlant(int i) {
-		// TODO
 		System.out.println("Plant!");
 		// restore health and pick new plant
 		Plant.plants[i].health = 100;
 		Plant.randPlant = (int) Math.floor(Math.random() * 4);
 	}
 
+	/** Changes the velocity of the Player relatively, and recalculates {@link #direction} and {@link #status}. For example, if the player is moving left then alterVelocity is called with <code>ddx=1</code> <code>ddy=1</code>, then he will start moving down. This method also keeps the velocities bounded from -1 to 1.
+	 *  @param ddx The amount to change {@link #dx}.
+	 *  @param ddy The amount to change {@link #dy}.
+	 *  @see #dy
+	 *  @see #dy
+	 *  @see #direction
+	 *  @see #status
+	 */
 	public void alterVelocity(int ddx, int ddy) {
 		this.dx += ddx;
 		this.dy += ddy;
@@ -115,7 +99,7 @@ public class Player extends Interactable {
 			this.dy = 1;
 
 		// Fix direction and status
-		this.status = PlayerStatus.WALKING;
+		this.status = PlayerStatus.WALKING; // All but one are WALKING.
 		if (dx < 0) {
 			// left
 			if (dy < 0) {
@@ -157,42 +141,30 @@ public class Player extends Interactable {
 		}
 	}
 
-	public void move(boolean playerMove) {
-		if (playerMove) {
-			this.addXLocation(this.speed * this.dx);
-			this.addYLocation(this.speed * this.dy);
-		} else {
-			this.addXLocation(0);
-			this.addYLocation(0);
-		}
+	
+	/** Moves the player according to it's speed and velocity. */
+	public void move() {
+		this.addXLocation(SPEED * this.dx);
+		this.addYLocation(SPEED * this.dy);
 	}
-	/**
-	 * Returns the current Direction of the Player. 
-	 * 
-	 * @param None. 
-	 * @return The enum value corresponding to the direction of the player. 
+	/** Gets the current {@link #direction} of the Player
+	 *  @return The current {@link #direction} of the Player
 	 */
 	public Direction getDirection() {
 		return this.direction;
 	}
-	
-	/**
-	 * Method that sets the Direction of this Player object
-	 *  
-	 * @param d The new Direction of the Player
-	 * @return None. 
-	 */
-	public void setDirection(Direction d) {
-		this.direction = d;
-	}
-	
-	/**
-	 * Returns the current status of the Player. 
-	 * 
-	 * @param None. 
-	 * @return The enum value corresponding to the status of the player. 
+
+	/** Gets the current {@link #status} of the player
+	 *  @return The current {@link #status} of the Player
 	 */
 	public PlayerStatus getStatus() {
 		return this.status;
+	}
+
+	/** Change the player's direction to the parameter
+	 *  @param d The new direction
+	 */
+	public void setDirection(Direction d) {
+		this.direction = d;
 	}
 }

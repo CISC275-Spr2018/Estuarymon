@@ -14,29 +14,24 @@ import MapObjects.Animal;
 import MapObjects.Plant;
 import Player.Player;
 
-/**
- * Controller class that handles creating Model and View, as well as communication needed between the two. 
- * Contains TimerTasks for the various events in the game. 
- * 
- * @author Zack Klodnicki 
- *
- */
+/** Manages interfacing {@link View} and {@link Model}, as well as managing timed loops. */
 public class Controller implements KeyListener {
-	/** The Model of the game */
+	/** The instance of {@link Model}. */
 	private Model model;
-	/** The View of the game */
+	/** The instance of {@link View}. */
 	private View view;
-	/** The Timer that handles stepping through the game*/
+	/** The main loop timer */
 	private Timer stepTimer;
-	/** Timer that calls the appropriate methods to damage plants */
-	java.util.Timer taskTimer = new java.util.Timer();
-	/** Timer that calls the appropriate methods to spawn Litter */
-	java.util.Timer trashTimer = new java.util.Timer();
 	
+	/** A timer used to damage the plants, runs {@link damagePlantTask}*/
+	private java.util.Timer taskTimer = new java.util.Timer();
+	/** A timer used to spawn litter, runs {@link TrashTask} */
+	private java.util.Timer trashTimer = new java.util.Timer();
+
+	/** The delay between game frames */
 	private static final int DRAW_DELAY = 1000/30; // 30fps
 
-	//for alpha only
-	
+	/** The Action to run every frame. Simply calls the {@link #step} method. */
 	private final Action stepAction = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
 			step();
@@ -85,8 +80,6 @@ public class Controller implements KeyListener {
 		}
 	}
 	
-	
-	
 	/**
 	 * Method that creates a new Model and View, and starts the game. Also creates taskTimers for spawning Litter and damaging Plants. 
 	 * 
@@ -108,15 +101,10 @@ public class Controller implements KeyListener {
 			}
 		});
 	}
-	
-	
+
+	/** Changes the player's velocity according to the arrow keys being pressed, or marks that the space key is pressed down.
+	 *  @param e The KeyEvent containing the key that way pressed. */
 	@Override
-	/**
-	 * Method that listens gets keyboard input and calls the appropriate model method depending on what key is pressed.
-	 * 
-	 * @param e The KeyEvent of the key pressed. 
-	 * @return None. 
-	 */
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 		switch(key) {
@@ -137,15 +125,10 @@ public class Controller implements KeyListener {
 			break;
 		}
 	}
-	
-	
+
+	/** Changes the player's velocity according to the arrow keys being released, or mark that the space key is no longer pressed down.
+	 *  @param e The KeyEvent containing the key that was released. */
 	@Override
-	/**
-	 * Method called when a key is released and calls the appropriate Model methods depending on what key was pressed. 
-	 * 
-	 * @param e KeyEvent that corresponds to the key released.
-	 * @return None. 
-	 */
 	public void keyReleased(KeyEvent e) {
 		int key = e.getKeyCode();
 
@@ -168,6 +151,14 @@ public class Controller implements KeyListener {
 		}
 	}
 
+	/** Does nothing
+	 *  @param e Ignored
+	 */
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+
+	}
 	
 	
 	/**
@@ -190,13 +181,5 @@ public class Controller implements KeyListener {
 		
 			
 		}
-	}
-
-
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 }

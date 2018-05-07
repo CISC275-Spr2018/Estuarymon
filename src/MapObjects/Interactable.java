@@ -8,25 +8,22 @@ import java.awt.Rectangle;
  *
  */
 public class Interactable {
-	/** X location */
+	/** The x-location of the object */
 	int xLocation;
-	/** Y location */
+	/** The y-location of the object */
 	int yLocation;
-	/** Width */
+	/** The width of the object */
 	int width;
-	/** Height */
+	/** The height of the object */
 	int height;
-	/** Rectangle used for collisions. */
+	/** The collision box used by the object. Definition is relative to the 0,0 position of the object. */
 	private Rectangle relativeCollisionBox;
 	
-	/** 
-	 * Constructor for Interactable. Sets basic attributes about location (x, y coordinates), and dimensions (width and height)
-	 * 
-	 * @param x X location of the Interactable
-	 * @param y Y location of the Interactable
-	 * @param width Width of the Interactable.
-	 * @param height Height of the Interactable. 
-	 * @return a new Interactable object with the specified coordinates and dimensions. 
+	/** Create a new Interactable with the given position and dimensions.
+	 *  @param x The x-location of the object
+	 *  @param y The y-location of the object
+	 *  @param width The width of the object
+	 *  @param height The height of the object
 	 */
 	public Interactable(int x, int y, int width, int height) {
 		this.xLocation = x;
@@ -35,6 +32,9 @@ public class Interactable {
 		this.height = height;
 	}
 
+	/** Returns a rectangle representing the collision box of the Interactable, <em>relative to world coordinate 0,0.</em>
+	 *  Note that this is <em>different</em> from the {@link #relativeCollisionBox} used internally.
+	 *  @return The collision box of this Interactable relative to world coordinate 0,0. */
 	public Rectangle getCollisionRect() {
 		if(this.relativeCollisionBox == null) {
 			System.out.println("Warning: no collision box set for "+this.toString());
@@ -45,77 +45,79 @@ public class Interactable {
 		return collisionBox;
 	}
 
-	public void setRelativeCollisionRect(int dx, int dy, int width, int height) {
+	/** Sets the relative collision box of this interactable. Should only be called by subclasses.
+	 *  Note that these coordinates are relative to the 0,0 position of the Interactable at any given time.
+	 *  @param dx The x-coordinate of the left side of the box, relative to the Interactable's x-position.
+	 *  @param dy The y-coordinate of the top side of the box, relative to the Interactable's y-position.
+	 *  @param width The width of the box
+	 *  @param height The height of the box
+	 */
+	protected void setRelativeCollisionRect(int dx, int dy, int width, int height) {
 		this.relativeCollisionBox = new Rectangle(dx, dy, width, height);
 	}
 
+	/** Determines whether this Interactable and another are colliding according to their collision boxes.
+	 *  @return True if the two interactables are colliding; false otherwise. 
+	 */
 	public boolean getCollidesWith(Interactable other) {
 		return this.getCollisionRect().intersects(other.getCollisionRect());
 	}
 	
-	/**
-	 * Returns the height of the Interactable 
-	 * 
-	 * @param None
-	 * @return The height of the Interactable
+	/** Gets the {@link #height} of the Interactable
+	 *  @return The {@link #height} of the Interactable
 	 */
 	public int getHeight() {
 		return this.height;
 	}
 	
-	/**
-	 * Returns the width of the Interactable 
-	 * 
-	 * @param None. 
-	 * @return The width of the Interactable. 
+	/** Gets the {@link #width} of the Interactable
+	 *  @return The {@link #width} of the Interactable
 	 */
 	public int getWidth() {
 		return this.width;
 	}
 	
-	/**
-	 * Sets the xLocation attribute of the Interactable. 
-	 * 
-	 * @param x The x location
-	 * @return None. 
+	/** Sets the x-coordinate of the Interactable
+	 *  @param x The new x-coordinate
 	 */
 	public void setXLocation(int x) {
 		this.xLocation = x;
 	}
 	
-	/**
-	 * Sets the yLocation attribute of the Interactable. 
-	 * 
-	 * @param y The y location 
-	 * @return None. 
+	/** Sets the y-coordinate of the Interactable
+	 *  @param y The new y-coordinate
 	 */
 	public void setYLocation(int y) {
 		this.yLocation = y;
 	}
 
+	/** Adds to the x-coordinate of the Interactable.
+	 *  For example, if a <code>can</code> is at <code>x=200</code> and someone calls <code>can.addXLocation(50)</code>,
+	 *  then the can will now be located at <code>x=250</code>.
+	 *  @param dx The amount to add to the x-coordinate
+	 */
 	public void addXLocation(int dx) {
 		this.xLocation += dx;
 	}
 
+	/** Adds to the y-coordinate of the Interactable.
+	 *  For example, if a <code>can</code> is at <code>y=200</code> and someone calls <code>can.addYLocation(50)</code>,
+	 *  then the can will now be located at <code>y=250</code>.
+	 *  @param dy The amount to add to the y-coordinate
+	 */
 	public void addYLocation(int dy) {
 		this.yLocation += dy;
 	}
 	
-	/**
-	 * Returns the x location of this Interactable object. 
-	 * 
-	 * @param None. 
-	 * @return The x location. 
+	/** Gets the current x-location of the Interactable.
+	 *  @return The current x-location of the Interactable.
 	 */
 	public int getXLocation() {
 		return this.xLocation;
 	}
 	
-	/**
-	 * Returns the y location of this Interactable object.
-	 * 
-	 * @param None. 
-	 * @return the Y location. 
+	/** Gets the current y-location of the Interactable.
+	 *  @return The current y-location of the Interactable.
 	 */
 	public int getYLocation() {
 		return this.yLocation;

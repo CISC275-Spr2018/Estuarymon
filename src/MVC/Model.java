@@ -15,7 +15,7 @@ import Player.Player;
 
 /**
  * Model: Contains all the state and logic Does not contain anything about
- * images or graphics, must ask view for that
+ * images or graphics, must ask {@link View} for that
  *
  * has methods to
  *  detect collision with boundaries
@@ -32,38 +32,51 @@ public class Model {
 	private static int WIDTH;
 	private static int HEIGHT;
 	
-	Player player = new Player(0,0, 165,165);
+	/** The only controllable object in the game. 
+	 *  @see Player */
+	private Player player = new Player(0,0, 165,165);
 	
-	boolean spacePressed = false;
+	/** Whether the space key is currently pressed down. */
+	private boolean spacePressed = false;
 
-	int crabDirection = 3;
+	/** The current movement direction of the {@link #crab}. */
+	private int crabDirection = 3;
 	
-	//plantXloc = frameWidth - (frameWidth/3);
-	//plantYloc = (frameHeight / 100) + count;
+	/** The amount of health to detract from the Plant every time it is damaged */
+	private static final int plantDamage = 10;
+	/** The initial amount of health of each Plant */
+	private static final int plantHealth = 100;
 	
-	int plantDamage = 10;
-	int plantHealth = 100;
-	
-	String coords = "";
-
-	Receptacle tBin = new Receptacle(128,128,ReceptacleType.TRASHBIN);
+	/** The trash bin */
+	private Receptacle tBin = new Receptacle(128,128,ReceptacleType.TRASHBIN);
+	/** The recycle bin */
 	private Receptacle rBin = new Receptacle(128,128,ReceptacleType.RECYCLINGBIN);
 	
-	static boolean trashVictory = false;
-	static boolean recycleVictory = false;
+	/** Whether the trash bin recently received a piece of Litter */
+	public static boolean trashVictory = false;
+	/** Whether the recycle bin recently received a piece of Litter */
+	public static boolean recycleVictory = false;
 
-	Animal crab;
-	HashSet<Animal> animals;
+	/** The Crab, currently the only Animal in the game. */
+	private Animal crab;
+	/** Every animal in the world. Currently only the crab. */
+	private HashSet<Animal> animals;
 
-	int animalXIncr = 4;
-	int animalYIncr = 4;
+	/** The horizontal speed of the Crab */
+	private int animalXIncr = 4;
+	/** The vertical speed of the Crab */
+	private int animalYIncr = 4;
 
-	boolean playerMove = true;
+	/** Whether the player is allowed to move this frame. Set to false under specific circumstances, i.e. when colliding with an Animal */
+	private boolean playerMove = true;
 
+	/** The current game score */
 	private int score = 0;
 
-	Litter pickedUp;
-	Litter animalEatenLitter;
+	/** The last Litter to be picked up by the {@link #player} */
+	private Litter pickedUp;
+	/** The last Litter to be picked up by an {@link #animals animal} */
+	private Litter animalEatenLitter;
 	
 	/**
 	 * Constructor for the Model. It creates a new animal and initializes a hashset
@@ -87,38 +100,12 @@ public class Model {
 		int count = 0;
 		//fills plant array
 		for(int i = 0; i < 4; i++)
-		{//health,xloc,yoc
-			//System.out.println(winW - (winW/3));
-			//System.out.println((winH / 100) + count);
+		{
 			Plant.plants[i] = new Plant(plantHealth, WIDTH - (WIDTH/3), 50+(WIDTH / 90) + count);//sets location of plants
 			count = count + 200;
 		}
-
-		// Fill animals collection (temporary)
 	}
 	
-	/**
-	 * Returns the width of the Model. 
-	 * 
-	 * @param None
-	 * @return The width of the model.
-	 */
-	public static int getWidth() {
-		return WIDTH;
-	}
-
-
-
-	/**
-	 * Returns the height of the Model.
-	 * 
-	 * @param None. 
-	 * @return The height of the Model. 
-	 */
-	public static int getHeight() {
-		return HEIGHT;
-	}
-
 	/**
 	 * Simple getter method that retrieves the amount the x coordinate should be
 	 * incremented by.
@@ -171,67 +158,40 @@ public class Model {
 	public Litter getPickedUpLitter() {
 		return this.pickedUp;
 	}
-	
-	/**
-	 * Setter for pickedUp Litter object. Testing purposes only. 
-	 * 
-	 * @param l the Litter object pickedUp will be set to
-	 * @return none. 
-	 */
-	public void setPickedUpLitter(Litter l) {
-		this.pickedUp = l;
-	}
-	
-	/**
-	 * Returns the spacePressed boolean of the Model, which tells whether or not the space key is currently being pressed. 
-	 * 
-	 * @param None. 
-	 * @return The spacePressed boolean. True if the spaceKey is currently being pressed, false otherwise. 
+
+	/** Gets whether the space key is pressed down.
+	 *  @return Whether the space key is pressed down.
 	 */
 	public boolean getSpacePressed() {
 		return this.spacePressed;
 	}
-	
-	/**
-	 * Returns the Litter object most recently eaten by the Animal.
-	 * 
-	 * 
-	 * @param None.
-	 * @return Litter object most recently eaten by the Animal.
+
+	/** Gets the {@link Litter} most recently eaten by an {@link Animal}.
+	 *  @return The {@link Litter} most recently eaten by an {@link Animal}.
 	 */
 	public Litter getAnimalEatenLitter() {
 		return this.animalEatenLitter;
 	}
 
-	
-	/**
-	 * Returns the RecyclingBin Receptacle in the game. 
-	 * 
-	 * @param None. 
-	 * @return The RecyclingBin Receptacle. 
+	/** Gets the {@link #rBin recycle bin}.
+	 *  @return The {@link #rBin recycle bin}.
 	 */
 	public Receptacle getRBin() {
 		return rBin;
 	}
-	
-	/**
-	 * Returns the TrashBin Receptacle in the game. 
-	 * 
-	 * @param None. 
-	 * @return The TrashBin Receptacle. 
+
+	/** Gets the {@link #tBin trash bin}.
+	 *  @return The {@link #tBin trash bin}.
 	 */
 	public Receptacle getTBin() {
 		return tBin;
 	}
-	
-	/**
-	 * Method that updates the Model by calling methods to move the Player and Animal, as well as check collisions between various game objects. 
-	 * 
-	 * @param None. 
-	 * @return None. 
-	 */
+	/** Advances the Model by one frame. 
+	 *  Moves {@link #player}, checks for collisions, runs collision handlers, and moves the {@link #animals}. 
+	 *  Should be called once per expected screen frame. */
 	public void updateModel() {
-		this.player.move(playerMove);
+		if(playerMove)
+			this.player.move();
 		this.checkCollision();
 		updatingAnimalLocation();
 		
@@ -405,6 +365,10 @@ public class Model {
 
 		}
 
+	/** A public version of {@link #checkCollision} only for use by the {@link ModelTest} class.
+	 *  @see #checkCollision
+	 *  @see ModelTest
+	 */
 	public boolean testCheckColl() {
 		return checkCollision();
 	}
@@ -422,7 +386,7 @@ public class Model {
 	 * Also checks if Player and any of the Plants on screen are colliding. If they are and the plant has no health, the appropriate methods are called to regrow the Plant. 
 	 * 
 	 * @param empty
-	 * @return boolean for testing purposes. True if 
+	 * @return whether a collision has been detected
 	 */
 	private boolean checkCollision() {
 
@@ -525,4 +489,21 @@ public class Model {
 		}
 	}
 
+
+	/** Gets the width of the Model */
+	public int getWidth() {
+		return WIDTH;
+	}
+
+	/** Gets the height of the Model */
+	public int getHeight() {
+		return HEIGHT;
+	}
+
+	/** Sets the last picked up litter to the parameter
+	 *  @param l The new Litter
+	 */
+	public void setPickedUpLitter(Litter l) {
+		this.pickedUp = l;
+	}
 }
