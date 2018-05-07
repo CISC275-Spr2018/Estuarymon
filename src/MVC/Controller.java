@@ -38,7 +38,7 @@ public class Controller implements KeyListener {
 	private void step() {
 		// increment the x and y coordinates, alter direction if necessary
 		model.updateModel();
-		view.update(
+		view.update(		
 			model.getPlayer().getXLocation(),
 			model.getPlayer().getYLocation(),
 			model.getPlayer().getDirection(),
@@ -47,7 +47,8 @@ public class Controller implements KeyListener {
 			model.getAnimal().getYLocation(),
 			model.getPickedUpLitter(),
 			model.getPlayer().getHasLitter(),
-			model.getAnimalEatenLitter());
+			model.getAnimalEatenLitter(),
+			model.getScore());
 	}
 	
 	//plant stuff
@@ -56,23 +57,10 @@ public class Controller implements KeyListener {
 		public void run()
 		{
 			model.damagePlant();
-			//show plant health on screen
-			//view.plant0H = Plant.plants[0].health;
-			//view.plant1H = Plant.plants[1].health;
-			//view.plant2H = Plant.plants[2].health;
-			//view.plant3H = Plant.plants[3].health;
+
 		}
 	}
 	
-	class checkPlantTask extends TimerTask 
-	{
-		public void run()
-		{
-			//checkPlants();
-			//for alpha testing
-			view.coords = model.coords;
-		}
-	}
 	
 	
 	// run the simulation
@@ -87,7 +75,6 @@ public class Controller implements KeyListener {
 				stepTimer = new Timer(DRAW_DELAY, stepAction);
 				stepTimer.start();
 				taskTimer.scheduleAtFixedRate(new damagePlantTask(),500,1000);//damages plants every ten seconds
-				taskTimer.scheduleAtFixedRate(new checkPlantTask(),500,100);//evaluates plants with player every second
 				trashTimer.scheduleAtFixedRate(new TrashTask(), 0, 10000);
 			}
 		});

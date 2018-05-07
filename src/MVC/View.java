@@ -1,3 +1,4 @@
+
 package MVC;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -5,25 +6,23 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 
+
 import javax.imageio.ImageIO;
-import javax.swing.Box;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -49,6 +48,7 @@ public class View extends JPanel{
 	private static Direction playerDirection = Direction.EAST;
 	private static final Color BACKGROUND_COLOR = Color.GRAY;
 	static int bCount;
+	
 	private static final int trashImgCount = 2;
 	private static final int recImgCount = 2;
 	private static final int litterCount = 20;
@@ -66,27 +66,11 @@ public class View extends JPanel{
 	int plant2H;
 	int plant3H;
 	String coords = "";
-
-	public View() {
+	
+	private int score = 0;
+	public View() {	
 		preloadLitterImgs();
-		
-		
-		JLabel trashBin = new JLabel();
-		ImageIcon trashIcon = new ImageIcon("images/MapObjects/garbage.png");
-		Image trashImg = trashIcon.getImage();
-		Image secondTrashImg = trashImg.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH) ;
-		trashBin.setIcon(new ImageIcon(secondTrashImg));
-		trashBin.setBounds(0,450,100,100);
-		//frame.getContentPane().add(trashBin);
-		
-		JLabel recycleBin = new JLabel();
-		ImageIcon recycleIcon = new ImageIcon("images/MapObjects/recycling-bin.png");
-		Image recycleImg = recycleIcon.getImage();
-		Image secondRecycleImg = recycleImg.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH) ;
-		recycleBin.setIcon(new ImageIcon(secondRecycleImg));
-		recycleBin.setBounds(0,580,100,100);
-		//frame.getContentPane().add(recycleBin);
-				
+
 		frame.setFocusable(true);
 		frame.setLayout(new GridBagLayout());
 		frame.setUndecorated(true);
@@ -98,18 +82,6 @@ public class View extends JPanel{
 		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.setVisible(true);
 	}
-
-	/*//makes plant dissappear if health is zero
-	public void deletePlant(int pick)
-	{
-		plantImgs.get(pick).setVisible(false);
-	}
-	//make plant reappear
-	public void revivePlant(int pick)
-	{
-		plantImgs.get(pick).setVisible(true);
-	}*/
-	
 	
 	
 	public void setKeyListener(KeyListener listener) {
@@ -123,37 +95,37 @@ public class View extends JPanel{
 		
 		
 
-		for(Plant plant : Plant.plants) {
-			drawImage(g, Sprite.ID.PLANT, plant.getXLocation(), plant.getYLocation());
+		for(Plant plant : Plant.plants) 
+		{
+			if(plant.health < 100 && plant.health != 0)
+			{
+				drawImage(g, Sprite.ID.DECAY_PLANT, plant.getXLocation(), plant.getYLocation());
+			}
+			else if(plant.health == 100)
+			{
+				drawImage(g, Sprite.ID.PLANT, plant.getXLocation(), plant.getYLocation());
+			}
 		}
 		
 		//traverse through litter set and draw them, had to make a copy of litter set everytime to avoid ConcurrentModificationExceptions.
 		for(Map.Entry<Litter, Sprite.ID>entry: new HashMap<Litter,Sprite.ID>(litterImgMap).entrySet()) {
-			drawImage(g,entry.getValue(),
-				convertDimension(entry.getKey().getXLocation()),
-				convertDimension(entry.getKey().getYLocation()));
-			
+			drawImage(g,entry.getValue(), entry.getKey().getXLocation(), entry.getKey().getYLocation());
 		}
 
-		g.setColor(Color.RED);
-		g.setFont(new Font("TimesRoman", Font.BOLD, 25)); 
-		g.drawString(""+plant0H, 550, 100);//change to make it the spacing as the plant jlabels
-		g.drawString(""+plant1H, 550, 260);
-		g.drawString(""+plant2H, 550, 460);
-		g.drawString(""+plant3H, 550, 660);
-		g.setColor(Color.PINK);
-		g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
-		g.drawString(coords, 10, 20);
 		drawImage(g, Sprite.ID.CRAB, crabXLoc, crabYLoc);
 		drawImage(g, getPlayerSprite(), playerXLoc, playerYLoc);
+		drawImage(g, Sprite.ID.SCORESTAR, 900, 0);
+		drawString(g, Integer.toString(score), 100, 900, 65);
+	
 		drawImage(g, Sprite.ID.LITTERFRAME,0,0);
 		if(hasLitter) {
 			drawImage(g,getSpriteID(pickedUpLitter),10,10);
 		}
+
 		
 		
 	}
-
+ //looks like this method just looks at the status of the player 
 	private Sprite.ID getPlayerSprite() {
 		switch(this.playerStatus) {
 			case IDLE:
@@ -196,13 +168,18 @@ public class View extends JPanel{
 			this);
 	}
 	
+	private void drawString(Graphics g, String word, int width, int XPos, int YPos) {
+		g.setFont(new Font("TimesRoman", Font.BOLD, 25));
+		int stringLength = (int) g.getFontMetrics().getStringBounds(word, g).getWidth();
+		int start = convertDimension(width)/2 - stringLength/2;
+		g.setColor(Color.BLACK);
+		g.drawString(word, start + convertDimension(XPos), convertDimension(YPos));
+	}
 
 	// convertDimension: converts a dimension from world coordinates to pixel coordinates
 	private int convertDimension(int world_dimension) {
 		return (int) ((double) world_dimension / Controller.WORLD_WIDTH * this.getWidth());
 	}
-
-	
 
 	@Override
 	public Dimension getPreferredSize() {
@@ -213,6 +190,7 @@ public class View extends JPanel{
 			return new Dimension(parent.width, parent.width);
 		}
 	}
+
 	
 	/**Updates the View based on parameters given by Model.
 	 * Updates the Player's and Crab's x and y location, as well as stops the most recent Litter object the player picked up from being rendered on the ground.
@@ -227,7 +205,7 @@ public class View extends JPanel{
 	 * @param hasLitter Boolean value representing if the Player is currently holding a Litter object. 
 	 * @param animalEatenLitter The most recent Litter object eaten by the animal. 
 	 */
-	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter) {
+	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score) {
 		//Updating crab and player locations
 		playerXLoc = playerX;
 		playerYLoc = playerY;
@@ -236,6 +214,8 @@ public class View extends JPanel{
 
 		crabXLoc = crabX;
 		crabYLoc = crabY;
+		
+		this.score = score;
 		
 		//Remove both litter parameter from HashMap so it does not get painted.
 		litterImgMap.remove(playerPickedUp);
@@ -249,6 +229,17 @@ public class View extends JPanel{
 	 * 
 	 * @param t The Litter object that will be added for rendering.
 	 */
+
+	//don't worry about this
+//	public void setLitterImage(Litter l) {
+//		switch(l.getType()){
+//		case TRASH:
+//			l.setlitterImage(trashImgs[(int)(Math.random()*trashImgs.length)]);
+//			break;
+//		case RECYCLABLE:
+//			l.setlitterImage(recyclableImgs[(int)(Math.random()*recyclableImgs.length)]);
+//		}
+
 	public void addLitter(Litter l) {
 		Sprite.ID curSpriteID = getSpriteID(l);
 		litterImgMap.put(l, curSpriteID);

@@ -56,10 +56,14 @@ public class Sprite {
 
 		/** A crab */
 		CRAB("Animal/crab.png", 150, 100, 7, 5),
+		/** A star intended to house the current score */
+		SCORESTAR("MapObjects/FlatIcon-074.png", 100, 100),
 		/** A box intended to house a type of litter */
 		LITTERFRAME("MapObjects/litterbox.png", 75,75),
 		/** A plant */
 		PLANT("MapObjects/azalea.png", 100, 100),
+		/** A decaying plant */
+		DECAY_PLANT("MapObjects/dazal.png", 100, 100),
 		/** A banana peel */
 		BANANAPEEL("MapObjects/bananaSkin.png",40,40),
 		/** A soda can */
