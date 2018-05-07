@@ -37,9 +37,12 @@ class Sprite {
 		BANANAPEEL("MapObjects/bananaSkin.png",40,40),
 		SODACAN("MapObjects/Soda-Can.png",40,40),
 		PAPER("MapObjects/paper.png",40,40),
-		APPLE("MapObjects/CompostA.png",50,50);
+		APPLE("MapObjects/CompostA.png",50,50),
+		TRASHBIN("MapObjects/garbage.png",128,128),
+		TRASHGLOW("MapObjects/glow-trash.png", 128,128),
+		RECYCLEBIN("MapObjects/recycling-bin.png",128,128),
+		RECYCLEGLOW("MapObjects/recyclegreen.png",128,128);
 		
-
 		private String fname;
 		private int worldWidth;
 		private int worldHeight;
