@@ -36,6 +36,8 @@ public class Model {
 	 *  @see Player */
 	private Player player = new Player(0,0, 165,165);
 	
+	private GameState gameState = GameState.TUTORIAL;
+	
 	/** Whether the space key is currently pressed down. */
 	private boolean spacePressed = false;
 
@@ -106,6 +108,14 @@ public class Model {
 		}
 	}
 	
+	public GameState getGameState() {
+		return gameState;
+	}
+
+	public void setGameState(GameState gameState) {
+		this.gameState = gameState;
+	}
+
 	/**
 	 * Simple getter method that retrieves the amount the x coordinate should be
 	 * incremented by.
@@ -190,11 +200,27 @@ public class Model {
 	 *  Moves {@link #player}, checks for collisions, runs collision handlers, and moves the {@link #animals}. 
 	 *  Should be called once per expected screen frame. */
 	public void updateModel() {
+		switch(gameState) {
+		case REGULARGAME:
+			updateModelNormal();
+			break;
+		case TUTORIAL:
+			updateModelTutorial();
+		}
+		
+		
+	}
+	
+	public void updateModelTutorial() {
+		if(playerMove)
+			this.player.move();
+	}
+	
+	public void updateModelNormal() {
 		if(playerMove)
 			this.player.move();
 		this.checkCollision();
 		updatingAnimalLocation();
-		
 	}
 	
 	/**
