@@ -110,7 +110,7 @@ public class Model implements java.io.Serializable{
 		this.HEIGHT = height;
 		this.WIDTH = width;
 		int count = 0;
-		river = new River(WIDTH -200, 0, 200, HEIGHT);
+		river = new River(WIDTH - 200, 0, WIDTH, HEIGHT);
 		//fills plant array
 		for(int i = 0; i < 4; i++)
 		{
