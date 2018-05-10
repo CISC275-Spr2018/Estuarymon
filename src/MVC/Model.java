@@ -78,9 +78,10 @@ public class Model implements java.io.Serializable{
 	private Litter pickedUp;
 	/** The last Litter to be picked up by an {@link #animals animal} */
 	private Litter animalEatenLitter;
-
+	/**Contains plant objects**/
 	private ArrayList<Plant> plants = new ArrayList<Plant>();
-	int randPlant = (int) Math.floor(Math.random() * 4);
+	/**Random index of next plant**/
+	private int randPlant = (int) Math.floor(Math.random() * 4);
 
 	/**
 	 * Constructor for the Model. It creates a new animal and initializes a hashset
@@ -351,6 +352,17 @@ public class Model implements java.io.Serializable{
 	public void setRandPlant()
 	{
 		this.randPlant = (int) Math.floor(Math.random() * 4);
+	}
+	
+	/**
+	 * Method called to return randPlant index
+	 * 
+	 * @param
+	 * @return
+	 */
+	public int getRandPlant()
+	{
+		return randPlant;
 	}
 
 	public ArrayList<Plant> getPlants()

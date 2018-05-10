@@ -115,6 +115,7 @@ public class Controller implements KeyListener {
 	}
 
 	/** Changes the player's velocity according to the arrow keys being pressed, or marks that the space key is pressed down.
+	 * If spacebar is pressed trash is collected. If 1 is press game is saved. If 2 is pressed game is loaded.
 	 *  @param e The KeyEvent containing the key that way pressed. */
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -144,6 +145,12 @@ public class Controller implements KeyListener {
 		}
 	}
 	
+	/**
+	 * Method that serializes the state of model to a serial file.
+	 * 
+	 * @param None. 
+	 * @return None. 
+	 */
 	public void saveGame()
 	{
 		try
@@ -160,6 +167,14 @@ public class Controller implements KeyListener {
 		}
 	}
 	
+	
+	/**
+	 * Method that loads the serializable file and changes the attributes in model.
+	 * 
+	 * @param None. 
+	 * @return None. 
+	 */
+	 
 	public void loadGame()
 	{
 		try
@@ -177,7 +192,7 @@ public class Controller implements KeyListener {
 
 	
 	/** Changes the player's velocity according to the arrow keys being released, or mark that the space key is no longer pressed down.
-	 *  @param e The KeyEvent containing the key that was released. */
+	 *  @param e The KeyEvent containing the key that was rseleased. */
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int key = e.getKeyCode();
@@ -187,7 +202,7 @@ public class Controller implements KeyListener {
 			model.getPlayer().alterVelocity(0, 1);
 			break;
 		case KeyEvent.VK_DOWN:
-			model.getPlayer().alterVelocity(0, -1);
+			model.getPlayer().alterVelocity(0, -1); 
 			break;
 		case KeyEvent.VK_RIGHT:
 			model.getPlayer().alterVelocity(-1, 0);

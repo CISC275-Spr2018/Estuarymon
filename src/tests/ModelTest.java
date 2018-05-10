@@ -27,7 +27,7 @@ class ModelTest {
 	{
 		Model model = new Model(1000,1000);
 		model.damagePlant();
-		assertTrue(Plant.plants[Plant.randPlant].getHealth()==90);
+		assertTrue(model.getPlants().get(model.getRandPlant()).getHealth()==90);
 		
 	}
 	
