@@ -11,6 +11,7 @@ import MapObjects.LitterType;
 import MapObjects.Plant;
 import MapObjects.Receptacle;
 import MapObjects.ReceptacleType;
+import MapObjects.River;
 import Player.Direction;
 import Player.Player;
 
@@ -88,7 +89,8 @@ public class Model implements java.io.Serializable{
 	private ArrayList<Plant> plants = new ArrayList<Plant>();
 	/**Random index of next plant**/
 	private int randPlant = (int) Math.floor(Math.random() * 4);
-
+	/**onscreen river**/
+	River river;
 	/**
 	 * Constructor for the Model. It creates a new animal and initializes a hashset
 	 * of animals just in case more than one animal is wanted in the game. Then the
@@ -107,12 +109,12 @@ public class Model implements java.io.Serializable{
 		animals.add(crab);
 		this.HEIGHT = height;
 		this.WIDTH = width;
-
 		int count = 0;
+		river = new River(WIDTH -200, 0, 200, HEIGHT);
 		//fills plant array
 		for(int i = 0; i < 4; i++)
 		{
-			plants.add(new Plant(plantHealth, WIDTH - (WIDTH/3), 50+(WIDTH / 90) + count));//sets location of plants
+			plants.add(new Plant(plantHealth, river.getXLocation() - 200, 50+(WIDTH / 90) + count));//sets location of plants
 			count = count + 200;
 		}
 	}
@@ -388,10 +390,25 @@ public class Model implements java.io.Serializable{
 	{
 		return randPlant;
 	}
-
+	/**
+	 * Method called to return plant array
+	 * 
+	 * @param
+	 * @return plants the array of plants
+	 */
 	public ArrayList<Plant> getPlants()
 	{
 		return plants;
+	}
+	/**
+	 * Method called to return river
+	 * 
+	 * @param
+	 * @return river object that represents in game river
+	 */
+	public River getRiver()
+	{
+		return river;
 	}
 
 	/**
