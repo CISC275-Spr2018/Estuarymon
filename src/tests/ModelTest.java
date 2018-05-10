@@ -22,12 +22,12 @@ class ModelTest {
 	//View view = new View(new Animal());
 	//view.setKeyListener(this);
 	
-	Model model = new Model(1000,1000);
 	@Test
 	void testDamagePlant() 
 	{
-		
+		Model model = new Model(1000,1000);
 		model.damagePlant();
+		assertTrue(Plant.plants[Plant.randPlant].getHealth()==90);
 		
 	}
 	
@@ -376,6 +376,23 @@ class ModelTest {
 		model.getPlayer().setDirection(Direction.SOUTHWEST);
 		model.testCheckColl();
 		assertTrue(model.getAnimal().getDirection()==Direction.SOUTHWEST);
+	}
+	
+	@Test
+	void testLitterAdding() {
+		Model model = new Model(1000,1000);
+		Litter l = new Litter();
+		Litter.litterSet.add(l);
+		assertTrue(Litter.litterSet.contains(l)==true);
+	}
+	
+	@Test
+	void testLitterRemoving() {
+		Model model = new Model(1000,1000);
+		Litter l = new Litter();
+		Litter.litterSet.add(l);
+		Litter.litterSet.remove(l);
+		assertTrue(Litter.litterSet.contains(l)==false);
 	}
 	
 	
