@@ -37,8 +37,9 @@ public class Model implements java.io.Serializable{
 	/** The only controllable object in the game. 
 	 *  @see Player */
 	private Player player = new Player(240,240, 165,165);
-	
+	/** Current state of the overall game */
 	private GameState gameState = GameState.TUTORIAL;
+	/** Current state of the tutorial */
 	private GameState tutorialState = GameState.TUTORIAL_SPAWNTRASH;
 	
 	/** Whether the Player is carrying {@link Litter}. */
@@ -99,6 +100,8 @@ public class Model implements java.io.Serializable{
 	private int randPlant = (int) Math.floor(Math.random() * 4);
 	
 	private Litter litterSpawned;
+	
+	private boolean plantGrown = false;
 	
 	/**
 	 * Constructor for the Model. It creates a new animal and initializes a hashset
@@ -316,6 +319,15 @@ public class Model implements java.io.Serializable{
 			}
 			break;
 		case TUTORIAL_SIGNALPLANT:
+			System.out.println("reached signal plant");
+			if(this.plantGrown) {
+				spawnLitter(LitterType.RECYCLABLE);
+				this.tutorialState = GameState.TUTORIAL_CRABEATLITTER;
+			}
+			break;
+		case TUTORIAL_CRABEATLITTER:
+			
+			break;
 			
 			
 			
@@ -582,8 +594,9 @@ public class Model implements java.io.Serializable{
 			if (plant.health == 0 && plant.getCollidesWith(this.player)) 
 			{
 				//this.player.growPlant(i);
-				setRandPlant();
 				plant.health = 100;
+				setRandPlant();
+				this.plantGrown = true;
 				changeScore(10);
 				return true;
 			}
