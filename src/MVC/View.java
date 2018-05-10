@@ -45,7 +45,7 @@ import Player.PlayerStatus;
  **/
 public class View extends JPanel{
 	/** The width of the game world */
-	public static final int WORLD_WIDTH = 1000;
+	public static final int WORLD_WIDTH = 1500;
 	/** The height of the game world */
 	public static final int WORLD_HEIGHT = 1000;
 	/** The dimensions of the computer screen, in pixels. */
@@ -55,7 +55,7 @@ public class View extends JPanel{
 	/** The width of the computer screen, in pixels. */
 	private final static double screenWidth = screenDimension.getWidth();
 	/** The JFrame housing this View. */
-	JFrame frame = new JFrame();
+	JFrame frame;
 	/** The x location of the player in world coordinates */
 	private static int playerXLoc = 0;
 	/** The y location of the player in world coordinates */
@@ -103,8 +103,8 @@ public class View extends JPanel{
 		preloadLitterImgs();
 				
 		// Set up the JFrame
+		frame = new JFrame();
 		frame.setFocusable(true);
-		frame.setLayout(new GridBagLayout());
 		frame.setUndecorated(true);
 		frame.add(this);
 		frame.setBackground(BACKGROUND_COLOR);
@@ -181,8 +181,8 @@ public class View extends JPanel{
 		// Draw the player
 		drawImage(g, getPlayerSprite(), playerXLoc, playerYLoc);
 		// Draw the score
-		drawImage(g, Sprite.ID.SCORESTAR, 900, 0);
-		drawString(g, Integer.toString(score), 100, 900, 65);
+		drawImage(g, Sprite.ID.SCORESTAR, WORLD_WIDTH-100, 0);
+		drawString(g, Integer.toString(score), 100, WORLD_WIDTH-100, 65);
 		// Draw the litter in the box
 		drawImage(g, Sprite.ID.LITTERFRAME,0,0);
 		if(hasLitter) {
@@ -238,9 +238,9 @@ public class View extends JPanel{
 	private void drawImage(Graphics g, Sprite.ID s, int world_x, int world_y) {
 		g.drawImage(
 			Sprite.getImage(s,
-			(double) this.getWidth() / WORLD_WIDTH),
-			convertDimension(world_x),
-			convertDimension(world_y),
+			(double) this.getFrameWidth() / WORLD_WIDTH),
+			worldXToPixelX(world_x),
+			worldYToPixelY(world_y),
 			this);
 	}
 	
@@ -254,32 +254,73 @@ public class View extends JPanel{
 	private void drawString(Graphics g, String word, int width, int XPos, int YPos) {
 		g.setFont(new Font("TimesRoman", Font.BOLD, 25));
 		int stringLength = (int) g.getFontMetrics().getStringBounds(word, g).getWidth();
-		int start = convertDimension(width)/2 - stringLength/2;
+		int start = worldXToPixelX(XPos+width/2) - stringLength/2;
 		g.setColor(Color.BLACK);
-		g.drawString(word, start + convertDimension(XPos), convertDimension(YPos));
+		g.drawString(word, start, worldYToPixelY(YPos));
 	}
 
-	/** Converts a dimension (i.e.&nbsp;half of a coordinate) from the <em>world</em> coordinate system to the <em>pixel</em> coordinate system.
-	 * 
-	 *  @param world_dimension The dimension (i.e. half of a coordinate) to convert, in the <em>world</em> coordinate system.
-	 *  @return The same dimension as the parameter, in the <em>pixel</em> coordinate system.
+	/** Consumes a x-coordinate in <em>world</em> coordinates, computes the
+	 *  expected x-coordinate in the window (i.e.&nbsp;<em>pixel</em> coordinates).
+	 *  @param world_x The x-coordinate in <em>world</em> coordinates.
+	 *  @return The x-coordinate in <em>pixel</em> coordinates.
 	 */
-	private int convertDimension(int world_dimension) {
-		return (int) ((double) world_dimension / WORLD_WIDTH * this.getWidth());
+	private int worldXToPixelX(int world_x) {
+		return getFrameHorizOffset() + (world_x * getFrameWidth() / WORLD_WIDTH);
 	}
 
-	/** Returns the largest possible square that can fit in the layout. Note that {@link Dimension} in this case is a duple of a width and a height, as opposed to the terminology "dimension" used in {@link #convertDimension}.
-	 * 
-	 * @param 
-	 *  @return The largest possible square that can fit in the layout
+	/** Consumes a y-coordinate in <em>world</em> coordinates, computes the
+	 *  expected y-coordinate in the window (i.e.&nbsp;<em>pixel</em> coordinates).
+	 *  @param world_y The y-coordinate in <em>world</em> coordinates.
+	 *  @return The x-coordinate in <em>pixel</em> coordinates.
 	 */
-	@Override
-	public Dimension getPreferredSize() {
-		Dimension parent = this.getParent().getSize();
-		if(parent.width > parent.height) {
-			return new Dimension(parent.height, parent.height);
+	private int worldYToPixelY(int world_y) {
+		return getFrameVertOffset() + (world_y * getFrameHeight() / WORLD_HEIGHT);
+	}
+
+	/** Returns the width in pixels of the inner frame.
+	 *  @return The width of the inner frame in pixels.
+	 */
+	private int getFrameWidth() {
+		return this.getFrameDimensions().width;
+	}
+
+	/** Returns the height in pixels of the inner frame.
+	 *  @return The height of the inner frame in pixels.
+	 */
+	private int getFrameHeight() {
+		return this.getFrameDimensions().height;
+	}
+
+	/** Returns the distance in pixels between a side of the window and the inner frame.
+	 *  Can be <code>0</code> if the inner frame size is contrained by the width of the window.
+	 *  @return The distance between a side of the window and a side of the inner frame
+	 */
+	private int getFrameHorizOffset() {
+		return (this.getWidth() - this.getFrameDimensions().width) / 2;
+	}
+
+	/** Returns the distance in pixels between the top/bottom of the window and the inner frame.
+	 *  Can be <code>0</code> if the inner frame size is contrained by the height of the window.
+	 *  @return The distance between the top/bottom of the window and the top/bottom of the inner frame.
+	 */
+	private int getFrameVertOffset() {
+		return (this.getHeight() - this.getFrameDimensions().height) /2;
+	}
+
+	/** Returns the dimensions of the inner frame in pixels.
+	 *  @return The dimensions of the inner frame in pixels.
+	 */
+	private Dimension getFrameDimensions() {
+		// Calculate aspect ratios
+		final double frameAR = (double) WORLD_WIDTH / WORLD_HEIGHT;
+		double screenAR = (double) this.getWidth() / this.getHeight();
+
+		if(frameAR > screenAR) {
+			// Frame is wider than screen; constrain on screen width.
+			return new Dimension(this.getWidth(), this.getWidth() * WORLD_HEIGHT / WORLD_WIDTH);
 		} else {
-			return new Dimension(parent.width, parent.width);
+			// Screen is width than frame; constrain on screen height.
+			return new Dimension(this.getHeight() * WORLD_WIDTH / WORLD_HEIGHT, this.getHeight());
 		}
 	}
 	
