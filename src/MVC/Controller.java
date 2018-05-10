@@ -1,6 +1,4 @@
 package MVC;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
