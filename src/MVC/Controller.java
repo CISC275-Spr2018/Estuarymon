@@ -89,7 +89,7 @@ public class Controller implements KeyListener {
 	public void start() {
 		view = new View();
 		view.setKeyListener(this);
-		model = new Model(View.WORLD_HEIGHT, View.WORLD_WIDTH);
+		model = new Model(View.WORLD_WIDTH, View.WORLD_HEIGHT);
 		
 		
 		EventQueue.invokeLater(new Runnable() {
