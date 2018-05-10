@@ -188,6 +188,7 @@ public class View extends JPanel{
 		switch(this.gamePhase) {
 			case TITLE_SCREEN:
 				this.drawOverlayBox(g);
+				this.drawStartScreenText(g);
 				break;
 			case TUTORIAL:
 			case NORMAL:
@@ -220,13 +221,18 @@ public class View extends JPanel{
 	private void drawOverlayBox(Graphics g) {
 		g.setColor(new Color(0, 0, 0, 128));
 		g.fillRoundRect(
-			worldXToPixelX(50),
-			worldYToPixelY(50),
-			worldWidthToPixelWidth(WORLD_WIDTH-2*50),
-			worldHeightToPixelHeight(WORLD_HEIGHT-2*50),
-			worldWidthToPixelWidth(150),
-			worldHeightToPixelHeight(150));
+			worldXToPixelX(WORLD_WIDTH/20), // X
+			worldYToPixelY(WORLD_HEIGHT/20), // Y
+			worldWidthToPixelWidth(WORLD_WIDTH*18/20), // WIDTH
+			worldHeightToPixelHeight(WORLD_HEIGHT*18/20), // HEIGHT
+			worldWidthToPixelWidth(150), // ARC WIDTH
+			worldHeightToPixelHeight(150)); // ARC HEIGHT
 		g.setColor(Color.WHITE);
+	}
+
+	/** Draws the start screen text onto the screen. Does not draw the box. */
+	private void drawStartScreenText(Graphics g) {
+		this.drawImage(g, Sprite.ID.TITLE_SCREEN, 50, 50);
 	}
 
 	/** Determines which {@link Sprite.ID} to use to render the player. Determines this based on the player's {@link #playerStatus status} and {@link #playerDirection direction}.
