@@ -5,7 +5,7 @@ package MapObjects;
  * @author Juan Villacis 
  *
  */
-public enum ReceptacleType {
+public enum ReceptacleType implements java.io.Serializable{
 	TRASHBIN(0),
 	RECYCLINGBIN(1);
 	

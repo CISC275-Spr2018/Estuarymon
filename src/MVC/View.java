@@ -87,7 +87,8 @@ public class View extends JPanel{
 	private static ArrayList<ArrayList<Sprite.ID>> litterImgLists = new ArrayList<ArrayList<Sprite.ID>>();
 	/** Contains all Litter objects to be rendered onscreen, maps them to a Sprite.ID. */
 	private static HashMap<Litter, Sprite.ID> litterImgMap = new HashMap<Litter, Sprite.ID>();
-
+	/** Contains all plant objects onscreen*/
+	private ArrayList<Plant> plants = new ArrayList<Plant>();
 	/** The current score of the game */
 	private int score = 0;
 
@@ -158,7 +159,7 @@ public class View extends JPanel{
 		}
 		
 		// Draw all plants
-		for(Plant plant : Plant.plants) 
+		for(Plant plant : plants) 
 		{
 			if(plant.health < 100 && plant.health != 0) // If decaying...
 			{
@@ -300,16 +301,15 @@ public class View extends JPanel{
 	 * @param score Current score of the game. 
 	 * @return None. 
 	 */
-	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score) {
+	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score, ArrayList<Plant> plants) {
 		//Updating crab and player locations
 		playerXLoc = playerX;
 		playerYLoc = playerY;
 		playerDirection = dir;
 		playerStatus = status;
-
 		crabXLoc = crabX;
 		crabYLoc = crabY;
-		
+		this.plants = plants;
 		this.score = score;
 		
 		//Remove both litter parameter from HashMap so it does not get painted.
