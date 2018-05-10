@@ -35,13 +35,13 @@ public class Model implements java.io.Serializable{
 
 	/** The only controllable object in the game. 
 	 *  @see Player */
-	private Player player = new Player(0,0, 165,165);
+	private Player player;
 
 	/** Whether the space key is currently pressed down. */
 	private boolean spacePressed = false;
 
 	/** The current movement direction of the {@link #crab}. */
-	private int crabDirection = 3;
+	private int crabDirection;
 
 	/** The amount of health to detract from the Plant every time it is damaged */
 	private static final int plantDamage = 10;
@@ -64,9 +64,9 @@ public class Model implements java.io.Serializable{
 	private HashSet<Animal> animals;
 
 	/** The horizontal speed of the Crab */
-	private int animalXIncr = 4;
+	private int animalXIncr;
 	/** The vertical speed of the Crab */
-	private int animalYIncr = 4;
+	private int animalYIncr;
 
 	/** Whether the player is allowed to move this frame. Set to false under specific circumstances, i.e. when colliding with an Animal */
 	private boolean playerMove = true;
@@ -99,9 +99,6 @@ public class Model implements java.io.Serializable{
 	 * 
 	 */
 	public Model(int width, int height) {
-		this.crab = new Animal();
-		animals = new HashSet<Animal>();
-		animals.add(crab);
 		this.HEIGHT = height;
 		this.WIDTH = width;
 
@@ -112,6 +109,8 @@ public class Model implements java.io.Serializable{
 			plants.add(new Plant(plantHealth, WIDTH - (WIDTH/3), 50+(WIDTH / 90) + count));//sets location of plants
 			count = count + 200;
 		}
+
+		this.resetEverything();
 	}
 
 	/**
@@ -216,7 +215,7 @@ public class Model implements java.io.Serializable{
 		this.spacePressed = true;
 	}
 
-	/**Method called when the space key is released. Sets the spacePressed boolean value to false;
+	/** Sets {@link #spacePressed} to false, and exits the title screen if necessary.
 	 * 
 	 * @param None.
 	 * @return None.
@@ -224,6 +223,9 @@ public class Model implements java.io.Serializable{
 	 */
 	public void spaceKeyReleased() {
 		this.spacePressed = false;
+		if(this.gamePhase == GamePhase.TITLE_SCREEN) {
+			this.startTutorial();
+		}
 	}
 
 	/**
@@ -551,7 +553,35 @@ public class Model implements java.io.Serializable{
 	 *  @param ddy The change in y-velocity of the player
 	 */
 	public void normalAlterPlayerVelocity(int ddx, int ddy) {
-		if(this.gamePhase == GamePhase.NORMAL)
+		if(this.gamePhase.isPlayable())
 			this.getPlayer().alterVelocity(ddx, ddy);
+	}
+
+	/** Resets the entire game and does all setup necessary for the tutorial. */
+	private void startTutorial() {
+		this.resetEverything();
+		this.gamePhase = GamePhase.NORMAL;
+		// TODO: Actually do tutorial stuff@
+	}
+
+	/** Resets everything to the 'initial game' state.
+	 *  Resets the Player position.
+	 *  Resets the Crab position.
+	 *  Resets all Plants' health.
+	 *  Removes all existing Litter */
+	private void resetEverything() {
+		this.player = new Player(0, 0, 165, 165);
+		this.crabDirection = 3;
+		this.score = 0;
+		this.pickedUp = null;
+		this.animalEatenLitter = null;
+		this.animalXIncr = 4;
+		this.animalYIncr = 4;
+		for(Plant p : this.plants) {
+			p.setHealth(100);
+		}
+		this.crab = new Animal();
+		animals = new HashSet<Animal>();
+		animals.add(crab);
 	}
 }
