@@ -8,7 +8,7 @@ import Player.Player;
  * 
  *
  */
-public class Receptacle extends Interactable{
+public class Receptacle extends Interactable implements java.io.Serializable{
 	/** The type of Receptacle this object is. */
 	ReceptacleType rType;
 	/** y Location of the trash bin Recptacle in the game */

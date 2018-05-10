@@ -1,8 +1,11 @@
 package MVC;
+
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.TimerTask;
 
 import javax.jws.WebParam.Mode;
@@ -14,6 +17,12 @@ import MapObjects.Animal;
 import MapObjects.Plant;
 import Player.Player;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 /** Manages interfacing {@link View} and {@link Model}, as well as managing timed loops. */
 public class Controller implements KeyListener {
 	/** The instance of {@link Model}. */
@@ -30,7 +39,7 @@ public class Controller implements KeyListener {
 
 	/** The delay between game frames */
 	private static final int DRAW_DELAY = 1000/30; // 30fps
-
+	
 	/** The Action to run every frame. Simply calls the {@link #step} method. */
 	private final Action stepAction = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
@@ -56,7 +65,8 @@ public class Controller implements KeyListener {
 			model.getPickedUpLitter(),
 			model.getPlayer().getHasLitter(),
 			model.getAnimalEatenLitter(),
-			model.getScore());
+			model.getScore(),
+			model.getPlants());
 	}
 	
 	/**
@@ -103,6 +113,7 @@ public class Controller implements KeyListener {
 	}
 
 	/** Changes the player's velocity according to the arrow keys being pressed, or marks that the space key is pressed down.
+	 * If spacebar is pressed trash is collected. If 1 is press game is saved. If 2 is pressed game is loaded.
 	 *  @param e The KeyEvent containing the key that way pressed. */
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -123,11 +134,63 @@ public class Controller implements KeyListener {
 		case KeyEvent.VK_SPACE:
 			model.spaceKeyPressed();
 			break;
+		case KeyEvent.VK_1:
+			saveGame();
+			break;
+		case KeyEvent.VK_2:
+			loadGame();
+			break;
+		}
+	}
+	
+	/**
+	 * Method that serializes the state of model to a serial file.
+	 * 
+	 * @param None. 
+	 * @return None. 
+	 */
+	public void saveGame()
+	{
+		try
+		{
+			FileOutputStream fos = new FileOutputStream("saveGame.ser");
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(model);
+			oos.close();
+		}
+		
+		catch (Exception ex)
+		{
+			System.out.println("Exception thrown during test: " + ex.toString());
+		}
+	}
+	
+	
+	/**
+	 * Method that loads the serializable file and changes the attributes in model.
+	 * 
+	 * @param None. 
+	 * @return None. 
+	 */
+	 
+	public void loadGame()
+	{
+		try
+		{
+			FileInputStream fis = new FileInputStream("saveGame.ser");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			model = (Model) ois.readObject();
+			ois.close();
+		}
+		catch (Exception ex)
+		{
+			System.out.println("Exception thrown during test: " + ex.toString());
 		}
 	}
 
+	
 	/** Changes the player's velocity according to the arrow keys being released, or mark that the space key is no longer pressed down.
-	 *  @param e The KeyEvent containing the key that was released. */
+	 *  @param e The KeyEvent containing the key that was rseleased. */
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int key = e.getKeyCode();
@@ -137,7 +200,7 @@ public class Controller implements KeyListener {
 			model.getPlayer().alterVelocity(0, 1);
 			break;
 		case KeyEvent.VK_DOWN:
-			model.getPlayer().alterVelocity(0, -1);
+			model.getPlayer().alterVelocity(0, -1); 
 			break;
 		case KeyEvent.VK_RIGHT:
 			model.getPlayer().alterVelocity(-1, 0);

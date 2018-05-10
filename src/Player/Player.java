@@ -6,7 +6,7 @@ import MapObjects.Plant;
 import MapObjects.Receptacle;
 
 /** A user-controlled character that can move around the screen and interact with other map objects */
-public class Player extends Interactable {
+public class Player extends Interactable implements java.io.Serializable{
 	/** Whether the Player is carrying {@link Litter}. */
 	public static boolean hasLitter = false;
 	/** Horizontal movement direction. 
@@ -73,8 +73,9 @@ public class Player extends Interactable {
 	public void growPlant(int i) {
 		System.out.println("Plant!");
 		// restore health and pick new plant
-		Plant.plants[i].health = 100;
-		Plant.randPlant = (int) Math.floor(Math.random() * 4);
+		//model.setRandPlant();
+		//Plant.plants[i].health = 100;
+		//Plant.randPlant = (int) Math.floor(Math.random() * 4);
 	}
 
 	/** Changes the velocity of the Player relatively, and recalculates {@link #direction} and {@link #status}. For example, if the player is moving left then alterVelocity is called with <code>ddx=1</code> <code>ddy=1</code>, then he will start moving down. This method also keeps the velocities bounded from -1 to 1.

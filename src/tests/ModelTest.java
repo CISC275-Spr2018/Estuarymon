@@ -27,7 +27,7 @@ class ModelTest {
 	{
 		Model model = new Model(1000,1000);
 		model.damagePlant();
-		assertTrue(Plant.plants[Plant.randPlant].getHealth()==90);
+		assertTrue(model.getPlants().get(model.getRandPlant()).getHealth()==90);
 		
 	}
 	
@@ -111,16 +111,16 @@ class ModelTest {
 	@Test
 	void testPlayerPlantCollision() {
 		Model model = new Model(1000,1000);
-		Plant.plants[0].health = 0;
-		model.getPlayer().setXLocation(Plant.plants[0].getXLocation()+10);
-		model.getPlayer().setYLocation(Plant.plants[0].getYLocation()-8);
+		model.getPlants().get(0).health = 0;
+		model.getPlayer().setXLocation(model.getPlants().get(0).getXLocation()+10);
+		model.getPlayer().setYLocation(model.getPlants().get(0).getYLocation()-8);
 		assertTrue(model.testCheckColl()==true);
 	}
 	
 	@Test
 	void testPlayerPlantCollisionFalse() {
 		Model model = new Model(1000,1000);
-		Plant.plants[0].health = 0;
+		model.getPlants().get(0).health = 0;
 		model.getPlayer().setXLocation(300);
 		model.getPlayer().setYLocation(300);
 		assertTrue(model.testCheckColl()==false);

@@ -7,7 +7,7 @@ import java.awt.Rectangle;
  * @author Zack Klodnicki
  *
  */
-public class Interactable {
+public class Interactable implements java.io.Serializable{
 	/** The x-location of the object */
 	int xLocation;
 	/** The y-location of the object */

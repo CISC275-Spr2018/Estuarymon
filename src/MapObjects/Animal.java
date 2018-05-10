@@ -12,7 +12,7 @@ import Player.Direction;
  *
  */
 
-public class Animal extends Interactable {
+public class Animal extends Interactable implements java.io.Serializable {
 	/** Current Direction of the Animal */
 	private Direction curDir;
 	/** Speed of the Animal */

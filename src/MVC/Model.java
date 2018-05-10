@@ -1,5 +1,6 @@
 package MVC;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
@@ -28,30 +29,30 @@ import Player.Player;
  *@author Kalloyan Stoyanov 
  *@author Zack Klodnicki 
  **/
-public class Model {
+public class Model implements java.io.Serializable{
 	private static int WIDTH;
 	private static int HEIGHT;
-	
+
 	/** The only controllable object in the game. 
 	 *  @see Player */
 	private Player player = new Player(0,0, 165,165);
-	
+
 	/** Whether the space key is currently pressed down. */
 	private boolean spacePressed = false;
 
 	/** The current movement direction of the {@link #crab}. */
 	private int crabDirection = 3;
-	
+
 	/** The amount of health to detract from the Plant every time it is damaged */
 	private static final int plantDamage = 10;
 	/** The initial amount of health of each Plant */
 	private static final int plantHealth = 100;
-	
+
 	/** The trash bin */
 	private Receptacle tBin = new Receptacle(128,128,ReceptacleType.TRASHBIN);
 	/** The recycle bin */
 	private Receptacle rBin = new Receptacle(128,128,ReceptacleType.RECYCLINGBIN);
-	
+
 	/** Whether the trash bin recently received a piece of Litter */
 	public static boolean trashVictory = false;
 	/** Whether the recycle bin recently received a piece of Litter */
@@ -77,7 +78,11 @@ public class Model {
 	private Litter pickedUp;
 	/** The last Litter to be picked up by an {@link #animals animal} */
 	private Litter animalEatenLitter;
-	
+	/**Contains plant objects**/
+	private ArrayList<Plant> plants = new ArrayList<Plant>();
+	/**Random index of next plant**/
+	private int randPlant = (int) Math.floor(Math.random() * 4);
+
 	/**
 	 * Constructor for the Model. It creates a new animal and initializes a hashset
 	 * of animals just in case more than one animal is wanted in the game. Then the
@@ -96,16 +101,16 @@ public class Model {
 		animals.add(crab);
 		this.HEIGHT = height;
 		this.WIDTH = width;
-		
+
 		int count = 0;
 		//fills plant array
 		for(int i = 0; i < 4; i++)
 		{
-			Plant.plants[i] = new Plant(plantHealth, WIDTH - (WIDTH/3), 50+(WIDTH / 90) + count);//sets location of plants
+			plants.add(new Plant(plantHealth, WIDTH - (WIDTH/3), 50+(WIDTH / 90) + count));//sets location of plants
 			count = count + 200;
 		}
 	}
-	
+
 	/**
 	 * Simple getter method that retrieves the amount the x coordinate should be
 	 * incremented by.
@@ -147,7 +152,7 @@ public class Model {
 	public Animal getAnimal() {
 		return crab;
 	}
-	
+
 	/**
 	 * Gets the Litter most recently picked up by the Player.
 	 * This will either be the Litter object the player is currently holding, or the last Litter object the player picked up if they are not currently holding one.
@@ -194,9 +199,10 @@ public class Model {
 			this.player.move();
 		this.checkCollision();
 		updatingAnimalLocation();
-		
+
 	}
-	
+
+
 	/**
 	 * Method called when the space key is pressed. Sets the spacePressed boolean value to true;
 	 * 
@@ -207,7 +213,7 @@ public class Model {
 	public void spaceKeyPressed() {
 		this.spacePressed = true;
 	}
-	
+
 	/**Method called when the space key is released. Sets the spacePressed boolean value to false;
 	 * 
 	 * @param None.
@@ -217,7 +223,7 @@ public class Model {
 	public void spaceKeyReleased() {
 		this.spacePressed = false;
 	}
-	
+
 	/**
 	 * Method that checks whether the crab has hit a wall. If the crab has hit a
 	 * wall it also checks to see what the direction of the crab was, so that it can
@@ -230,22 +236,22 @@ public class Model {
 		if (crab.getXLocation() <= 0 && crab.getDirection() == Direction.WEST) { // when the left wall is hit
 			crab.setDirection(Direction.EAST);
 		} else if (crab.getXLocation() >= WIDTH - 400 && crab.getDirection() == Direction.EAST) { // when the right wall
-																									// is hit
+			// is hit
 			crab.setDirection(Direction.WEST);
 		}
 
 		else if (crab.getYLocation() <= 0 && crab.getDirection() == Direction.NORTH) { // when the top wall is hit
 			crab.setDirection(Direction.SOUTH);
 		} else if (crab.getYLocation() >= HEIGHT - 170 && crab.getDirection() == Direction.SOUTH) { // when the bottom
-																									// wall is hit
+			// wall is hit
 			crab.setDirection(Direction.NORTH);
 		}
 
 		else if (crab.getXLocation() >= WIDTH - 400 && crab.getDirection() == Direction.NORTHEAST) { // when the right
-																										// wall is hit
+			// wall is hit
 			crab.setDirection(Direction.NORTHWEST);
 		} else if (crab.getXLocation() >= WIDTH - 400 && crab.getDirection() == Direction.SOUTHEAST) { // when the right
-																										// wall is hit
+			// wall is hit
 			crab.setDirection(Direction.SOUTHWEST);
 		}
 
@@ -256,22 +262,22 @@ public class Model {
 		}
 
 		else if (crab.getYLocation() >= HEIGHT - 170 && crab.getDirection() == Direction.SOUTHEAST) { // when the bottom
-																										// wall is hit
+			// wall is hit
 			crab.setDirection(Direction.NORTHEAST);
 		} else if (crab.getYLocation() >= HEIGHT - 170 && crab.getDirection() == Direction.SOUTHWEST) { // when the
-																										// bottom wall
-																										// is hit
+			// bottom wall
+			// is hit
 			crab.setDirection(Direction.NORTHWEST);
 		}
 
 		else if (crab.getXLocation() <= 0 && crab.getDirection() == Direction.NORTHWEST) { // when the left wall is hit
 			crab.setDirection(Direction.NORTHEAST);
 		} else if (crab.getXLocation() <= 0 && crab.getDirection() == Direction.SOUTHWEST) { // when the left wall is
-																								// hit
+			// hit
 			crab.setDirection(Direction.SOUTHEAST);
 		}
 	}
-	
+
 	/**
 	 * Method that updates the x and y coordinates of the crab depending on its
 	 * current direction.
@@ -327,43 +333,65 @@ public class Model {
 	public int getScore() {
 		return score;
 	}
-	
+
 	// damage plant every 10 seconds
-		/**
-		 * Method called to decrement plant health by the plantdamage integer value
-		 * 
-		 * @param
-		 * @return
-		 */
-		public void damagePlant() {
-			if (Plant.plants[Plant.randPlant].getHealth() > 0) {
-				Plant.plants[Plant.randPlant].health = Plant.plants[Plant.randPlant].health - plantDamage;
-			}
-
+	/**
+	 * Method called to decrement plant health by the plantdamage integer value
+	 * 
+	 * @param
+	 * @return
+	 */
+	public void damagePlant() 
+	{
+		if (plants.get(randPlant).getHealth() > 0) 
+		{
+			plants.get(randPlant).health = plants.get(randPlant).health - plantDamage;
 		}
-		
-		/**
-		 * Generates a new Litter object with random x and y coordinates, as well as
-		 * generates a random imgID for the object.
-		 * 
-		 * @return the new Litter object created.
-		 * 
-		 */
-		public Litter spawnLitter() {
-			Random r = new Random();
-			Litter l = new Litter();
-			l.setType(LitterType.randomLitter());
-			int litterXCoord = r.nextInt((WIDTH - l.getWidth())-(rBin.getXLocation()+rBin.getWidth())) + rBin.getXLocation() + rBin.getWidth();// generates random coordinates
-			int litterYCoord = r.nextInt((HEIGHT - l.getHeight()));
-			l.setXLocation(litterXCoord);//
-			l.setYLocation(litterYCoord);
-			l.setImgID(Math.abs(r.nextInt()));
-			Litter.litterSet.add(l);// Adds them to hashset of litter, prevents exact duplicates in terms of
-									// coordinates.
-			System.out.println(l);
-			return l;
+	}
 
-		}
+	public void setRandPlant()
+	{
+		this.randPlant = (int) Math.floor(Math.random() * 4);
+	}
+	
+	/**
+	 * Method called to return randPlant index
+	 * 
+	 * @param
+	 * @return
+	 */
+	public int getRandPlant()
+	{
+		return randPlant;
+	}
+
+	public ArrayList<Plant> getPlants()
+	{
+		return plants;
+	}
+
+	/**
+	 * Generates a new Litter object with random x and y coordinates, as well as
+	 * generates a random imgID for the object.
+	 * 
+	 * @return the new Litter object created.
+	 * 
+	 */
+	public Litter spawnLitter() {
+		Random r = new Random();
+		Litter l = new Litter();
+		l.setType(LitterType.randomLitter());
+		int litterXCoord = r.nextInt((WIDTH - l.getWidth())-(rBin.getXLocation()+rBin.getWidth())) + rBin.getXLocation() + rBin.getWidth();// generates random coordinates
+		int litterYCoord = r.nextInt((HEIGHT - l.getHeight()));
+		l.setXLocation(litterXCoord);//
+		l.setYLocation(litterYCoord);
+		l.setImgID(Math.abs(r.nextInt()));
+		Litter.litterSet.add(l);// Adds them to hashset of litter, prevents exact duplicates in terms of
+		// coordinates.
+		System.out.println(l);
+		return l;
+
+	}
 
 	/** A public version of {@link #checkCollision} only for use by the {@link ModelTest} class.
 	 *  @see #checkCollision
@@ -372,7 +400,7 @@ public class Model {
 	public boolean testCheckColl() {
 		return checkCollision();
 	}
-	
+
 	/**
 	 * Method that deals with all the various collisions in the game. If the player
 	 * collides with the crab, the player is slowed down, the crab goes in the same
@@ -401,16 +429,19 @@ public class Model {
 			}
 		}
 
-		for (int i = 0; i < 4; i++) {
+		for (Plant plant: plants) 
+		{
 			// add and health == 0
-			if (Plant.plants[i].health == 0 && Plant.plants[i].getCollidesWith(this.player)) {
-				this.player.growPlant(i);
+			if (plant.health == 0 && plant.getCollidesWith(this.player)) 
+			{
+				//this.player.growPlant(i);
+				setRandPlant();
+				plant.health = 100;
 				changeScore(10);
 				return true;
 			}
-
 		}
-		
+
 		if(this.player.getHasLitter()) {
 			if(this.player.getCollidesWith(this.tBin) && this.pickedUp.getType() == LitterType.TRASH) {
 				this.tBin.takeLitter(this.player);
@@ -426,7 +457,7 @@ public class Model {
 				recycleVictory = true;
 				return true;
 			}
-				
+
 		}
 
 		if (this.player.getCollidesWith(this.crab)) {
@@ -474,7 +505,7 @@ public class Model {
 		}
 		return false;
 	}
-	
+
 	/**Method to change the game's score.
 	 * 
 	 * @param i The amount of points to be added (positive integer) or subtracted (negative integer) from the score. 
