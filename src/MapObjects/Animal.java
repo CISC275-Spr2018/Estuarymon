@@ -33,7 +33,7 @@ public class Animal extends Interactable {
 	 *
 	 */
 	public Animal() {
-		super(200, 400, imageHeight, imageWidth);
+		super(0, 0, imageHeight, imageWidth);
 		this.setRelativeCollisionRect(15, 15, imageWidth, imageHeight); // this is for the collision detection
 		curDir = Direction.NORTHWEST;
 	}

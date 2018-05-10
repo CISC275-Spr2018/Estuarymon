@@ -58,12 +58,7 @@ public class Player extends Interactable {
 	 * @param l The Litter object being picked up 
 	 * @return The Litter object being picked up
 	 */
-	public Litter pickUpLitter(Litter l) {
-		System.out.println("Player pick up litter " + l.toString());
-		this.hasLitter = true;
-		Litter.litterSet.remove(l);
-		return l;
-	}
+	
 	/**
 	 * Method that restores a plants health as well as chooses a new plant to start fading. 
 	 * 

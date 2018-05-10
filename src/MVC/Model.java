@@ -34,9 +34,11 @@ public class Model {
 	
 	/** The only controllable object in the game. 
 	 *  @see Player */
-	private Player player = new Player(0,0, 165,165);
+	private Player player = new Player(240,240, 165,165);
 	
 	private GameState gameState = GameState.TUTORIAL;
+	private GameState tutorialState = GameState.TUTORIAL_SPAWNTRASH;
+	
 	
 	/** Whether the space key is currently pressed down. */
 	private boolean spacePressed = false;
@@ -63,6 +65,8 @@ public class Model {
 	private Animal crab;
 	/** Every animal in the world. Currently only the crab. */
 	private HashSet<Animal> animals;
+	
+	private HashSet<Litter> litterSet = new HashSet<Litter>();
 
 	/** The horizontal speed of the Crab */
 	private int animalXIncr = 4;
@@ -80,6 +84,16 @@ public class Model {
 	/** The last Litter to be picked up by an {@link #animals animal} */
 	private Litter animalEatenLitter;
 	
+	private Litter litterSpawned;
+	
+	public Litter getLitterSpawned() {
+		return litterSpawned;
+	}
+
+	public void setLitterSpawned(Litter litterSpawned) {
+		this.litterSpawned = litterSpawned;
+	}
+
 	/**
 	 * Constructor for the Model. It creates a new animal and initializes a hashset
 	 * of animals just in case more than one animal is wanted in the game. Then the
@@ -108,6 +122,14 @@ public class Model {
 		}
 	}
 	
+	public GameState getTutorialState() {
+		return tutorialState;
+	}
+
+	public void setTutorialState(GameState tutorialState) {
+		this.tutorialState = tutorialState;
+	}
+
 	public GameState getGameState() {
 		return gameState;
 	}
@@ -206,6 +228,7 @@ public class Model {
 			break;
 		case TUTORIAL:
 			updateModelTutorial();
+			break;
 		}
 		
 		
@@ -214,6 +237,22 @@ public class Model {
 	public void updateModelTutorial() {
 		if(playerMove)
 			this.player.move();
+		checkCollision();
+		checkTutorialStates();
+	}
+	
+	public void checkTutorialStates() {
+		switch(tutorialState) {
+		case TUTORIAL_SPAWNTRASH:
+			spawnLitter(LitterType.TRASH);
+			this.tutorialState = GameState.TUTORIAL_SIGNALTRASH;
+			break;
+		case TUTORIAL_SIGNALTRASH:
+			if(player.hasLitter)
+				this.tutorialState = GameState.TUTORIAL_SIGNALTRASHCAN;
+			break;
+			
+		}
 	}
 	
 	public void updateModelNormal() {
@@ -384,11 +423,23 @@ public class Model {
 			l.setXLocation(litterXCoord);//
 			l.setYLocation(litterYCoord);
 			l.setImgID(Math.abs(r.nextInt()));
-			Litter.litterSet.add(l);// Adds them to hashset of litter, prevents exact duplicates in terms of
+			litterSet.add(l);// Adds them to hashset of litter, prevents exact duplicates in terms of
 									// coordinates.
 			System.out.println(l);
 			return l;
 
+		}
+		
+		public Litter spawnLitter(LitterType lt) {
+			Random r = new Random();
+			Litter l = new Litter();
+			l.setType(lt);
+			l.setXLocation(360);
+			l.setYLocation(480);
+			l.setImgID(Math.abs(r.nextInt()));
+			litterSet.add(l);
+			this.setLitterSpawned(l);
+			return l;
 		}
 
 	/** A public version of {@link #checkCollision} only for use by the {@link ModelTest} class.
@@ -417,10 +468,10 @@ public class Model {
 	private boolean checkCollision() {
 
 		if (!Player.hasLitter) {
-			for (Litter litter : new HashSet<Litter>(Litter.litterSet)) {
+			for (Litter litter : new HashSet<Litter>(litterSet)) {
 				if (litter.getCollidesWith(this.player)) {
 					if (spacePressed)
-						this.pickedUp = this.player.pickUpLitter(litter);
+						this.pickedUp = pickUpLitter(litter);
 					return true;
 				}
 
@@ -486,7 +537,7 @@ public class Model {
 
 		animalWallCollision();
 
-		Iterator<Litter> litterIterator = Litter.litterSet.iterator();
+		Iterator<Litter> litterIterator = litterSet.iterator();
 		while (litterIterator.hasNext()) {
 			Litter litter = litterIterator.next();
 			for (Animal animal : this.animals) {
@@ -513,6 +564,13 @@ public class Model {
 		else {
 			this.score += i;
 		}
+	}
+	
+	public Litter pickUpLitter(Litter l) {
+		System.out.println("Player pick up litter " + l.toString());
+		player.hasLitter = true;
+		litterSet.remove(l);
+		return l;
 	}
 
 

@@ -56,7 +56,9 @@ public class Controller implements KeyListener {
 			model.getPickedUpLitter(),
 			model.getPlayer().getHasLitter(),
 			model.getAnimalEatenLitter(),
-			model.getScore());
+			model.getScore(),
+			model.getLitterSpawned(),
+			model.getTutorialState());
 	}
 	
 	/**

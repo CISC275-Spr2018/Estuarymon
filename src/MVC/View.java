@@ -63,9 +63,9 @@ public class View extends JPanel{
 	/** The status of the player, i.e.&nbdp;idle, moving, etc. */
 	private static PlayerStatus playerStatus = PlayerStatus.IDLE;
 	/** The x location of the crab in world coordinates */
-	private static int crabXLoc = 200;
+	private static int crabXLoc = 0;
 	/** The y location of the crab in world coordinates */
-	private static int crabYLoc = 400;
+	private static int crabYLoc = 0;
 	
 	/** The current direction of the player */
 	private static Direction playerDirection = Direction.EAST;
@@ -95,6 +95,8 @@ public class View extends JPanel{
 	private int tGlowCount = 0;
 	/** The number of frames that the recycle bin has been glowing */
 	private int rGlowCount = 0;
+	
+	private GameState tutorialState;
 
 	/** Creates a new View, places it in a new JPanel, arranges everything, and makes it visible. */
 	public View() {	
@@ -300,7 +302,7 @@ public class View extends JPanel{
 	 * @param score Current score of the game. 
 	 * @return None. 
 	 */
-	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score) {
+	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score, Litter litterSpawned, GameState tutorialState) {
 		//Updating crab and player locations
 		playerXLoc = playerX;
 		playerYLoc = playerY;
@@ -312,12 +314,22 @@ public class View extends JPanel{
 		
 		this.score = score;
 		
+		this.tutorialState = tutorialState;
+		
 		//Remove both litter parameter from HashMap so it does not get painted.
 		litterImgMap.remove(playerPickedUp);
 		litterImgMap.remove(animalEatenLitter);
 		this.pickedUpLitter = playerPickedUp;
 		this.hasLitter = hasLitter;
 		frame.repaint();
+		
+		if(!litterImgMap.containsKey(litterSpawned) && tutorialState == GameState.TUTORIAL_SIGNALTRASH) {
+			addLitter(litterSpawned);
+		}
+		
+		if(litterImgMap.containsKey(litterSpawned) && tutorialState == GameState.TUTORIAL_SIGNALTRASHCAN) {
+			litterImgMap.remove(litterSpawned);
+		}
 	}
 	
 	/**Adds a Litter object to the other Litter objects being rendered on the View
