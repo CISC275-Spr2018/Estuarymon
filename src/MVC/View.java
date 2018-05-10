@@ -364,11 +364,11 @@ public class View extends JPanel{
 		this.hasLitter = hasLitter;
 		frame.repaint();
 		
-		if(!litterImgMap.containsKey(litterSpawned) && tutorialState == GameState.TUTORIAL_SIGNALTRASH) {
+		if(!litterImgMap.containsKey(litterSpawned) && (tutorialState == GameState.TUTORIAL_SIGNALTRASH || tutorialState == GameState.TUTORIAL_SIGNALRECYCLABLE)) {
 			addLitter(litterSpawned);
 		}
 		
-		if(litterImgMap.containsKey(litterSpawned) && tutorialState == GameState.TUTORIAL_SIGNALTRASHCAN) {
+		if(litterImgMap.containsKey(litterSpawned) && (tutorialState == GameState.TUTORIAL_SIGNALTRASHCAN || tutorialState == GameState.TUTORIAL_SIGNALRECYCLINGBIN)) {
 			litterImgMap.remove(litterSpawned);
 		}
 	}

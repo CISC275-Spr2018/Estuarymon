@@ -251,6 +251,23 @@ public class Model {
 			if(player.hasLitter)
 				this.tutorialState = GameState.TUTORIAL_SIGNALTRASHCAN;
 			break;
+		case TUTORIAL_SIGNALTRASHCAN:
+			if(trashVictory) 
+				this.tutorialState = GameState.TUTORIAL_SPAWNRECYCLABLE;
+			break;
+		case TUTORIAL_SPAWNRECYCLABLE:
+			spawnLitter(LitterType.RECYCLABLE);
+			this.tutorialState = GameState.TUTORIAL_SIGNALRECYCLABLE;
+			break;
+		case TUTORIAL_SIGNALRECYCLABLE:
+			if(player.hasLitter)
+				this.tutorialState = GameState.TUTORIAL_SIGNALRECYCLINGBIN;
+			break;
+		case TUTORIAL_SIGNALRECYCLINGBIN:
+			if(recycleVictory)
+				this.tutorialState = GameState.TUTORIAL_DAMAGEPLANT;
+			break;
+			
 			
 		}
 	}
