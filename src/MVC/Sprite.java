@@ -67,6 +67,8 @@ public class Sprite {
 		DECAY_PLANT("MapObjects/dazal.png", 100, 100),
 		/** spot of dirt where plant resided*/	
 		DIRT("MapObjects/dirtPatch.png", 100, 100),
+		/** spot of mud where plant resided*/	
+		MUD("MapObjects/mud.png", 100, 100),
 		/** A banana peel */
 		BANANAPEEL("MapObjects/bananaSkin.png",40,40),
 		/** A soda can */
@@ -84,7 +86,7 @@ public class Sprite {
 		/** A glowing recycle bin */
 		RECYCLEGLOW("MapObjects/recyclegreen.png",128,128),
 		/** Onscreen river*/
-		RIVER("MapObjects/river.png", 200, View.WORLD_HEIGHT);
+		RIVER("MapObjects/river.png", View.WORLD_HEIGHT, View.WORLD_HEIGHT);
 		
 		// These values are set to the enum instances. When a Sprite object is instantiated, it copies these values.
 

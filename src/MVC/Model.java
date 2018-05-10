@@ -46,7 +46,7 @@ public class Model implements java.io.Serializable{
 	private int crabDirection = 3;
 
 	/** The amount of health to detract from the Plant every time it is damaged */
-	private static final int plantDamage = 10;
+	private static final int plantDamage = 20;
 	/** The initial amount of health of each Plant */
 	private static final int plantHealth = 100;
 
@@ -219,6 +219,7 @@ public class Model implements java.io.Serializable{
 			this.player.move();
 		this.checkCollision();
 		updatingAnimalLocation();
+		checkPlants();
 		if(trashVictory && ((trashGlow++)% 14 < 1)) {
 			trashVictory = false;
 		}
@@ -373,15 +374,25 @@ public class Model implements java.io.Serializable{
 		{
 			plants.get(randPlant).health = plants.get(randPlant).health - plantDamage;
 		}
+		else if(plants.get(randPlant).getHealth() == 0)
+		{
+			setRandPlant();
+		}
 	}
 
+	/**
+	 * Method called to set randPlant index
+	 * 
+	 * @param
+	 * @return
+	 */
 	public void setRandPlant()
 	{
 		this.randPlant = (int) Math.floor(Math.random() * 4);
 	}
 	
 	/**
-	 * Method called to return randPlant index
+	 * Method called to get randPlant index
 	 * 
 	 * @param
 	 * @return
@@ -410,7 +421,35 @@ public class Model implements java.io.Serializable{
 	{
 		return river;
 	}
+	
+	public void floodRiver()
+	{
+		if(river.getXLocation() > WIDTH - 800)
+			river.addXLocation(-5);
+	}
+	
+	public void recedeRiver()
+	{
+		if(river.getXLocation() < WIDTH - 200)
+			river.addXLocation(5);
+	}
 
+	public void checkPlants()
+	{
+		int sum = 0;
+		for(Plant plant: plants)
+		{	
+			sum = sum + plant.health;
+		}
+		if(sum == 0)
+		{
+			floodRiver();
+		}
+		else if(sum > 0)
+		{
+			recedeRiver();
+		}
+	}
 	/**
 	 * Generates a new Litter object with random x and y coordinates, as well as
 	 * generates a random imgID for the object.
@@ -475,14 +514,23 @@ public class Model implements java.io.Serializable{
 			// add and health == 0
 			if (plant.health == 0 && plant.getCollidesWith(this.player)) 
 			{
-				//this.player.growPlant(i);
-				setRandPlant();
 				plant.health = 100;
 				changeScore(10);
 				return true;
 			}
 		}
+		
 
+		if(this.player.getCollidesWith(river))
+		{
+			this.player.setSpeed(5);
+		}
+		else
+		{
+			this.player.setSpeed(10);
+		}
+	
+		
 		if(this.player.getHasLitter()) {
 			if(this.player.getCollidesWith(this.tBin) && this.pickedUp.getType() == LitterType.TRASH) {
 				this.tBin.takeLitter(this.player);

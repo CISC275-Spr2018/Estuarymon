@@ -72,27 +72,6 @@ public class Controller implements KeyListener {
 	}
 	
 	/**
-	 * TimerTask that handles damaging plants in a certain interval. 
-	 * 
-	 * @author Hunter Suchyj
-	 *
-	 */
-	class damagePlantTask extends TimerTask 
-	{
-		/**
-		 * Method that calls the model method to damage the plant. 
-		 * 
-		 * @param None
-		 * @return None. 
-		 */
-		public void run()
-		{
-			model.damagePlant();
-
-		}
-	}
-	
-	/**
 	 * Method that creates a new Model and View, and starts the game. Also creates taskTimers for spawning Litter and damaging Plants. 
 	 * 
 	 * @param None. 
@@ -245,6 +224,27 @@ public class Controller implements KeyListener {
 		
 		
 			
+		}
+	}
+	
+	/**
+	 * TimerTask that handles damaging plants in a certain interval. 
+	 * 
+	 * @author Hunter Suchyj
+	 *
+	 */
+	class damagePlantTask extends TimerTask 
+	{
+		/**
+		 * Method that calls the model method to damage the plant. 
+		 * 
+		 * @param None
+		 * @return None. 
+		 */
+		public void run()
+		{
+			model.damagePlant();
+
 		}
 	}
 }

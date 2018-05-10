@@ -11,7 +11,7 @@ public class River extends Interactable{
 	
 	public River(int x, int y, int width, int height) {
 		super(x, y, width, height);
-		
+		this.setRelativeCollisionRect(0, 0, width, height);
 	}
 	
 	

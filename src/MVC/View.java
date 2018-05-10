@@ -140,8 +140,8 @@ public class View extends JPanel{
 		// Draw the background
 		drawImage(g, Sprite.ID.BACKGROUND, 0, 0);
 		// Draw receptacles
-		
 		// Draw all plants
+		drawImage(g, Sprite.ID.RIVER, river.getXLocation(), river.getYLocation());
 		for(Plant plant : plants) 
 		{
 			if(plant.health < 100 && plant.health != 0) // If decaying...
@@ -157,13 +157,7 @@ public class View extends JPanel{
 				drawImage(g, Sprite.ID.DIRT, plant.getXLocation(), plant.getYLocation());
 			}
 		}
-		
-		int count = 0;
-		for(int i = 0; i < 5; i++)
-		{
-			drawImage(g, Sprite.ID.RIVER, river.getXLocation()- count, river.getYLocation());
-			count = count + 40;
-		}
+	
 		
 		if(tGlow) {
 			drawImage(g,Sprite.ID.TRASHGLOW,0,Receptacle.trashYpos);
@@ -195,6 +189,7 @@ public class View extends JPanel{
 		if(hasLitter) {
 			drawImage(g,getSpriteID(pickedUpLitter),10,10);
 		}
+		
 	}
 
 	/** Determines which {@link Sprite.ID} to use to render the player. Determines this based on the player's {@link #playerStatus status} and {@link #playerDirection direction}.
