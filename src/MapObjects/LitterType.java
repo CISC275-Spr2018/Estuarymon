@@ -9,7 +9,7 @@ import java.util.Random;
  * @author Juan Villacis
  *
  */
-public enum LitterType {
+public enum LitterType implements java.io.Serializable{
 	TRASH(0),
 	RECYCLABLE(1);
 	
