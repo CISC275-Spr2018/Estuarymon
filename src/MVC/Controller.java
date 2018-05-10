@@ -64,12 +64,11 @@ public class Controller implements KeyListener {
 			model.getAnimal().getXLocation(),
 			model.getAnimal().getYLocation(),
 			model.getPickedUpLitter(),
-			model.getPlayer().getHasLitter(),
-			model.getAnimalEatenLitter(),
+			model.isHasLitter(),
 			model.getScore(),
-			model.getPlants(),model.getTrashVictory(),model.getRecycleVictory());
-			model.getLitterSpawned(),
-			model.getTutorialState());
+			model.getPlants(),model.getTrashVictory(),model.getRecycleVictory(),
+			model.getTutorialState(),
+			model.getLitterSet());
 	}
 	
 	/**
@@ -242,7 +241,7 @@ public class Controller implements KeyListener {
 		 */
 		public void run() {
 			if(model.getGameState()==GameState.REGULARGAME)
-				view.addLitter(model.spawnLitter());
+				model.spawnLitter();
 			
 		
 		

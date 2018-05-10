@@ -41,6 +41,9 @@ public class Model implements java.io.Serializable{
 	private GameState gameState = GameState.TUTORIAL;
 	private GameState tutorialState = GameState.TUTORIAL_SPAWNTRASH;
 	
+	/** Whether the Player is carrying {@link Litter}. */
+	private boolean hasLitter = false;
+	
 
 	/** Whether the space key is currently pressed down. */
 	private boolean spacePressed = false;
@@ -97,13 +100,6 @@ public class Model implements java.io.Serializable{
 	
 	private Litter litterSpawned;
 	
-	public Litter getLitterSpawned() {
-		return litterSpawned;
-	}
-
-	public void setLitterSpawned(Litter litterSpawned) {
-		this.litterSpawned = litterSpawned;
-	}
 	/**
 	 * Constructor for the Model. It creates a new animal and initializes a hashset
 	 * of animals just in case more than one animal is wanted in the game. Then the
@@ -131,6 +127,32 @@ public class Model implements java.io.Serializable{
 			count = count + 200;
 		}
 	}
+	
+	public Litter getLitterSpawned() {
+		return litterSpawned;
+	}
+
+	public void setLitterSpawned(Litter litterSpawned) {
+		this.litterSpawned = litterSpawned;
+	}
+	
+	public HashSet<Litter> getLitterSet(){
+		return this.litterSet;
+	}
+	
+	/**Returns a boolean depending on whether or not the player is currently holding a Litter object that needs to be disposed of. 
+	 * 
+	 * @param None
+	 * @return True if the player is holding a piece of Litter, false otherwise. 
+	 */
+	public boolean isHasLitter() {
+		return hasLitter;
+	}
+
+	public void setHasLitter(boolean hasLitter) {
+		this.hasLitter = hasLitter;
+	}
+
 	public GameState getTutorialState() {
 		return tutorialState;
 	}
@@ -207,13 +229,6 @@ public class Model implements java.io.Serializable{
 		return this.spacePressed;
 	}
 
-	/** Gets the {@link Litter} most recently eaten by an {@link Animal}.
-	 *  @return The {@link Litter} most recently eaten by an {@link Animal}.
-	 */
-	public Litter getAnimalEatenLitter() {
-		return this.animalEatenLitter;
-	}
-
 	/** Gets the {@link #rBin recycle bin}.
 	 *  @return The {@link #rBin recycle bin}.
 	 */
@@ -260,6 +275,12 @@ public class Model implements java.io.Serializable{
 			this.player.move();
 		checkCollision();
 		checkTutorialStates();
+		if(trashVictory && ((trashGlow++)% 14 < 1)) {
+			trashVictory = false;
+		}
+		if(recycleVictory && ((recycleGlow++)% 14 < 1)) {
+			recycleVictory = false;
+		}
 	}
 	
 	public void checkTutorialStates() {
@@ -269,7 +290,7 @@ public class Model implements java.io.Serializable{
 			this.tutorialState = GameState.TUTORIAL_SIGNALTRASH;
 			break;
 		case TUTORIAL_SIGNALTRASH:
-			if(player.hasLitter)
+			if(hasLitter)
 				this.tutorialState = GameState.TUTORIAL_SIGNALTRASHCAN;
 			break;
 		case TUTORIAL_SIGNALTRASHCAN:
@@ -281,13 +302,21 @@ public class Model implements java.io.Serializable{
 			this.tutorialState = GameState.TUTORIAL_SIGNALRECYCLABLE;
 			break;
 		case TUTORIAL_SIGNALRECYCLABLE:
-			if(player.hasLitter)
+			if(hasLitter)
 				this.tutorialState = GameState.TUTORIAL_SIGNALRECYCLINGBIN;
 			break;
 		case TUTORIAL_SIGNALRECYCLINGBIN:
 			if(recycleVictory)
 				this.tutorialState = GameState.TUTORIAL_DAMAGEPLANT;
 			break;
+		case TUTORIAL_DAMAGEPLANT:
+			this.damagePlant();
+			if(plants.get(this.randPlant).getHealth() == 0) {
+				this.tutorialState = GameState.TUTORIAL_SIGNALPLANT;
+			}
+			break;
+		case TUTORIAL_SIGNALPLANT:
+			
 			
 			
 		}
@@ -493,7 +522,7 @@ public class Model implements java.io.Serializable{
 			l.setXLocation(litterXCoord);//
 			l.setYLocation(litterYCoord);
 			l.setImgID(Math.abs(r.nextInt()));
-			litterSet.add(l);// Adds them to hashset of litter, prevents exact duplicates in terms of
+			this.litterSet.add(l);// Adds them to hashset of litter, prevents exact duplicates in terms of
 									// coordinates.
 			System.out.println(l);
 			return l;
@@ -507,8 +536,7 @@ public class Model implements java.io.Serializable{
 			l.setXLocation(360);
 			l.setYLocation(480);
 			l.setImgID(Math.abs(r.nextInt()));
-			litterSet.add(l);
-			this.setLitterSpawned(l);
+			this.litterSet.add(l);
 			return l;
 		}
 
@@ -537,7 +565,7 @@ public class Model implements java.io.Serializable{
 	 */
 	private boolean checkCollision() {
 
-		if (!Player.hasLitter) {
+		if (!hasLitter) {
 			for (Litter litter : new HashSet<Litter>(litterSet)) {
 				if (litter.getCollidesWith(this.player)) {
 					if (spacePressed)
@@ -561,16 +589,16 @@ public class Model implements java.io.Serializable{
 			}
 		}
 
-		if(this.player.getHasLitter()) {
+		if(this.hasLitter) {
 			if(this.player.getCollidesWith(this.tBin) && this.pickedUp.getType() == LitterType.TRASH) {
-				this.tBin.takeLitter(this.player);
+				this.tBin.takeLitter(this.player, this);
 				System.out.println("DEPOSITED TRASH");
 				changeScore(10);
 				trashVictory = true;
 				return true;
 			}	
 			if(this.player.getCollidesWith(this.rBin) && this.pickedUp.getType() == LitterType.RECYCLABLE) {
-				this.rBin.takeLitter(this.player);
+				this.rBin.takeLitter(this.player, this);
 				System.out.println("DEPOSITED RECYCLABLE");
 				changeScore(10);
 				recycleVictory = true;
@@ -616,7 +644,6 @@ public class Model implements java.io.Serializable{
 			for (Animal animal : this.animals) {
 				if (litter.getCollidesWith(animal)) {
 					changeScore(-20);
-					this.animalEatenLitter = litter;
 					litterIterator.remove();
 					return true;
 				}
@@ -639,9 +666,14 @@ public class Model implements java.io.Serializable{
 		}
 	}
 	
+	/**"Picks up" a Litter object the Player is colliding with. Removes the Litter from the Litter hashSet and sets Model.hasLitter to true 
+	 * 
+	 * @param l The Litter object being picked up 
+	 * @return The Litter object being picked up
+	 */
 	public Litter pickUpLitter(Litter l) {
 		System.out.println("Player pick up litter " + l.toString());
-		player.hasLitter = true;
+		this.hasLitter = true;
 		litterSet.remove(l);
 		return l;
 	}

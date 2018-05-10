@@ -92,6 +92,11 @@ public class View extends JPanel{
 	private ArrayList<Plant> plants = new ArrayList<Plant>();
 	/** The current score of the game */
 	private int score = 0;
+	/**contains all of the Litter objects on-screen */
+	private HashSet<Litter> litterSet = new HashSet<Litter>();
+	
+	/**Gamestate variable that represents the current stage of the tutorial the player is at */
+	GameState tutorialState;
 
 	/** A Boolean to decide if the trash bin is in the glowing deposit state */
 	private boolean tGlow = false;
@@ -165,9 +170,12 @@ public class View extends JPanel{
 		}
 		
 		//traverse through litter set and draw them, had to make a copy of litter set everytime to avoid ConcurrentModificationExceptions.
-		for(Map.Entry<Litter, Sprite.ID>entry: new HashMap<Litter,Sprite.ID>(litterImgMap).entrySet()) {
-			drawImage(g,entry.getValue(), entry.getKey().getXLocation(), entry.getKey().getYLocation());
-		}
+		//for(Map.Entry<Litter, Sprite.ID>entry: new HashMap<Litter,Sprite.ID>(litterImgMap).entrySet()) {
+		//	drawImage(g,entry.getValue(), entry.getKey().getXLocation(), entry.getKey().getYLocation());
+		//}
+		
+		for(Litter l: new HashSet<Litter>(this.litterSet))
+			drawImage(g,getSpriteID(l),l.getXLocation(), l.getYLocation());
 
 		// Draw the crab
 		drawImage(g, Sprite.ID.CRAB, crabXLoc, crabYLoc);
@@ -338,7 +346,7 @@ public class View extends JPanel{
 	 * @param rVictory Whether the recycle bin should be glowing
 	 * @return None. 
 	 */
-	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory,Litter litterSpawned, GameState tutorialState) {
+	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory, GameState tutorialState, HashSet<Litter> litterSet) {
 		//Updating crab and player locations
 		playerXLoc = playerX;
 		playerYLoc = playerY;
@@ -352,33 +360,14 @@ public class View extends JPanel{
 		rGlow = rVictory;
 		
 		this.tutorialState = tutorialState;
+		this.litterSet = litterSet;
 		
 		//Remove both litter parameter from HashMap so it does not get painted.
-		litterImgMap.remove(playerPickedUp);
-		litterImgMap.remove(animalEatenLitter);
+		//litterSet.remove(playerPickedUp);
+		//litterSet.remove(animalEatenLitter);
 		this.pickedUpLitter = playerPickedUp;
 		this.hasLitter = hasLitter;
 		frame.repaint();
-		
-		if(!litterImgMap.containsKey(litterSpawned) && (tutorialState == GameState.TUTORIAL_SIGNALTRASH || tutorialState == GameState.TUTORIAL_SIGNALRECYCLABLE)) {
-			addLitter(litterSpawned);
-		}
-		
-		if(litterImgMap.containsKey(litterSpawned) && (tutorialState == GameState.TUTORIAL_SIGNALTRASHCAN || tutorialState == GameState.TUTORIAL_SIGNALRECYCLINGBIN)) {
-			litterImgMap.remove(litterSpawned);
-		}
-	}
-	
-	/**Adds a Litter object to the other Litter objects being rendered on the View
-	 * 
-	 * @param l The Litter object that will be added for rendering.
-	 * @return None. 
-	 */
-	public void addLitter(Litter l) {
-		Sprite.ID curSpriteID = getSpriteID(l);
-		litterImgMap.put(l, curSpriteID);
-		
-		
 	}
 	
 	/**
