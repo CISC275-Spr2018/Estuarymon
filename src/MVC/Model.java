@@ -544,4 +544,14 @@ public class Model implements java.io.Serializable{
 	public void setPickedUpLitter(Litter l) {
 		this.pickedUp = l;
 	}
+
+	/** Alters the player's velocity, only works in the NORMAL {@link GamePhase}. 
+	 *  When outside that phase, does nothing.
+	 *  @param ddx The change in x-velocity of the player
+	 *  @param ddy The change in y-velocity of the player
+	 */
+	public void normalAlterPlayerVelocity(int ddx, int ddy) {
+		if(this.gamePhase == GamePhase.NORMAL)
+			this.getPlayer().alterVelocity(ddx, ddy);
+	}
 }

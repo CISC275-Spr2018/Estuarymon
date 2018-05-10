@@ -121,16 +121,16 @@ public class Controller implements KeyListener {
 		int key = e.getKeyCode();
 		switch(key) {
 		case KeyEvent.VK_UP:
-			model.getPlayer().alterVelocity(0, -1);
+			model.normalAlterPlayerVelocity(0, -1);
 			break;
 		case KeyEvent.VK_DOWN:
-			model.getPlayer().alterVelocity(0, 1);
+			model.normalAlterPlayerVelocity(0, 1);
 			break;
 		case KeyEvent.VK_RIGHT:
-			model.getPlayer().alterVelocity(1, 0);
+			model.normalAlterPlayerVelocity(1, 0);
 			break;
 		case KeyEvent.VK_LEFT:
-			model.getPlayer().alterVelocity(-1, 0);
+			model.normalAlterPlayerVelocity(-1, 0);
 			break;
 		case KeyEvent.VK_SPACE:
 			model.spaceKeyPressed();
@@ -198,16 +198,16 @@ public class Controller implements KeyListener {
 
 		switch(key) {
 		case KeyEvent.VK_UP:
-			model.getPlayer().alterVelocity(0, 1);
+			model.normalAlterPlayerVelocity(0, 1);
 			break;
 		case KeyEvent.VK_DOWN:
-			model.getPlayer().alterVelocity(0, -1); 
+			model.normalAlterPlayerVelocity(0, -1); 
 			break;
 		case KeyEvent.VK_RIGHT:
-			model.getPlayer().alterVelocity(-1, 0);
+			model.normalAlterPlayerVelocity(-1, 0);
 			break;
 		case KeyEvent.VK_LEFT:
-			model.getPlayer().alterVelocity(1, 0);
+			model.normalAlterPlayerVelocity(1, 0);
 			break;
 		case KeyEvent.VK_SPACE:
 			model.spaceKeyReleased();
