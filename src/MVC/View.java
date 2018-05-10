@@ -180,8 +180,8 @@ public class View extends JPanel{
 		// Draw the player
 		drawImage(g, getPlayerSprite(), playerXLoc, playerYLoc);
 		// Draw the score
-		drawImage(g, Sprite.ID.SCORESTAR, 900, 0);
-		drawString(g, Integer.toString(score), 100, 900, 65);
+		drawImage(g, Sprite.ID.SCORESTAR, WORLD_WIDTH-100, 0);
+		drawString(g, Integer.toString(score), 100, WORLD_WIDTH-100, 65);
 		// Draw the litter in the box
 		drawImage(g, Sprite.ID.LITTERFRAME,0,0);
 		if(hasLitter) {
@@ -253,9 +253,9 @@ public class View extends JPanel{
 	private void drawString(Graphics g, String word, int width, int XPos, int YPos) {
 		g.setFont(new Font("TimesRoman", Font.BOLD, 25));
 		int stringLength = (int) g.getFontMetrics().getStringBounds(word, g).getWidth();
-		int start = worldXToPixelX(width)/2 - stringLength/2;
+		int start = worldXToPixelX(XPos+width/2) - stringLength/2;
 		g.setColor(Color.BLACK);
-		g.drawString(word, start + worldXToPixelX(XPos), worldYToPixelY(YPos));
+		g.drawString(word, start, worldYToPixelY(YPos));
 	}
 
 	/** Consumes a x-coordinate in <em>world</em> coordinates, computes the
