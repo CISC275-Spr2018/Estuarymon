@@ -92,10 +92,10 @@ public class View extends JPanel{
 	/** The current score of the game */
 	private int score = 0;
 
-	/** The number of frames that the trash bin has been glowing */
-	private int tGlowCount = 0;
-	/** The number of frames that the recycle bin has been glowing */
-	private int rGlowCount = 0;
+	/** A Boolean to decide if the trash bin is in the glowing deposit state */
+	private boolean tGlow = false;
+	/** A Boolean to decide if the recycling bin is in the glowing deposit state */
+	private boolean rGlow = false;
 
 	/** Creates a new View, places it in a new JPanel, arranges everything, and makes it visible. */
 	public View() {	
@@ -137,23 +137,15 @@ public class View extends JPanel{
 		drawImage(g, Sprite.ID.BACKGROUND, 0, 0);
 		
 		// Draw receptacles
-		if(Model.trashVictory) {
+		if(tGlow) {
 			drawImage(g,Sprite.ID.TRASHGLOW,0,Receptacle.trashYpos);
-			if((tGlowCount += 1)%13 <1) {
-				Model.trashVictory = false;
-			}
-			System.out.println(tGlowCount);
 		}
 		else {
 			drawImage(g,Sprite.ID.TRASHBIN,0,Receptacle.trashYpos);
 		}
-		if(Model.recycleVictory) {
-			drawImage(g,Sprite.ID.RECYCLEGLOW,0,Receptacle.recyclingYpos);
-			if((rGlowCount += 1)%13 <1) {
-				Model.recycleVictory = false;
-			}
-			System.out.println(rGlowCount);
-		}		
+		if(rGlow) {
+			drawImage(g,Sprite.ID.RECYCLEGLOW,0,Receptacle.recyclingYpos);	
+		}
 		else {
 			drawImage(g,Sprite.ID.RECYCLEBIN,0,Receptacle.recyclingYpos);
 		}
@@ -340,9 +332,12 @@ public class View extends JPanel{
 	 * @param hasLitter Boolean value representing if the Player is currently holding a Litter object. 
 	 * @param animalEatenLitter The most recent Litter object eaten by the animal. 
 	 * @param score Current score of the game. 
+	 * @param plants the array of plants in the game
+	 * @param tVictory Whether the trash bin should be glowing
+	 * @param rVictory Whether the recycle bin should be glowing
 	 * @return None. 
 	 */
-	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score, ArrayList<Plant> plants) {
+	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory) {
 		//Updating crab and player locations
 		playerXLoc = playerX;
 		playerYLoc = playerY;
@@ -352,6 +347,8 @@ public class View extends JPanel{
 		crabYLoc = crabY;
 		this.plants = plants;
 		this.score = score;
+		tGlow = tVictory;
+		rGlow = rVictory;
 		
 		//Remove both litter parameter from HashMap so it does not get painted.
 		litterImgMap.remove(playerPickedUp);

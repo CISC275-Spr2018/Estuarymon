@@ -66,7 +66,7 @@ public class Controller implements KeyListener {
 			model.getPlayer().getHasLitter(),
 			model.getAnimalEatenLitter(),
 			model.getScore(),
-			model.getPlants());
+			model.getPlants(),model.getTrashVictory(),model.getRecycleVictory());
 	}
 	
 	/**
