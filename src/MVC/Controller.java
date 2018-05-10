@@ -17,6 +17,7 @@ import MapObjects.Animal;
 import MapObjects.Plant;
 import Player.Player;
 
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -66,7 +67,7 @@ public class Controller implements KeyListener {
 			model.getPlayer().getHasLitter(),
 			model.getAnimalEatenLitter(),
 			model.getScore(),
-			model.getPlants());
+			model.getPlants(),model.getTrashVictory(),model.getRecycleVictory());
 	}
 	
 	/**

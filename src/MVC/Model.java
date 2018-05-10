@@ -14,6 +14,7 @@ import MapObjects.ReceptacleType;
 import Player.Direction;
 import Player.Player;
 
+
 /**
  * Model: Contains all the state and logic Does not contain anything about
  * images or graphics, must ask {@link View} for that
@@ -57,6 +58,11 @@ public class Model implements java.io.Serializable{
 	public static boolean trashVictory = false;
 	/** Whether the recycle bin recently received a piece of Litter */
 	public static boolean recycleVictory = false;
+	/** A count of the number of frames the trash bin has been in glowing victory state for*/
+	private int trashGlow = 1;
+	/** A count of the number of frames the recycle bin has been in glowing victory state for*/
+	private int recycleGlow = 1;
+
 
 	/** The Crab, currently the only Animal in the game. */
 	private Animal crab;
@@ -191,6 +197,18 @@ public class Model implements java.io.Serializable{
 	public Receptacle getTBin() {
 		return tBin;
 	}
+	/** Gets the {@link #trashVictory boolean}.
+	 *  @return The {@link #trashVictory boolean}.
+	 */
+	public boolean getTrashVictory() {
+		return trashVictory;
+	}
+	/** Gets the {@link #recycleVictory boolean}.
+	 *  @return The {@link #recycleVictory boolean}.
+	 */
+	public boolean getRecycleVictory() {
+		return recycleVictory;
+	}
 	/** Advances the Model by one frame. 
 	 *  Moves {@link #player}, checks for collisions, runs collision handlers, and moves the {@link #animals}. 
 	 *  Should be called once per expected screen frame. */
@@ -199,6 +217,12 @@ public class Model implements java.io.Serializable{
 			this.player.move();
 		this.checkCollision();
 		updatingAnimalLocation();
+		if(trashVictory && ((trashGlow++)% 14 < 1)) {
+			trashVictory = false;
+		}
+		if(recycleVictory && ((recycleGlow++)% 14 < 1)) {
+			recycleVictory = false;
+		}
 
 	}
 
