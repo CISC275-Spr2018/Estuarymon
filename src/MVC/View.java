@@ -97,6 +97,9 @@ public class View extends JPanel{
 	/** The number of frames that the recycle bin has been glowing */
 	private int rGlowCount = 0;
 
+	/** The current phase of the game */
+	GamePhase gamePhase = GamePhase.TITLE_SCREEN;
+
 	/** Creates a new View, places it in a new JPanel, arranges everything, and makes it visible. */
 	public View() {	
 		// Prepare for rendering litters
@@ -180,14 +183,50 @@ public class View extends JPanel{
 		drawImage(g, Sprite.ID.CRAB, crabXLoc, crabYLoc);
 		// Draw the player
 		drawImage(g, getPlayerSprite(), playerXLoc, playerYLoc);
-		// Draw the score
-		drawImage(g, Sprite.ID.SCORESTAR, WORLD_WIDTH-100, 0);
-		drawString(g, Integer.toString(score), 100, WORLD_WIDTH-100, 65);
+
+		// Draw overlays depending on the game phase
+		switch(this.gamePhase) {
+			case TITLE_SCREEN:
+				this.drawOverlayBox(g);
+				break;
+			case TUTORIAL:
+			case NORMAL:
+				this.drawLitterContainerOverlay(g);
+				this.drawScoreOverlay(g);
+				break;
+			case GAME_END:
+				this.drawOverlayBox(g);
+				break;
+		}
+	}
+
+	/** Draws the litter container overlay */
+	private void drawLitterContainerOverlay(Graphics g) {
 		// Draw the litter in the box
 		drawImage(g, Sprite.ID.LITTERFRAME,0,0);
 		if(hasLitter) {
 			drawImage(g,getSpriteID(pickedUpLitter),10,10);
 		}
+	}
+
+	/** Draws the score overlay on the screen */
+	private void drawScoreOverlay(Graphics g) {
+		// Draw the score
+		drawImage(g, Sprite.ID.SCORESTAR, WORLD_WIDTH-100, 0);
+		drawString(g, Integer.toString(score), 100, WORLD_WIDTH-100, 65);
+	}
+
+	/** Draws a box on the screen appropriate for title screen, end score, etc. */
+	private void drawOverlayBox(Graphics g) {
+		g.setColor(new Color(0, 0, 0, 128));
+		g.fillRoundRect(
+			worldXToPixelX(50),
+			worldYToPixelY(50),
+			worldWidthToPixelWidth(WORLD_WIDTH-2*50),
+			worldHeightToPixelHeight(WORLD_HEIGHT-2*50),
+			worldWidthToPixelWidth(150),
+			worldHeightToPixelHeight(150));
+		g.setColor(Color.WHITE);
 	}
 
 	/** Determines which {@link Sprite.ID} to use to render the player. Determines this based on the player's {@link #playerStatus status} and {@link #playerDirection direction}.
@@ -277,6 +316,24 @@ public class View extends JPanel{
 		return getFrameVertOffset() + (world_y * getFrameHeight() / WORLD_HEIGHT);
 	}
 
+	/** Consumes a width in <em>world</em> coordinates, computes the
+	 *  expected width in the window (i.e.&nbsp;<em>pixel</em> coordinates).
+	 *  @param width in <em>world</em> coordinates.
+	 *  @return The width in <em>pixel</em> coordinates.
+	 */
+	private int worldWidthToPixelWidth(int world_width) {
+		return (world_width * getFrameWidth() / WORLD_WIDTH);
+	}
+
+	/** Consumes a height in <em>world</em> coordinates, computes the
+	 *  expected height in the window (i.e.&nbsp;<em>pixel</em> coordinates).
+	 *  @param height in <em>world</em> coordinates.
+	 *  @return The height in <em>pixel</em> coordinates.
+	 */
+	private int worldHeightToPixelHeight(int height) {
+		return (height * getFrameHeight() / WORLD_HEIGHT);
+	}
+
 	/** Returns the width in pixels of the inner frame.
 	 *  @return The width of the inner frame in pixels.
 	 */
@@ -330,6 +387,7 @@ public class View extends JPanel{
 	 * Updates the most recently held {@link Litter}, whether the player is currently holding a {@link Litter}, and the most recent {@link Litter} eaten by the animal.
 	 * Updates the current game score.
 	 * 
+	 * @param phase The current game phase.
 	 * @param playerX The Player's X-location in <em>world</em> coordinates.
 	 * @param playerY The Player's Y-location in <em>world</em> coordinates.
 	 * @param dir The current Direction of the Player. 
@@ -342,7 +400,9 @@ public class View extends JPanel{
 	 * @param score Current score of the game. 
 	 * @return None. 
 	 */
-	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score, ArrayList<Plant> plants) {
+	public void update(GamePhase gamePhase, int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score, ArrayList<Plant> plants) {
+		// Update game phase
+		this.gamePhase = gamePhase;
 		//Updating crab and player locations
 		playerXLoc = playerX;
 		playerYLoc = playerY;

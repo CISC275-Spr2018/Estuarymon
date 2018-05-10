@@ -83,6 +83,9 @@ public class Model implements java.io.Serializable{
 	/**Random index of next plant**/
 	private int randPlant = (int) Math.floor(Math.random() * 4);
 
+	/** The current game phase */
+	private GamePhase gamePhase = GamePhase.TITLE_SCREEN;
+
 	/**
 	 * Constructor for the Model. It creates a new animal and initializes a hashset
 	 * of animals just in case more than one animal is wanted in the game. Then the
@@ -195,8 +198,7 @@ public class Model implements java.io.Serializable{
 	 *  Moves {@link #player}, checks for collisions, runs collision handlers, and moves the {@link #animals}. 
 	 *  Should be called once per expected screen frame. */
 	public void updateModel() {
-		if(playerMove)
-			this.player.move();
+		if(playerMove) this.player.move();
 		this.checkCollision();
 		updatingAnimalLocation();
 
@@ -529,6 +531,11 @@ public class Model implements java.io.Serializable{
 	/** Gets the height of the Model */
 	public int getHeight() {
 		return HEIGHT;
+	}
+
+	/** Gets the current game phase of the Model */
+	public GamePhase getGamePhase() {
+		return this.gamePhase;
 	}
 
 	/** Sets the last picked up litter to the parameter
