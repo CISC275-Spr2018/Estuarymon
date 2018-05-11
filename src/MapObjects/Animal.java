@@ -36,8 +36,7 @@ public class Animal extends Interactable {
 	/**
 	 * Simple getter method that retrieves the current direction of the animal.
 	 * 
-	 * @param l
-	 *            empty
+	 * @param empty
 	 * @return The current direction of the crab
 	 */
 	public Direction getDirection() {

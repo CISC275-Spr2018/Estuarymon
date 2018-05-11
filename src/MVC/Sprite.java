@@ -26,7 +26,16 @@ public class Sprite {
 	/** Houses all Sprites' info. This is the only public way to represent a Sprite. */
 	public static enum ID {
 		/** The background image */
-		BACKGROUND("Map/Background.jpg", Controller.WORLD_WIDTH, Controller.WORLD_HEIGHT),
+		BACKGROUND("Map/map2.png", Controller.WORLD_WIDTH, Controller.WORLD_HEIGHT),
+		
+		KID_WALK_SOUTH("Player/boy_south.png", 130, 130, 4, 1),
+		KID_WALK_NORTH("Player/boy_north.png", 130, 130, 4, 1),
+		KID_WALK_EAST("Player/boy_east.png", 130, 130, 4, 1),
+		KID_WALK_WEST("Player/boy_west.png", 130, 130, 4, 1),
+		KID_IDLE_WEST("Player/boy_idle_west.png", 130, 130, 4, 1),
+		KID_IDLE_EAST("Player/boy_idle_east.png", 130, 130, 4, 1),
+		KID_IDLE_NORTH("Player/boy_idle_north.png", 130, 130, 4, 1),
+		KID_IDLE_SOUTH("Player/boy_idle_south.png", 130, 130, 4, 1),
 
 		/** Orc walkig north */
 		ORC_WALK_NORTH("orc/orc_forward_north.png", 165, 165, 10, 1),

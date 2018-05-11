@@ -186,26 +186,26 @@ public class View extends JPanel{
 			case IDLE:
 				switch(this.playerDirection) {
 					case NORTH:
-					case NORTHEAST: return Sprite.ID.ORC_IDLE_NORTH;
+					case NORTHEAST: return Sprite.ID.KID_IDLE_NORTH;
 					case EAST:
-					case SOUTHEAST: return Sprite.ID.ORC_IDLE_EAST;
+					case SOUTHEAST: return Sprite.ID.KID_IDLE_EAST;
 					case SOUTH:
-					case SOUTHWEST: return Sprite.ID.ORC_IDLE_SOUTH;
+					case SOUTHWEST: return Sprite.ID.KID_IDLE_SOUTH;
 					case WEST:
-					case NORTHWEST: return Sprite.ID.ORC_IDLE_WEST;
+					case NORTHWEST: return Sprite.ID.KID_IDLE_WEST;
 					default: // Unknown player direction
 						throw new RuntimeException("Unknkown player direction "+this.playerDirection);
 				}
 			case WALKING:
 				switch(this.playerDirection) {
-					case NORTH: return Sprite.ID.ORC_WALK_NORTH;
-					case SOUTH: return Sprite.ID.ORC_WALK_SOUTH;
-					case WEST: return Sprite.ID.ORC_WALK_WEST;
-					case EAST: return Sprite.ID.ORC_WALK_EAST;
-					case NORTHWEST: return Sprite.ID.ORC_WALK_NORTHWEST;
-					case NORTHEAST: return Sprite.ID.ORC_WALK_NORTHEAST;
-					case SOUTHWEST: return Sprite.ID.ORC_WALK_SOUTHWEST;
-					case SOUTHEAST: return Sprite.ID.ORC_WALK_SOUTHEAST;
+					case NORTH: return Sprite.ID.KID_WALK_NORTH;
+					case SOUTH: return Sprite.ID.KID_WALK_SOUTH;
+					case WEST: return Sprite.ID.KID_WALK_WEST;
+					case EAST: return Sprite.ID.KID_WALK_EAST;
+					case NORTHWEST: return Sprite.ID.KID_WALK_WEST;
+					case NORTHEAST: return Sprite.ID.KID_WALK_EAST;
+					case SOUTHWEST: return Sprite.ID.KID_WALK_WEST;
+					case SOUTHEAST: return Sprite.ID.KID_WALK_EAST;
 					default: // Unknown player direction
 						throw new RuntimeException("Unknown player direction "+this.playerDirection);
 				}
