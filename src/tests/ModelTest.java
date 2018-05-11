@@ -12,38 +12,42 @@ import MapObjects.LitterType;
 import MapObjects.Plant;
 import Player.Direction;
 import Player.Player;
-
+/**
+ * 
+ * @author Juan Villacis 
+ *
+ */
 class ModelTest {
 	
 	//View view = new View(new Animal());
 	//view.setKeyListener(this);
 	
-	Model model = new Model();
 	@Test
 	void testDamagePlant() 
 	{
-		
+		Model model = new Model(1000,1000);
 		model.damagePlant();
+		assertTrue(model.getPlants().get(model.getRandPlant()).getHealth()==90);
 		
 	}
 	
 	@Test
 	void testSpaceKeyPressed() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.spaceKeyPressed();
 		assertTrue(model.getSpacePressed()==true);
 	}
 	
 	@Test
 	void testSpaceKeyRelease() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.spaceKeyReleased();
 		assertTrue(model.getSpacePressed()==false);
 	}
 	
 	@Test
 	void testAnimalWallCollisionLeft() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.getAnimal().setXLocation(0);
 		model.getAnimal().setDirection(Direction.WEST);
 		model.animalWallCollision();
@@ -53,7 +57,7 @@ class ModelTest {
 	
 	@Test
 	void testAnimalWallCollisionRight() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.getAnimal().setXLocation(model.getWidth());
 		
 		model.animalWallCollision();
@@ -62,7 +66,7 @@ class ModelTest {
 	
 	@Test
 	void testAnimalWallCollisionTop() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.getAnimal().setYLocation(0);
 		model.getAnimal().setDirection(Direction.NORTH);;
 		model.animalWallCollision();
@@ -71,7 +75,7 @@ class ModelTest {
 	
 	@Test
 	void testAnimalWallCollisionBottom() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.getAnimal().setYLocation(model.getHeight());
 		model.getAnimal().setDirection(Direction.SOUTHWEST);
 		model.animalWallCollision();
@@ -80,7 +84,7 @@ class ModelTest {
 	
 	@Test
 	void testPlayerLitterCollision() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.getPlayer().setXLocation(1);
 		model.getPlayer().setYLocation(1);
 		Litter l = new Litter();
@@ -93,7 +97,7 @@ class ModelTest {
 	
 	@Test
 	void testPlayerLitterCollisionFalse() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.getPlayer().setXLocation(1);
 		model.getPlayer().setYLocation(1);
 		Litter l = new Litter();
@@ -106,17 +110,17 @@ class ModelTest {
 	
 	@Test
 	void testPlayerPlantCollision() {
-		Model model = new Model();
-		Plant.plants[0].health = 0;
-		model.getPlayer().setXLocation(Plant.plants[0].getXLocation()+10);
-		model.getPlayer().setYLocation(Plant.plants[0].getYLocation()-8);
+		Model model = new Model(1000,1000);
+		model.getPlants().get(0).health = 0;
+		model.getPlayer().setXLocation(model.getPlants().get(0).getXLocation()+10);
+		model.getPlayer().setYLocation(model.getPlants().get(0).getYLocation()-8);
 		assertTrue(model.testCheckColl()==true);
 	}
 	
 	@Test
 	void testPlayerPlantCollisionFalse() {
-		Model model = new Model();
-		Plant.plants[0].health = 0;
+		Model model = new Model(1000,1000);
+		model.getPlants().get(0).health = 0;
 		model.getPlayer().setXLocation(300);
 		model.getPlayer().setYLocation(300);
 		assertTrue(model.testCheckColl()==false);
@@ -124,7 +128,7 @@ class ModelTest {
 	
 	@Test
 	void testPlayerTrashBinCollision() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.getPlayer().hasLitter = true;
 		model.getPlayer().setXLocation(model.getTBin().getXLocation());
 		model.getPlayer().setYLocation(model.getTBin().getYLocation());
@@ -136,7 +140,7 @@ class ModelTest {
 	
 	@Test
 	void testPlayerTrashBinCollisionFalse() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.getPlayer().hasLitter = true;
 		model.getPlayer().setXLocation(0);
 		model.getPlayer().setYLocation(0);
@@ -145,7 +149,7 @@ class ModelTest {
 	
 	@Test
 	void testPlayerRecycleBinCollision() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.getPlayer().hasLitter = true;
 		model.getPlayer().setXLocation(model.getRBin().getXLocation());
 		model.getPlayer().setYLocation(model.getRBin().getYLocation());
@@ -157,7 +161,7 @@ class ModelTest {
 	
 	@Test 
 	void testAnimalLitterCollision() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.getAnimal().setXLocation(50);
 		model.getAnimal().setYLocation(50);
 		Litter l = new Litter();
@@ -170,7 +174,7 @@ class ModelTest {
 	
 	@Test 
 	void testAnimalLitterCollisionFalse() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.getAnimal().setXLocation(50);
 		model.getAnimal().setYLocation(50);
 		Litter l = new Litter();
@@ -183,7 +187,7 @@ class ModelTest {
 	
 	/*@Test
 	void testUpdatingAnimalLocationEast() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.setCrabDirection(1);
 		model.getAnimal().setXLocation(0);
 		model.getAnimal().setYLocation(0);
@@ -193,7 +197,7 @@ class ModelTest {
 	
 	@Test
 	void testUpdatingAnimalLocationWest() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.setCrabDirection(2);
 		model.getAnimal().setXLocation(3);
 		model.getAnimal().setYLocation(3);
@@ -203,7 +207,7 @@ class ModelTest {
 	
 	@Test
 	void testUpdatingAnimalLocationSouth() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.setCrabDirection(3);
 		model.getAnimal().setXLocation(3);
 		model.getAnimal().setYLocation(3);
@@ -213,7 +217,7 @@ class ModelTest {
 	
 	@Test
 	void testUpdatingAnimalLocationNorth() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.setCrabDirection(4);
 		model.getAnimal().setXLocation(0);
 		model.getAnimal().setYLocation(0);
@@ -223,7 +227,7 @@ class ModelTest {
 	*/
 	@Test 
 	void testSpawnLitterXCoord() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		Litter l = model.spawnLitter();
 		assertTrue(l.getXLocation() >=0 && l.getXLocation() <=(model.getWidth()-l.getWidth()));
 		Litter.litterSet.remove(l);
@@ -231,7 +235,7 @@ class ModelTest {
 	
 	@Test
 	void testSpawnLitterYCoord() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		Litter l = model.spawnLitter();
 		assertTrue(l.getYLocation() >=0 && l.getYLocation() <=(model.getHeight()-l.getHeight()));
 		Litter.litterSet.remove(l);
@@ -240,7 +244,7 @@ class ModelTest {
 	
 	@Test
 	void testGetPickedUpLitter() {
-			Model model = new Model();
+			Model model = new Model(1000,1000);
 			model.getPlayer().setXLocation(1);
 			model.getPlayer().setYLocation(1);
 			model.spaceKeyPressed();
@@ -255,25 +259,25 @@ class ModelTest {
 	
 	@Test
 	void testGetAnimalXIncr() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		assertTrue(model.getAnimalXIncr()==4);
 	}
 	
 	@Test 
 	void testGetAnimalYIncr() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		assertTrue(model.getAnimalYIncr()==4);
 	}
 	
 	@Test
 	void testGetScore() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		assertTrue(model.getScore()==0);
 	}
 	
 	@Test
 	void testPlayerAnimalCollision() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.getPlayer().setXLocation(0);
 		model.getAnimal().setXLocation(0);
 		model.getAnimal().setYLocation(0);
@@ -283,7 +287,7 @@ class ModelTest {
 	
 	@Test
 	void testPlayerAnimalCollision2() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.getPlayer().setXLocation(0);
 		model.getAnimal().setXLocation(0);
 		model.getAnimal().setYLocation(0);
@@ -295,14 +299,14 @@ class ModelTest {
 	
 	@Test
 	void testScore() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.changeScore(-5);
 		assertTrue(model.getScore()==0);
 	}
 	
 	@Test
 	void testPlayerAnimalCollision3() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.getPlayer().setXLocation(0);
 		model.getAnimal().setXLocation(0);
 		model.getAnimal().setYLocation(0);
@@ -314,7 +318,7 @@ class ModelTest {
 	
 	@Test
 	void testPlayerAnimalCollision4() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.getPlayer().setXLocation(0);
 		model.getAnimal().setXLocation(0);
 		model.getAnimal().setYLocation(0);
@@ -328,7 +332,7 @@ class ModelTest {
 	
 	@Test
 	void testPlayerAnimalCollision5() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.getPlayer().setXLocation(0);
 		model.getAnimal().setXLocation(0);
 		model.getAnimal().setYLocation(0);
@@ -340,7 +344,7 @@ class ModelTest {
 	
 	@Test
 	void testPlayerAnimalCollision6() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.getPlayer().setXLocation(0);
 		model.getAnimal().setXLocation(0);
 		model.getAnimal().setYLocation(0);
@@ -352,7 +356,7 @@ class ModelTest {
 	
 	@Test
 	void testPlayerAnimalCollision7() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.getPlayer().setXLocation(0);
 		model.getAnimal().setXLocation(0);
 		model.getAnimal().setYLocation(0);
@@ -364,7 +368,7 @@ class ModelTest {
 	
 	@Test
 	void testPlayerAnimalCollision8() {
-		Model model = new Model();
+		Model model = new Model(1000,1000);
 		model.getPlayer().setXLocation(0);
 		model.getAnimal().setXLocation(0);
 		model.getAnimal().setYLocation(0);
@@ -372,6 +376,23 @@ class ModelTest {
 		model.getPlayer().setDirection(Direction.SOUTHWEST);
 		model.testCheckColl();
 		assertTrue(model.getAnimal().getDirection()==Direction.SOUTHWEST);
+	}
+	
+	@Test
+	void testLitterAdding() {
+		Model model = new Model(1000,1000);
+		Litter l = new Litter();
+		Litter.litterSet.add(l);
+		assertTrue(Litter.litterSet.contains(l)==true);
+	}
+	
+	@Test
+	void testLitterRemoving() {
+		Model model = new Model(1000,1000);
+		Litter l = new Litter();
+		Litter.litterSet.add(l);
+		Litter.litterSet.remove(l);
+		assertTrue(Litter.litterSet.contains(l)==false);
 	}
 	
 	

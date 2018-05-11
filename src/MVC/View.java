@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Random;
 
 
+
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -38,9 +39,16 @@ import Player.PlayerStatus;
  * View: Contains everything about graphics and images
  * Know size of screen, which images to load etc
  *
+ *@author Zack Klodnicki 
+ *@author Juan Villacis
+ *
  *
  **/
 public class View extends JPanel{
+	/** The width of the game world */
+	public static final int WORLD_WIDTH = 1500;
+	/** The height of the game world */
+	public static final int WORLD_HEIGHT = 1000;
 	/** The dimensions of the computer screen, in pixels. */
 	private final static Dimension  screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
 	/** The height of the computer screen, in pixels. */
@@ -48,7 +56,7 @@ public class View extends JPanel{
 	/** The width of the computer screen, in pixels. */
 	private final static double screenWidth = screenDimension.getWidth();
 	/** The JFrame housing this View. */
-	JFrame frame = new JFrame();
+	JFrame frame;
 	/** The x location of the player in world coordinates */
 	private static int playerXLoc = 0;
 	/** The y location of the player in world coordinates */
@@ -80,14 +88,15 @@ public class View extends JPanel{
 	private static ArrayList<ArrayList<Sprite.ID>> litterImgLists = new ArrayList<ArrayList<Sprite.ID>>();
 	/** Contains all Litter objects to be rendered onscreen, maps them to a Sprite.ID. */
 	private static HashMap<Litter, Sprite.ID> litterImgMap = new HashMap<Litter, Sprite.ID>();
-
+	/** Contains all plant objects onscreen*/
+	private ArrayList<Plant> plants = new ArrayList<Plant>();
 	/** The current score of the game */
 	private int score = 0;
 
-	/** The number of frames that the trash bin has been glowing */
-	private int tGlowCount = 0;
-	/** The number of frames that the recycle bin has been glowing */
-	private int rGlowCount = 0;
+	/** A Boolean to decide if the trash bin is in the glowing deposit state */
+	private boolean tGlow = false;
+	/** A Boolean to decide if the recycling bin is in the glowing deposit state */
+	private boolean rGlow = false;
 
 	/** Creates a new View, places it in a new JPanel, arranges everything, and makes it visible. */
 	public View() {	
@@ -95,8 +104,8 @@ public class View extends JPanel{
 		preloadLitterImgs();
 				
 		// Set up the JFrame
+		frame = new JFrame();
 		frame.setFocusable(true);
-		frame.setLayout(new GridBagLayout());
 		frame.setUndecorated(true);
 		frame.add(this);
 		frame.setBackground(BACKGROUND_COLOR);
@@ -108,14 +117,18 @@ public class View extends JPanel{
 	}
 	
 	/** Adds a key listener to the associated JFrame 
+	 * 
 	 *  @param listener The listener to add
+	 *  @return None. 
 	 */
 	public void setKeyListener(KeyListener listener) {
 		frame.addKeyListener(listener);
 	}
 	
 	/** Paints this view
+	 * 
 	 * @param g The {@link java.awt.Graphics} object to use for painting
+	 * @return None. 
 	 */
 	public void paint(Graphics g) {
 		super.paint(g);
@@ -125,29 +138,21 @@ public class View extends JPanel{
 		drawImage(g, Sprite.ID.BACKGROUND, 0, 0);
 		
 		// Draw receptacles
-		if(Model.trashVictory) {
+		if(tGlow) {
 			drawImage(g,Sprite.ID.TRASHGLOW,0,Receptacle.trashYpos);
-			if((tGlowCount += 1)%13 <1) {
-				Model.trashVictory = false;
-			}
-			System.out.println(tGlowCount);
 		}
 		else {
 			drawImage(g,Sprite.ID.TRASHBIN,0,Receptacle.trashYpos);
 		}
-		if(Model.recycleVictory) {
-			drawImage(g,Sprite.ID.RECYCLEGLOW,0,Receptacle.recyclingYpos);
-			if((rGlowCount += 1)%13 <1) {
-				Model.recycleVictory = false;
-			}
-			System.out.println(rGlowCount);
-		}		
+		if(rGlow) {
+			drawImage(g,Sprite.ID.RECYCLEGLOW,0,Receptacle.recyclingYpos);	
+		}
 		else {
 			drawImage(g,Sprite.ID.RECYCLEBIN,0,Receptacle.recyclingYpos);
 		}
 		
 		// Draw all plants
-		for(Plant plant : Plant.plants) 
+		for(Plant plant : plants) 
 		{
 			if(plant.health < 100 && plant.health != 0) // If decaying...
 			{
@@ -169,8 +174,8 @@ public class View extends JPanel{
 		// Draw the player
 		drawImage(g, getPlayerSprite(), playerXLoc, playerYLoc);
 		// Draw the score
-		drawImage(g, Sprite.ID.SCORESTAR, 900, 0);
-		drawString(g, Integer.toString(score), 100, 900, 65);
+		drawImage(g, Sprite.ID.SCORESTAR, WORLD_WIDTH-100, 0);
+		drawString(g, Integer.toString(score), 100, WORLD_WIDTH-100, 65);
 		// Draw the litter in the box
 		drawImage(g, Sprite.ID.LITTERFRAME,0,0);
 		if(hasLitter) {
@@ -179,6 +184,8 @@ public class View extends JPanel{
 	}
 
 	/** Determines which {@link Sprite.ID} to use to render the player. Determines this based on the player's {@link #playerStatus status} and {@link #playerDirection direction}.
+	 * 
+	 * @param None. 
 	 *  @return The appropriate {@link Sprite.ID} to use to render the player
 	 */
 	private Sprite.ID getPlayerSprite() {
@@ -219,13 +226,14 @@ public class View extends JPanel{
 	 *  @param s The {@link Sprite.ID} to use to retrieve the {@link BufferedImage} to draw.
 	 *  @param world_x The x-coordinate of the {@link Sprite.ID} to draw, in <em>world</em> coordinates.
 	 *  @param world_y The y-coordinate of the {@link Sprite.ID} to draw, in <em>world</em> coordinates.
+	 *  @return None. 
 	 */
 	private void drawImage(Graphics g, Sprite.ID s, int world_x, int world_y) {
 		g.drawImage(
 			Sprite.getImage(s,
-			(double) this.getWidth() / Controller.WORLD_WIDTH),
-			convertDimension(world_x),
-			convertDimension(world_y),
+			(double) this.getFrameWidth() / WORLD_WIDTH),
+			worldXToPixelX(world_x),
+			worldYToPixelY(world_y),
 			this);
 	}
 	
@@ -239,29 +247,73 @@ public class View extends JPanel{
 	private void drawString(Graphics g, String word, int width, int XPos, int YPos) {
 		g.setFont(new Font("TimesRoman", Font.BOLD, 25));
 		int stringLength = (int) g.getFontMetrics().getStringBounds(word, g).getWidth();
-		int start = convertDimension(width)/2 - stringLength/2;
+		int start = worldXToPixelX(XPos+width/2) - stringLength/2;
 		g.setColor(Color.BLACK);
-		g.drawString(word, start + convertDimension(XPos), convertDimension(YPos));
+		g.drawString(word, start, worldYToPixelY(YPos));
 	}
 
-	/** Converts a dimension (i.e.&nbsp;half of a coordinate) from the <em>world</em> coordinate system to the <em>pixel</em> coordinate system.
-	 *  @param world_dimension The dimension (i.e. half of a coordinate) to convert, in the <em>world</em> coordinate system.
-	 *  @return The same dimension as the parameter, in the <em>pixel</em> coordinate system.
+	/** Consumes a x-coordinate in <em>world</em> coordinates, computes the
+	 *  expected x-coordinate in the window (i.e.&nbsp;<em>pixel</em> coordinates).
+	 *  @param world_x The x-coordinate in <em>world</em> coordinates.
+	 *  @return The x-coordinate in <em>pixel</em> coordinates.
 	 */
-	private int convertDimension(int world_dimension) {
-		return (int) ((double) world_dimension / Controller.WORLD_WIDTH * this.getWidth());
+	private int worldXToPixelX(int world_x) {
+		return getFrameHorizOffset() + (world_x * getFrameWidth() / WORLD_WIDTH);
 	}
 
-	/** Returns the largest possible square that can fit in the layout. Note that {@link Dimension} in this case is a duple of a width and a height, as opposed to the terminology "dimension" used in {@link #convertDimension}.
-	 *  @return The largest possible square that can fit in the layout
+	/** Consumes a y-coordinate in <em>world</em> coordinates, computes the
+	 *  expected y-coordinate in the window (i.e.&nbsp;<em>pixel</em> coordinates).
+	 *  @param world_y The y-coordinate in <em>world</em> coordinates.
+	 *  @return The x-coordinate in <em>pixel</em> coordinates.
 	 */
-	@Override
-	public Dimension getPreferredSize() {
-		Dimension parent = this.getParent().getSize();
-		if(parent.width > parent.height) {
-			return new Dimension(parent.height, parent.height);
+	private int worldYToPixelY(int world_y) {
+		return getFrameVertOffset() + (world_y * getFrameHeight() / WORLD_HEIGHT);
+	}
+
+	/** Returns the width in pixels of the inner frame.
+	 *  @return The width of the inner frame in pixels.
+	 */
+	private int getFrameWidth() {
+		return this.getFrameDimensions().width;
+	}
+
+	/** Returns the height in pixels of the inner frame.
+	 *  @return The height of the inner frame in pixels.
+	 */
+	private int getFrameHeight() {
+		return this.getFrameDimensions().height;
+	}
+
+	/** Returns the distance in pixels between a side of the window and the inner frame.
+	 *  Can be <code>0</code> if the inner frame size is contrained by the width of the window.
+	 *  @return The distance between a side of the window and a side of the inner frame
+	 */
+	private int getFrameHorizOffset() {
+		return (this.getWidth() - this.getFrameDimensions().width) / 2;
+	}
+
+	/** Returns the distance in pixels between the top/bottom of the window and the inner frame.
+	 *  Can be <code>0</code> if the inner frame size is contrained by the height of the window.
+	 *  @return The distance between the top/bottom of the window and the top/bottom of the inner frame.
+	 */
+	private int getFrameVertOffset() {
+		return (this.getHeight() - this.getFrameDimensions().height) /2;
+	}
+
+	/** Returns the dimensions of the inner frame in pixels.
+	 *  @return The dimensions of the inner frame in pixels.
+	 */
+	private Dimension getFrameDimensions() {
+		// Calculate aspect ratios
+		final double frameAR = (double) WORLD_WIDTH / WORLD_HEIGHT;
+		double screenAR = (double) this.getWidth() / this.getHeight();
+
+		if(frameAR > screenAR) {
+			// Frame is wider than screen; constrain on screen width.
+			return new Dimension(this.getWidth(), this.getWidth() * WORLD_HEIGHT / WORLD_WIDTH);
 		} else {
-			return new Dimension(parent.width, parent.width);
+			// Screen is width than frame; constrain on screen height.
+			return new Dimension(this.getHeight() * WORLD_WIDTH / WORLD_HEIGHT, this.getHeight());
 		}
 	}
 	
@@ -281,18 +333,23 @@ public class View extends JPanel{
 	 * @param hasLitter Boolean value representing if the Player is currently holding a Litter object. 
 	 * @param animalEatenLitter The most recent Litter object eaten by the animal. 
 	 * @param score Current score of the game. 
+	 * @param plants the array of plants in the game
+	 * @param tVictory Whether the trash bin should be glowing
+	 * @param rVictory Whether the recycle bin should be glowing
+	 * @return None. 
 	 */
-	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score) {
+	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory) {
 		//Updating crab and player locations
 		playerXLoc = playerX;
 		playerYLoc = playerY;
 		playerDirection = dir;
 		playerStatus = status;
-
 		crabXLoc = crabX;
 		crabYLoc = crabY;
-		
+		this.plants = plants;
 		this.score = score;
+		tGlow = tVictory;
+		rGlow = rVictory;
 		
 		//Remove both litter parameter from HashMap so it does not get painted.
 		litterImgMap.remove(playerPickedUp);
@@ -305,6 +362,7 @@ public class View extends JPanel{
 	/**Adds a Litter object to the other Litter objects being rendered on the View
 	 * 
 	 * @param l The Litter object that will be added for rendering.
+	 * @return None. 
 	 */
 	public void addLitter(Litter l) {
 		Sprite.ID curSpriteID = getSpriteID(l);
@@ -328,6 +386,7 @@ public class View extends JPanel{
 	
 	/**
 	 * Loads in the different Litter images to be used in the game. 
+	 * 
 	 * 
 	 * @param None. 
 	 * @return None. 

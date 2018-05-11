@@ -1,12 +1,13 @@
 package MapObjects;
 /**
  * Represents a plant object
+ * 
  * @author Hunter
  *
  */
-public class Plant extends Interactable{
-	public int health;
-	public static Plant [] plants = new Plant[4];
+public class Plant extends Interactable implements java.io.Serializable{
+	public int health = 0;
+	//public static Plant [] plants = new Plant[4];
 	public static int randPlant = (int) Math.floor(Math.random() * 4);
 	
 	/**Constructor for plant object
@@ -20,7 +21,7 @@ public class Plant extends Interactable{
 	{
 		super(xLocation,yLocation,100,100);
 		this.health = health;
-		this.setRelativeCollisionRect(10, 10, 200, 200);
+		this.setRelativeCollisionRect(0, 0, 100, 100);
 	}
 
 	/**Sets health of plant object
@@ -35,11 +36,16 @@ public class Plant extends Interactable{
 	/**Gets health of plant object
 	 * 
 	 * @param 
-	 * @return
+	 * @return The Plant's health 
 	 */
 	public int getHealth()
 	{
 		return health;
+	}
+	@Override
+	public String toString()
+	{
+		return this.health+"";
 	}
 
 }

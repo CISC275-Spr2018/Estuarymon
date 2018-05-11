@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
  *  To use an image, the user must call {@link #getImage(Sprite.ID, double)} passing in the id of the image they want and a scale factor.
  *
  *  <p>Use caution: {@link #getImage(Sprite.ID, double)} is a <code>public static</code> method, intended for use by the user. {@link #getImage(double)} is a <code>private</code> instance method, used internally.
+ *  @author Zack Klodnicki  
  *  @see #getImage(Sprite.ID, double)
  */
 public class Sprite {
@@ -26,7 +27,8 @@ public class Sprite {
 	/** Houses all Sprites' info. This is the only public way to represent a Sprite. */
 	public static enum ID {
 		/** The background image */
-		BACKGROUND("Map/map2.png", Controller.WORLD_WIDTH, Controller.WORLD_HEIGHT),
+
+		BACKGROUND("Map/map2.png", View.WORLD_WIDTH, View.WORLD_HEIGHT),
 		
 		KID_WALK_SOUTH("Player/boy_south.png", 130, 130, 4, 1),
 		KID_WALK_NORTH("Player/boy_north.png", 130, 130, 4, 1),
@@ -36,6 +38,9 @@ public class Sprite {
 		KID_IDLE_EAST("Player/boy_idle_east.png", 130, 130, 4, 1),
 		KID_IDLE_NORTH("Player/boy_idle_north.png", 130, 130, 4, 1),
 		KID_IDLE_SOUTH("Player/boy_idle_south.png", 130, 130, 4, 1),
+
+		//BACKGROUND("Map/Background.jpg", View.WORLD_WIDTH, View.WORLD_HEIGHT),
+
 
 		/** Orc walkig north */
 		ORC_WALK_NORTH("orc/orc_forward_north.png", 165, 165, 10, 1),

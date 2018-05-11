@@ -1,5 +1,6 @@
 package MVC;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
@@ -13,9 +14,10 @@ import MapObjects.ReceptacleType;
 import Player.Direction;
 import Player.Player;
 
+
 /**
  * Model: Contains all the state and logic Does not contain anything about
- * images or graphics, must ask view for that
+ * images or graphics, must ask {@link View} for that
  *
  * has methods to
  *  detect collision with boundaries
@@ -28,92 +30,91 @@ import Player.Player;
  *@author Kalloyan Stoyanov 
  *@author Zack Klodnicki 
  **/
-public class Model {
-	private static final int WIDTH = Controller.WORLD_WIDTH;
-	private static final int HEIGHT = Controller.WORLD_HEIGHT;
-	
-	Player player = new Player(0,0, 165,165);
-	
-	boolean spacePressed = false;
+public class Model implements java.io.Serializable{
+	private static int WIDTH;
+	private static int HEIGHT;
 
-	int crabDirection = 3;
-	
-	//plantXloc = frameWidth - (frameWidth/3);
-	//plantYloc = (frameHeight / 100) + count;
-	
-	int plantDamage = 10;
-	int plantHealth = 100;
-	
-	String coords = "";
+	/** The only controllable object in the game. 
+	 *  @see Player */
+	private Player player = new Player(0,0, 165,165);
 
-	Receptacle tBin = new Receptacle(128,128,ReceptacleType.TRASHBIN);
+	/** Whether the space key is currently pressed down. */
+	private boolean spacePressed = false;
+
+	/** The current movement direction of the {@link #crab}. */
+	private int crabDirection = 3;
+
+	/** The amount of health to detract from the Plant every time it is damaged */
+	private static final int plantDamage = 10;
+	/** The initial amount of health of each Plant */
+	private static final int plantHealth = 100;
+
+	/** The trash bin */
+	private Receptacle tBin = new Receptacle(128,128,ReceptacleType.TRASHBIN);
+	/** The recycle bin */
 	private Receptacle rBin = new Receptacle(128,128,ReceptacleType.RECYCLINGBIN);
-	
-	static boolean trashVictory = false;
-	static boolean recycleVictory = false;
 
-	Animal crab;
-	HashSet<Animal> animals;
+	/** Whether the trash bin recently received a piece of Litter */
+	public static boolean trashVictory = false;
+	/** Whether the recycle bin recently received a piece of Litter */
+	public static boolean recycleVictory = false;
+	/** A count of the number of frames the trash bin has been in glowing victory state for*/
+	private int trashGlow = 1;
+	/** A count of the number of frames the recycle bin has been in glowing victory state for*/
+	private int recycleGlow = 1;
 
-	int animalXIncr = 4;
-	int animalYIncr = 4;
 
-	boolean playerMove = true;
+	/** The Crab, currently the only Animal in the game. */
+	private Animal crab;
+	/** Every animal in the world. Currently only the crab. */
+	private HashSet<Animal> animals;
 
+	/** The horizontal speed of the Crab */
+	private int animalXIncr = 4;
+	/** The vertical speed of the Crab */
+	private int animalYIncr = 4;
+
+	/** Whether the player is allowed to move this frame. Set to false under specific circumstances, i.e. when colliding with an Animal */
+	private boolean playerMove = true;
+
+	/** The current game score */
 	private int score = 0;
 
-	Litter pickedUp;
-	Litter animalEatenLitter;
-	
+	/** The last Litter to be picked up by the {@link #player} */
+	private Litter pickedUp;
+	/** The last Litter to be picked up by an {@link #animals animal} */
+	private Litter animalEatenLitter;
+	/**Contains plant objects**/
+	private ArrayList<Plant> plants = new ArrayList<Plant>();
+	/**Random index of next plant**/
+	private int randPlant = (int) Math.floor(Math.random() * 4);
+
 	/**
 	 * Constructor for the Model. It creates a new animal and initializes a hashset
 	 * of animals just in case more than one animal is wanted in the game. Then the
-	 * animal is added to the hashset.Adds 4 plants to the screen as well. 
+	 * animal is added to the hashset. Adds 4 Plants to the screen as well. 
 	 *
 	 * 
 	 * 
-	 * @param None
-	 * @return New Model object. 
+	 * @param width Width of the model. 
+	 * @param height Height of the model. 
+	 * @return New Model object with the specified dimensions. 
 	 * 
 	 */
-	public Model() {
+	public Model(int width, int height) {
 		this.crab = new Animal();
 		animals = new HashSet<Animal>();
 		animals.add(crab);
-		
+		this.HEIGHT = height;
+		this.WIDTH = width;
+
 		int count = 0;
 		//fills plant array
 		for(int i = 0; i < 4; i++)
-		{//health,xloc,yoc
-			//System.out.println(winW - (winW/3));
-			//System.out.println((winH / 100) + count);
-			Plant.plants[i] = new Plant(plantHealth, WIDTH - (WIDTH/3), 50+(WIDTH / 90) + count);//sets location of plants
+		{
+			plants.add(new Plant(plantHealth, WIDTH - (WIDTH/3), 50+(WIDTH / 90) + count));//sets location of plants
 			count = count + 200;
 		}
-
-		// Fill animals collection (temporary)
-	}
-	
-	/**
-	 * Returns the width of the Model. 
-	 * 
-	 * @param None
-	 * @return The width of the model.
-	 */
-	public static int getWidth() {
-		return WIDTH;
-	}
-
-
-
-	/**
-	 * Returns the height of the Model.
-	 * 
-	 * @param None. 
-	 * @return The height of the Model. 
-	 */
-	public static int getHeight() {
-		return HEIGHT;
 	}
 
 	/**
@@ -157,7 +158,7 @@ public class Model {
 	public Animal getAnimal() {
 		return crab;
 	}
-	
+
 	/**
 	 * Gets the Litter most recently picked up by the Player.
 	 * This will either be the Litter object the player is currently holding, or the last Litter object the player picked up if they are not currently holding one.
@@ -168,67 +169,64 @@ public class Model {
 	public Litter getPickedUpLitter() {
 		return this.pickedUp;
 	}
-	
-	/**
-	 * Setter for pickedUp Litter object. Testing purposes only. 
-	 * 
-	 * @param l the Litter object pickedUp will be set to
-	 * @return none. 
-	 */
-	public void setPickedUpLitter(Litter l) {
-		this.pickedUp = l;
-	}
-	
-	/**
-	 * Returns the spacePressed boolean of the Model, which tells whether or not the space key is currently being pressed. 
-	 * 
-	 * @param None. 
-	 * @return The spacePressed boolean. True if the spaceKey is currently being pressed, false otherwise. 
+
+	/** Gets whether the space key is pressed down.
+	 *  @return Whether the space key is pressed down.
 	 */
 	public boolean getSpacePressed() {
 		return this.spacePressed;
 	}
-	
-	/**
-	 * Returns the Litter object most recently eaten by the Animal.
-	 * 
-	 * 
-	 * @param None.
-	 * @return Litter object most recently eaten by the Animal.
+
+	/** Gets the {@link Litter} most recently eaten by an {@link Animal}.
+	 *  @return The {@link Litter} most recently eaten by an {@link Animal}.
 	 */
 	public Litter getAnimalEatenLitter() {
 		return this.animalEatenLitter;
 	}
 
-	
-	/**
-	 * Returns the RecyclingBin Receptacle in the game. 
-	 * 
-	 * @param None. 
-	 * @return The RecyclingBin Receptacle. 
+	/** Gets the {@link #rBin recycle bin}.
+	 *  @return The {@link #rBin recycle bin}.
 	 */
 	public Receptacle getRBin() {
 		return rBin;
 	}
-	
-	/**
-	 * Returns the TrashBin Receptacle in the game. 
-	 * 
-	 * @param None. 
-	 * @return The TrashBin Receptacle. 
+
+	/** Gets the {@link #tBin trash bin}.
+	 *  @return The {@link #tBin trash bin}.
 	 */
 	public Receptacle getTBin() {
 		return tBin;
 	}
-	
-	//same method as updateLocationAndDirection()
+	/** Gets the {@link #trashVictory boolean}.
+	 *  @return The {@link #trashVictory boolean}.
+	 */
+	public boolean getTrashVictory() {
+		return trashVictory;
+	}
+	/** Gets the {@link #recycleVictory boolean}.
+	 *  @return The {@link #recycleVictory boolean}.
+	 */
+	public boolean getRecycleVictory() {
+		return recycleVictory;
+	}
+	/** Advances the Model by one frame. 
+	 *  Moves {@link #player}, checks for collisions, runs collision handlers, and moves the {@link #animals}. 
+	 *  Should be called once per expected screen frame. */
 	public void updateModel() {
-		this.player.move(playerMove);
+		if(playerMove)
+			this.player.move();
 		this.checkCollision();
 		updatingAnimalLocation();
-		
+		if(trashVictory && ((trashGlow++)% 14 < 1)) {
+			trashVictory = false;
+		}
+		if(recycleVictory && ((recycleGlow++)% 14 < 1)) {
+			recycleVictory = false;
+		}
+
 	}
-	
+
+
 	/**
 	 * Method called when the space key is pressed. Sets the spacePressed boolean value to true;
 	 * 
@@ -239,8 +237,9 @@ public class Model {
 	public void spaceKeyPressed() {
 		this.spacePressed = true;
 	}
-	
+
 	/**Method called when the space key is released. Sets the spacePressed boolean value to false;
+	 * 
 	 * @param None.
 	 * @return None.
 	 * 
@@ -248,7 +247,7 @@ public class Model {
 	public void spaceKeyReleased() {
 		this.spacePressed = false;
 	}
-	
+
 	/**
 	 * Method that checks whether the crab has hit a wall. If the crab has hit a
 	 * wall it also checks to see what the direction of the crab was, so that it can
@@ -261,22 +260,22 @@ public class Model {
 		if (crab.getXLocation() <= 0 && crab.getDirection() == Direction.WEST) { // when the left wall is hit
 			crab.setDirection(Direction.EAST);
 		} else if (crab.getXLocation() >= WIDTH - 400 && crab.getDirection() == Direction.EAST) { // when the right wall
-																									// is hit
+			// is hit
 			crab.setDirection(Direction.WEST);
 		}
 
 		else if (crab.getYLocation() <= 0 && crab.getDirection() == Direction.NORTH) { // when the top wall is hit
 			crab.setDirection(Direction.SOUTH);
 		} else if (crab.getYLocation() >= HEIGHT - 170 && crab.getDirection() == Direction.SOUTH) { // when the bottom
-																									// wall is hit
+			// wall is hit
 			crab.setDirection(Direction.NORTH);
 		}
 
 		else if (crab.getXLocation() >= WIDTH - 400 && crab.getDirection() == Direction.NORTHEAST) { // when the right
-																										// wall is hit
+			// wall is hit
 			crab.setDirection(Direction.NORTHWEST);
 		} else if (crab.getXLocation() >= WIDTH - 400 && crab.getDirection() == Direction.SOUTHEAST) { // when the right
-																										// wall is hit
+			// wall is hit
 			crab.setDirection(Direction.SOUTHWEST);
 		}
 
@@ -287,22 +286,22 @@ public class Model {
 		}
 
 		else if (crab.getYLocation() >= HEIGHT - 170 && crab.getDirection() == Direction.SOUTHEAST) { // when the bottom
-																										// wall is hit
+			// wall is hit
 			crab.setDirection(Direction.NORTHEAST);
 		} else if (crab.getYLocation() >= HEIGHT - 170 && crab.getDirection() == Direction.SOUTHWEST) { // when the
-																										// bottom wall
-																										// is hit
+			// bottom wall
+			// is hit
 			crab.setDirection(Direction.NORTHWEST);
 		}
 
 		else if (crab.getXLocation() <= 0 && crab.getDirection() == Direction.NORTHWEST) { // when the left wall is hit
 			crab.setDirection(Direction.NORTHEAST);
 		} else if (crab.getXLocation() <= 0 && crab.getDirection() == Direction.SOUTHWEST) { // when the left wall is
-																								// hit
+			// hit
 			crab.setDirection(Direction.SOUTHEAST);
 		}
 	}
-	
+
 	/**
 	 * Method that updates the x and y coordinates of the crab depending on its
 	 * current direction.
@@ -358,58 +357,88 @@ public class Model {
 	public int getScore() {
 		return score;
 	}
-	
+
 	// damage plant every 10 seconds
-		/**
-		 * Method called to decrement plant health by the plantdamage integer value
-		 * 
-		 * @param
-		 * @return
-		 */
-		public void damagePlant() {
-			if (Plant.plants[Plant.randPlant].getHealth() > 0) {
-				Plant.plants[Plant.randPlant].health = Plant.plants[Plant.randPlant].health - plantDamage;
-			}
-
+	/**
+	 * Method called to decrement plant health by the plantdamage integer value
+	 * 
+	 * @param
+	 * @return
+	 */
+	public void damagePlant() 
+	{
+		if (plants.get(randPlant).getHealth() > 0) 
+		{
+			plants.get(randPlant).health = plants.get(randPlant).health - plantDamage;
 		}
-		
-		/**
-		 * Generates a new Litter object with random x and y coordinates, as well as
-		 * generates a random imgID for the object.
-		 * 
-		 * @return the new Litter object created.
-		 * 
-		 */
-		public Litter spawnLitter() {
-			Random r = new Random();
-			Litter l = new Litter();
-			l.setType(LitterType.randomLitter());
-			int litterXCoord = r.nextInt((WIDTH - l.getWidth()));// generates random coordinates
-			int litterYCoord = r.nextInt((HEIGHT - l.getHeight()));
-			l.setXLocation(litterXCoord);//
-			l.setYLocation(litterYCoord);
-			l.setImgID(Math.abs(r.nextInt()));
-			Litter.litterSet.add(l);// Adds them to hashset of litter, prevents exact duplicates in terms of
-									// coordinates.
-			System.out.println(l);
-			return l;
+	}
 
-		}
+	public void setRandPlant()
+	{
+		this.randPlant = (int) Math.floor(Math.random() * 4);
+	}
+	
+	/**
+	 * Method called to return randPlant index
+	 * 
+	 * @param
+	 * @return
+	 */
+	public int getRandPlant()
+	{
+		return randPlant;
+	}
 
+	public ArrayList<Plant> getPlants()
+	{
+		return plants;
+	}
+
+	/**
+	 * Generates a new Litter object with random x and y coordinates, as well as
+	 * generates a random imgID for the object.
+	 * 
+	 * @return the new Litter object created.
+	 * 
+	 */
+	public Litter spawnLitter() {
+		Random r = new Random();
+		Litter l = new Litter();
+		l.setType(LitterType.randomLitter());
+		int litterXCoord = r.nextInt((WIDTH - l.getWidth())-(rBin.getXLocation()+rBin.getWidth())) + rBin.getXLocation() + rBin.getWidth();// generates random coordinates
+		int litterYCoord = r.nextInt((HEIGHT - l.getHeight()));
+		l.setXLocation(litterXCoord);//
+		l.setYLocation(litterYCoord);
+		l.setImgID(Math.abs(r.nextInt()));
+		Litter.litterSet.add(l);// Adds them to hashset of litter, prevents exact duplicates in terms of
+		// coordinates.
+		System.out.println(l);
+		return l;
+
+	}
+
+	/** A public version of {@link #checkCollision} only for use by the {@link ModelTest} class.
+	 *  @see #checkCollision
+	 *  @see ModelTest
+	 */
 	public boolean testCheckColl() {
 		return checkCollision();
 	}
-	
+
 	/**
 	 * Method that deals with all the various collisions in the game. If the player
 	 * collides with the crab, the player is slowed down, the crab goes in the same
 	 * direction as the player, and the score is decreased. In addition, the crab
 	 * speeds up while the player is colliding with it to give it the effect that it
 	 * is scared. If the crab collides with a piece of trash or recycling, the piece
-	 * of trash or recycling is removed and the score is decreased.
+	 * of trash or recycling is removed and the score is decreased. 
+	 * If a Player does not have Litter such that Player.hasLitter is false, this method will check for collisions with Litter object on the ground
+	 * If a Player has a Litter object such that Player.hasLitter is true, this method will check if the Player is colliding with a Receptacle, 
+	 * check if that Receptacle is the correct one to deposit the current Litter in, and call the appropriate methods to deposit Litter if it is. 
+	 * Also checks if Player and any of the Plants on screen are colliding. If they are and the plant has no health, the appropriate methods are called to regrow the Plant. 
 	 * 
 	 * @param empty
-	 * @return boolean for testing purposes
+	 * @return whether a collision has been detected
 	 */
 	private boolean checkCollision() {
 
@@ -424,16 +453,19 @@ public class Model {
 			}
 		}
 
-		for (int i = 0; i < 4; i++) {
+		for (Plant plant: plants) 
+		{
 			// add and health == 0
-			if (Plant.plants[i].health == 0 && Plant.plants[i].getCollidesWith(this.player)) {
-				this.player.growPlant(i);
+			if (plant.health == 0 && plant.getCollidesWith(this.player)) 
+			{
+				//this.player.growPlant(i);
+				setRandPlant();
+				plant.health = 100;
 				changeScore(10);
 				return true;
 			}
-
 		}
-		
+
 		if(this.player.getHasLitter()) {
 			if(this.player.getCollidesWith(this.tBin) && this.pickedUp.getType() == LitterType.TRASH) {
 				this.tBin.takeLitter(this.player);
@@ -449,7 +481,7 @@ public class Model {
 				recycleVictory = true;
 				return true;
 			}
-				
+
 		}
 
 		if (this.player.getCollidesWith(this.crab)) {
@@ -497,7 +529,7 @@ public class Model {
 		}
 		return false;
 	}
-	
+
 	/**Method to change the game's score.
 	 * 
 	 * @param i The amount of points to be added (positive integer) or subtracted (negative integer) from the score. 
@@ -512,4 +544,21 @@ public class Model {
 		}
 	}
 
+
+	/** Gets the width of the Model */
+	public int getWidth() {
+		return WIDTH;
+	}
+
+	/** Gets the height of the Model */
+	public int getHeight() {
+		return HEIGHT;
+	}
+
+	/** Sets the last picked up litter to the parameter
+	 *  @param l The new Litter
+	 */
+	public void setPickedUpLitter(Litter l) {
+		this.pickedUp = l;
+	}
 }
