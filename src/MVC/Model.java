@@ -138,6 +138,9 @@ public class Model implements java.io.Serializable{
 			count = count + 200;
 		}
 	}
+	public HashSet<Litter> getLitterSet() {
+		return litterSet;
+	}
 	/**
 	 * Returns the hoverLitter boolean of Model. 
 	 * 
@@ -181,7 +184,12 @@ public class Model implements java.io.Serializable{
 	public boolean isHasLitter() {
 		return hasLitter;
 	}
-
+	
+	/**
+	 * Sets the hasLitter boolean of the model 
+	 * 
+	 * @param hasLitter The boolean variable hasLitter will be set to. 
+	 */
 	public void setHasLitter(boolean hasLitter) {
 		this.hasLitter = hasLitter;
 	}
