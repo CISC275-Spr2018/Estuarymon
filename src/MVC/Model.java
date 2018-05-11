@@ -106,7 +106,11 @@ public class Model implements java.io.Serializable{
 	private boolean plantGrown = false;
 	/** Boolean variable that represents whether the animal has eaten the Litter in the tutorial */
 	private boolean animalAteLitter = false;
-	
+	/** Boolean that represents whether the arrow key prompt should be shown on screen. */ 
+	private boolean arrowKeyPrompt = true;
+	/** Boolean that represents whether or not the Player is hovering, but not picking up a Litter object */
+	private boolean hoverLitter = false;
+
 	/**
 	 * Constructor for the Model. It creates a new animal and initializes a hashset
 	 * of animals just in case more than one animal is wanted in the game. Then the
@@ -134,6 +138,25 @@ public class Model implements java.io.Serializable{
 			count = count + 200;
 		}
 	}
+	/**
+	 * Returns the hoverLitter boolean of Model. 
+	 * 
+	 * @param
+	 * @return True if the Player is hovering, but not picking up a Litter object, false otherwise. 
+	 */
+	public boolean isHoverLitter() {
+		return hoverLitter;
+	}
+
+	/** Returns the arrowKeyPrompt
+	 * 
+	 * @param
+	 * @return True if the player hasn't moved and the arrow key prompt needs to be shown, false otherwise. 
+	 */
+	public boolean isArrowKeyPrompt() {
+		return arrowKeyPrompt;
+	}
+
 	
 	/**
 	 * Returns the ArrayList<Integer> corresponding to the Litter object of the player's most recently picked up Litter object
@@ -328,10 +351,13 @@ public class Model implements java.io.Serializable{
 	public void checkTutorialStates() {
 		switch(tutorialState) {
 		case TUTORIAL_SPAWNTRASH:
+			//
 			spawnLitter(LitterType.TRASH);
 			this.tutorialState = GameState.TUTORIAL_SIGNALTRASH;
 			break;
 		case TUTORIAL_SIGNALTRASH:
+			if(player.getXLocation() != 240 || player.getYLocation() != 240)
+				this.arrowKeyPrompt = false;
 			if(hasLitter)
 				this.tutorialState = GameState.TUTORIAL_SIGNALTRASHCAN;
 			break;
@@ -366,6 +392,10 @@ public class Model implements java.io.Serializable{
 		case TUTORIAL_CRABEATLITTER:
 			if(!this.animalAteLitter)
 				updatingTutorialAnimalLocation();
+			else
+				this.gameState = GameState.REGULARGAME;
+			//decrease score, show animal sick etc. 
+			
 			break;
 			
 			
@@ -595,7 +625,7 @@ public class Model implements java.io.Serializable{
 			Random r = new Random();
 			Litter l = new Litter();
 			l.setType(LitterType.randomLitter());
-			int litterXCoord = r.nextInt((WIDTH - l.getWidth())-(rBin.getXLocation()+rBin.getWidth())) + rBin.getXLocation() + rBin.getWidth();// generates random coordinates
+			int litterXCoord = r.nextInt((plants.get(0).getXLocation() - l.getWidth())-(rBin.getXLocation()+rBin.getWidth())) + rBin.getXLocation() + rBin.getWidth();// generates random coordinates
 			int litterYCoord = r.nextInt((HEIGHT - l.getHeight()));
 			l.setXLocation(litterXCoord);//
 			l.setYLocation(litterYCoord);
@@ -657,7 +687,9 @@ public class Model implements java.io.Serializable{
 		if (!hasLitter) {
 			for (Litter litter : new HashSet<Litter>(litterSet)) {
 				if (litter.getCollidesWith(this.player)) {
+					hoverLitter = true;
 					if (spacePressed) {
+						hoverLitter = false;
 						this.pickedUp = pickUpLitter(litter);
 						System.out.println(this.pickedUp);
 						this.pickedUpAttr = new ArrayList<Integer>();

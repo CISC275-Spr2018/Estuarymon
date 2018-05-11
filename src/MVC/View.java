@@ -96,12 +96,17 @@ public class View extends JPanel{
 	private HashSet<Litter> litterSet = new HashSet<Litter>();
 	
 	/**Gamestate variable that represents the current stage of the tutorial the player is at */
-	GameState tutorialState;
+	GameState tutorialState = GameState.TUTORIAL_SIGNALTRASH;
 
 	/** A Boolean to decide if the trash bin is in the glowing deposit state */
 	private boolean tGlow = false;
 	/** A Boolean to decide if the recycling bin is in the glowing deposit state */
 	private boolean rGlow = false;
+	
+	/** Boolean that determines whether the arrow key prompt should be shown on screen. */
+	private boolean arrowKeyPrompt = false;
+	/** Boolean that represents whether or not the Player is hovering, but not picking up a Litter object */
+	private boolean hoverLitter = false;
 
 	/** Creates a new View, places it in a new JPanel, arranges everything, and makes it visible. */
 	public View() {	
@@ -169,6 +174,7 @@ public class View extends JPanel{
 			}
 		}
 		
+		
 		//traverse through litter set and draw them, had to make a copy of litter set everytime to avoid ConcurrentModificationExceptions.
 		//for(Map.Entry<Litter, Sprite.ID>entry: new HashMap<Litter,Sprite.ID>(litterImgMap).entrySet()) {
 		//	drawImage(g,entry.getValue(), entry.getKey().getXLocation(), entry.getKey().getYLocation());
@@ -188,6 +194,32 @@ public class View extends JPanel{
 		drawImage(g, Sprite.ID.LITTERFRAME,0,0);
 		if(hasLitter) {
 			drawImage(g,getSpriteID(pickedUpAttr.get(1),pickedUpAttr.get(0)),10,10);
+		}
+		
+		if(arrowKeyPrompt)
+			drawImage(g, Sprite.ID.ARROWKEYS, 240,200);
+		
+		switch(this.tutorialState) {
+		case TUTORIAL_SIGNALTRASH:
+		case TUTORIAL_SIGNALRECYCLABLE:
+			if(hoverLitter) {
+				drawImage(g, Sprite.ID.SPACEKEY,playerXLoc, playerYLoc - 20);
+			}
+			else {
+				drawImage(g, Sprite.ID.ARROW, 360,400);
+			}
+			break;
+		case TUTORIAL_SIGNALPLANT:
+			drawImage(g, Sprite.ID.ARROW,plants.get(0).getXLocation(), 0);
+			break;
+		case TUTORIAL_SIGNALTRASHCAN:
+			drawImage(g, Sprite.ID.ARROW, 50, Receptacle.trashYpos - 60);
+			break;
+		case TUTORIAL_SIGNALRECYCLINGBIN:
+			drawImage(g, Sprite.ID.ARROW, 50, Receptacle.recyclingYpos - 60);
+			break;
+				
+			
 		}
 	}
 
@@ -346,7 +378,7 @@ public class View extends JPanel{
 	 * @param rVictory Whether the recycle bin should be glowing
 	 * @return None. 
 	 */
-	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,ArrayList<Integer> pickedUpAttr,boolean hasLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory, GameState tutorialState, HashSet<ArrayList<Integer>> litterAttrSet) {
+	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,ArrayList<Integer> pickedUpAttr,boolean hasLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory, GameState tutorialState, HashSet<ArrayList<Integer>> litterAttrSet, boolean arrowKeyPrompt,boolean hoverLitter) {
 		//Updating crab and player locations
 		playerXLoc = playerX;
 		playerYLoc = playerY;
@@ -364,6 +396,8 @@ public class View extends JPanel{
 		
 		this.pickedUpAttr = pickedUpAttr;
 		this.hasLitter = hasLitter;
+		this.arrowKeyPrompt = arrowKeyPrompt;
+		this.hoverLitter = hoverLitter;
 		frame.repaint();
 	}
 	
