@@ -76,8 +76,10 @@ public class Model implements java.io.Serializable{
 	private Animal crab;
 	/** Every animal in the world. Currently only the crab. */
 	private HashSet<Animal> animals;
-	
+	/** HashSet of all of the current Litter objects in the game */
 	private HashSet<Litter> litterSet = new HashSet<Litter>();
+	/** HashSet where every element is an ArrayList containing the x and y coordinates of the Litter objects, as well as the imgID and LitterType to send to View */
+	private HashSet<ArrayList<Integer>> litterAttrSet = new HashSet<ArrayList<Integer>>();
 
 	/** The horizontal speed of the Crab */
 	private int animalXIncr = 4;
@@ -92,16 +94,18 @@ public class Model implements java.io.Serializable{
 
 	/** The last Litter to be picked up by the {@link #player} */
 	private Litter pickedUp;
+	/** ArrayList of Litter imgID and LitterType of Model.pickedUp Litter attribute to send to View */
+	ArrayList<Integer> pickedUpAttr = new ArrayList<Integer>();
 	/** The last Litter to be picked up by an {@link #animals animal} */
 	private Litter animalEatenLitter;
 	/**Contains plant objects**/
 	private ArrayList<Plant> plants = new ArrayList<Plant>();
 	/**Random index of next plant**/
-	private int randPlant = (int) Math.floor(Math.random() * 4);
-	
-	private Litter litterSpawned;
-	
+	private int randPlant = 0;
+	/** Boolean variable that represents whether the player has planted the plant that despawns in the tutorial */
 	private boolean plantGrown = false;
+	/** Boolean variable that represents whether the animal has eaten the Litter in the tutorial */
+	private boolean animalAteLitter = false;
 	
 	/**
 	 * Constructor for the Model. It creates a new animal and initializes a hashset
@@ -131,16 +135,19 @@ public class Model implements java.io.Serializable{
 		}
 	}
 	
-	public Litter getLitterSpawned() {
-		return litterSpawned;
+	/**
+	 * Returns the ArrayList<Integer> corresponding to the Litter object of the player's most recently picked up Litter object
+	 * 
+	 * @param
+	 * @return ArrayList<Integer> corresponding to the Litter object of the player's most recently picked up Litter object
+	 */
+	public ArrayList<Integer> getPickedUpAttr() {
+		return pickedUpAttr;
 	}
 
-	public void setLitterSpawned(Litter litterSpawned) {
-		this.litterSpawned = litterSpawned;
-	}
 	
-	public HashSet<Litter> getLitterSet(){
-		return this.litterSet;
+	public HashSet<ArrayList<Integer>> getLitterAttrSet(){
+		return this.litterAttrSet;
 	}
 	
 	/**Returns a boolean depending on whether or not the player is currently holding a Litter object that needs to be disposed of. 
@@ -155,7 +162,13 @@ public class Model implements java.io.Serializable{
 	public void setHasLitter(boolean hasLitter) {
 		this.hasLitter = hasLitter;
 	}
-
+	
+	/**
+	 * Returns the current state of the tutorial, more specifically which stage of the tutorial the player is on. 
+	 * If the player is finished the tutorial, this method will simply return the last stage of the tutorial. 
+	 * 
+	 * @return
+	 */
 	public GameState getTutorialState() {
 		return tutorialState;
 	}
@@ -163,11 +176,22 @@ public class Model implements java.io.Serializable{
 	public void setTutorialState(GameState tutorialState) {
 		this.tutorialState = tutorialState;
 	}
-
+	
+	/**
+	 * Returns the current state of the game (regular or tutorial mode)
+	 * 
+	 * @param
+	 * @return The current state of the game. 
+	 */
 	public GameState getGameState() {
 		return gameState;
 	}
-
+	/**
+	 * Sets the current state of the game. 
+	 * 
+	 * @param gameState The game state the game will be set to. 
+	 * @return None. 
+	 */
 	public void setGameState(GameState gameState) {
 		this.gameState = gameState;
 	}
@@ -257,9 +281,13 @@ public class Model implements java.io.Serializable{
 	public boolean getRecycleVictory() {
 		return recycleVictory;
 	}
-	/** Advances the Model by one frame. 
-	 *  Moves {@link #player}, checks for collisions, runs collision handlers, and moves the {@link #animals}. 
-	 *  Should be called once per expected screen frame. */
+	/**
+	 * Checks the current state of the game, and calls the appropriate updateModel function depending on whether the game is currently
+	 * in tutorial or regular mode
+	 *  
+	 *  @param
+	 *  @return
+	 *   */
 	public void updateModel() {
 		switch(gameState) {
 		case REGULARGAME:
@@ -273,6 +301,12 @@ public class Model implements java.io.Serializable{
 		
 	}
 	
+	/**
+	 * Update model method for the tutorial state of the game. Moves the player and checks for collisions, but does not move crab around the map and checks the state of the tutorial.
+	 * 
+	 * @param
+	 * @return 
+	 */
 	public void updateModelTutorial() {
 		if(playerMove)
 			this.player.move();
@@ -285,7 +319,12 @@ public class Model implements java.io.Serializable{
 			recycleVictory = false;
 		}
 	}
-	
+	/**
+	 * Checks the current state of the tutorial, and calls tutorial events and changes tutorial states as the player progresses through the tutorial.
+	 * 
+	 * @param
+	 * @return 
+	 */
 	public void checkTutorialStates() {
 		switch(tutorialState) {
 		case TUTORIAL_SPAWNTRASH:
@@ -319,14 +358,14 @@ public class Model implements java.io.Serializable{
 			}
 			break;
 		case TUTORIAL_SIGNALPLANT:
-			System.out.println("reached signal plant");
 			if(this.plantGrown) {
 				spawnLitter(LitterType.RECYCLABLE);
 				this.tutorialState = GameState.TUTORIAL_CRABEATLITTER;
 			}
 			break;
 		case TUTORIAL_CRABEATLITTER:
-			
+			if(!this.animalAteLitter)
+				updatingTutorialAnimalLocation();
 			break;
 			
 			
@@ -334,6 +373,13 @@ public class Model implements java.io.Serializable{
 		}
 	}
 	
+	/** Advances the Model by one frame. 
+	 *  Moves {@link #player}, checks for collisions, runs collision handlers, and moves the {@link #animals}. 
+	 *  Should be called once per expected screen frame.
+	 *  
+	 *  @param
+	 *  @return
+	 *   */
 	public void updateModelNormal() {
 		if(playerMove)
 			this.player.move();
@@ -423,7 +469,10 @@ public class Model implements java.io.Serializable{
 			crab.setDirection(Direction.SOUTHEAST);
 		}
 	}
-
+	
+	public void updatingTutorialAnimalLocation() {
+		crab.setYLocation(crab.getYLocation() + 10);
+	}
 	/**
 	 * Method that updates the x and y coordinates of the crab depending on its
 	 * current direction.
@@ -494,6 +543,17 @@ public class Model implements java.io.Serializable{
 			plants.get(randPlant).health = plants.get(randPlant).health - plantDamage;
 		}
 	}
+	
+	/**
+	 * Method called to damage a specific plant by the plantdamage integer value
+	 * 
+	 * @param i The index in the plant arrayList of the plant to be damaged. 
+	 * @return None. 
+	 */
+	public void damagePlant(int i) {
+		if(plants.get(i).getHealth() > 0)
+			plants.get(i).health -= plantDamage;
+	}
 
 	public void setRandPlant()
 	{
@@ -504,13 +564,18 @@ public class Model implements java.io.Serializable{
 	 * Method called to return randPlant index
 	 * 
 	 * @param
-	 * @return
+	 * @return The randPlant index. 
 	 */
 	public int getRandPlant()
 	{
 		return randPlant;
 	}
-
+	
+	/**
+	 * Method called to return the Model's ArrayList of Plant objects 
+	 * 
+	 * @return 
+	 */
 	public ArrayList<Plant> getPlants()
 	{
 		return plants;
@@ -522,6 +587,7 @@ public class Model implements java.io.Serializable{
 		 * Generates a new Litter object with random x and y coordinates, as well as
 		 * generates a random imgID for the object.
 		 * 
+		 * @param 
 		 * @return the new Litter object created.
 		 * 
 		 */
@@ -534,13 +600,23 @@ public class Model implements java.io.Serializable{
 			l.setXLocation(litterXCoord);//
 			l.setYLocation(litterYCoord);
 			l.setImgID(Math.abs(r.nextInt()));
-			this.litterSet.add(l);// Adds them to hashset of litter, prevents exact duplicates in terms of
-									// coordinates.
+			this.litterSet.add(l);// Adds them to hashset of litter, prevents exact duplicates in terms of coordinates.
+			ArrayList<Integer> litterAttr = new ArrayList<Integer>();
+			litterAttr.add(l.getXLocation());
+			litterAttr.add(l.getYLocation());
+			litterAttr.add(l.getImgID());
+			litterAttr.add(l.getType().getID());
+			this.litterAttrSet.add(litterAttr);
 			System.out.println(l);
 			return l;
 
 		}
-		
+		/**
+		 * Method that spawns Litter for tutorial purposes. Spawns the Litter at a set location with the specified type. 
+		 * 
+		 * @param lt The litterType of the new Litter object
+		 * @return The new Litter object spawned on the map. 
+		 */
 		public Litter spawnLitter(LitterType lt) {
 			Random r = new Random();
 			Litter l = new Litter();
@@ -549,6 +625,7 @@ public class Model implements java.io.Serializable{
 			l.setYLocation(480);
 			l.setImgID(Math.abs(r.nextInt()));
 			this.litterSet.add(l);
+			this.litterAttrSet.add(getLitterAttr(l));
 			return l;
 		}
 
@@ -580,9 +657,15 @@ public class Model implements java.io.Serializable{
 		if (!hasLitter) {
 			for (Litter litter : new HashSet<Litter>(litterSet)) {
 				if (litter.getCollidesWith(this.player)) {
-					if (spacePressed)
+					if (spacePressed) {
 						this.pickedUp = pickUpLitter(litter);
+						System.out.println(this.pickedUp);
+						this.pickedUpAttr = new ArrayList<Integer>();
+						pickedUpAttr.add(this.pickedUp.getImgID());
+						pickedUpAttr.add(this.pickedUp.getType().getID());
+					}
 					return true;
+					
 				}
 
 			}
@@ -657,7 +740,9 @@ public class Model implements java.io.Serializable{
 			for (Animal animal : this.animals) {
 				if (litter.getCollidesWith(animal)) {
 					changeScore(-20);
+					litterAttrSet.remove(getLitterAttr(litter));
 					litterIterator.remove();
+					this.animalAteLitter = true;
 					return true;
 				}
 			}
@@ -687,8 +772,24 @@ public class Model implements java.io.Serializable{
 	public Litter pickUpLitter(Litter l) {
 		System.out.println("Player pick up litter " + l.toString());
 		this.hasLitter = true;
+		litterAttrSet.remove(getLitterAttr(l));
 		litterSet.remove(l);
 		return l;
+	}
+	
+	/**
+	 * Take a litter object and adds its attributes to an ArrayList of Integers that can be passed on to view 
+	 * 
+	 * @param l The litter object 
+	 * @return An ArrayList of Integers of the Litter object's attributes. 
+	 */
+	public ArrayList<Integer> getLitterAttr(Litter l){
+		ArrayList litterAttr = new ArrayList<Integer>();
+		litterAttr.add(l.getXLocation());
+		litterAttr.add(l.getYLocation());
+		litterAttr.add(l.getImgID());
+		litterAttr.add(l.getType().getID());
+		return litterAttr;
 	}
 
 
