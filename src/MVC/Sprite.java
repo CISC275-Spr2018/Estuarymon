@@ -60,7 +60,7 @@ public class Sprite {
 		/** A star intended to house the current score */
 		SCORESTAR("MapObjects/FlatIcon-074.png", 100, 100),
 		/** A box intended to house a type of litter */
-		LITTERFRAME("MapObjects/litterbox.png", 75,75),
+		LITTERFRAME("MapObjects/litterbox.png", 85,85),
 		/** A plant */
 		PLANT("MapObjects/azalea.png", 100, 100),
 		/** A decaying plant */
