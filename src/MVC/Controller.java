@@ -112,7 +112,7 @@ public class Controller implements KeyListener {
 				stepTimer = new Timer(DRAW_DELAY, stepAction);
 				stepTimer.start();
 				taskTimer.scheduleAtFixedRate(new damagePlantTask(),500,1000);//damages plants every ten seconds
-				trashTimer.scheduleAtFixedRate(new TrashTask(), 0, 10000);
+				trashTimer.scheduleAtFixedRate(new TrashTask(), 0, 6000);
 			}
 		});
 	}

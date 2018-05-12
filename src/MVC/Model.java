@@ -312,36 +312,25 @@ public class Model implements java.io.Serializable{
 	 *  @return
 	 *   */
 	public void updateModel() {
-		switch(gameState) {
-		case REGULARGAME:
-			updateModelNormal();
-			break;
-		case TUTORIAL:
-			updateModelTutorial();
-			break;
-		}
-		
-		
-	}
-	
-	/**
-	 * Update model method for the tutorial state of the game. Moves the player and checks for collisions, but does not move crab around the map and checks the state of the tutorial.
-	 * 
-	 * @param
-	 * @return 
-	 */
-	public void updateModelTutorial() {
 		if(playerMove)
 			this.player.move();
 		checkCollision();
-		checkTutorialStates();
 		if(trashVictory && ((trashGlow++)% 14 < 1)) {
 			trashVictory = false;
 		}
 		if(recycleVictory && ((recycleGlow++)% 14 < 1)) {
 			recycleVictory = false;
 		}
+		
+		if(gameState == GameState.TUTORIAL) {
+			checkTutorialStates();
+		}
+		else {
+			updatingAnimalLocation();
+		}
 	}
+	
+
 	/**
 	 * Checks the current state of the tutorial, and calls tutorial events and changes tutorial states as the player progresses through the tutorial.
 	 * 
@@ -403,26 +392,6 @@ public class Model implements java.io.Serializable{
 		}
 	}
 	
-	/** Advances the Model by one frame. 
-	 *  Moves {@link #player}, checks for collisions, runs collision handlers, and moves the {@link #animals}. 
-	 *  Should be called once per expected screen frame.
-	 *  
-	 *  @param
-	 *  @return
-	 *   */
-	public void updateModelNormal() {
-		if(playerMove)
-			this.player.move();
-		this.checkCollision();
-		updatingAnimalLocation();
-		if(trashVictory && ((trashGlow++)% 14 < 1)) {
-			trashVictory = false;
-		}
-		if(recycleVictory && ((recycleGlow++)% 14 < 1)) {
-			recycleVictory = false;
-		}
-
-	}
 
 
 	/**
