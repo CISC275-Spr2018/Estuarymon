@@ -11,6 +11,7 @@ import MapObjects.LitterType;
 import MapObjects.Plant;
 import MapObjects.Receptacle;
 import MapObjects.ReceptacleType;
+import MapObjects.River;
 import Player.Direction;
 import Player.Player;
 
@@ -45,7 +46,7 @@ public class Model implements java.io.Serializable{
 	private int crabDirection = 3;
 
 	/** The amount of health to detract from the Plant every time it is damaged */
-	private static final int plantDamage = 10;
+	private static final int plantDamage = 20;
 	/** The initial amount of health of each Plant */
 	private static final int plantHealth = 100;
 
@@ -88,7 +89,8 @@ public class Model implements java.io.Serializable{
 	private ArrayList<Plant> plants = new ArrayList<Plant>();
 	/**Random index of next plant**/
 	private int randPlant = (int) Math.floor(Math.random() * 4);
-
+	/**onscreen river**/
+	River river;
 	/**
 	 * Constructor for the Model. It creates a new animal and initializes a hashset
 	 * of animals just in case more than one animal is wanted in the game. Then the
@@ -107,12 +109,12 @@ public class Model implements java.io.Serializable{
 		animals.add(crab);
 		this.HEIGHT = height;
 		this.WIDTH = width;
-
 		int count = 0;
+		river = new River(WIDTH - 200, 0, WIDTH, HEIGHT);
 		//fills plant array
 		for(int i = 0; i < 4; i++)
 		{
-			plants.add(new Plant(plantHealth, WIDTH - (WIDTH/3), 50+(WIDTH / 90) + count));//sets location of plants
+			plants.add(new Plant(plantHealth, river.getXLocation() - 200, 50+(WIDTH / 90) + count));//sets location of plants
 			count = count + 200;
 		}
 	}
@@ -217,6 +219,7 @@ public class Model implements java.io.Serializable{
 			this.player.move();
 		this.checkCollision();
 		updatingAnimalLocation();
+		checkPlants();
 		if(trashVictory && ((trashGlow++)% 14 < 1)) {
 			trashVictory = false;
 		}
@@ -371,15 +374,25 @@ public class Model implements java.io.Serializable{
 		{
 			plants.get(randPlant).health = plants.get(randPlant).health - plantDamage;
 		}
+		else if(plants.get(randPlant).getHealth() == 0)
+		{
+			setRandPlant();
+		}
 	}
 
+	/**
+	 * Method called to set randPlant index
+	 * 
+	 * @param
+	 * @return
+	 */
 	public void setRandPlant()
 	{
 		this.randPlant = (int) Math.floor(Math.random() * 4);
 	}
 	
 	/**
-	 * Method called to return randPlant index
+	 * Method called to get randPlant index
 	 * 
 	 * @param
 	 * @return
@@ -388,12 +401,55 @@ public class Model implements java.io.Serializable{
 	{
 		return randPlant;
 	}
-
+	/**
+	 * Method called to return plant array
+	 * 
+	 * @param
+	 * @return plants the array of plants
+	 */
 	public ArrayList<Plant> getPlants()
 	{
 		return plants;
 	}
+	/**
+	 * Method called to return river
+	 * 
+	 * @param
+	 * @return river object that represents in game river
+	 */
+	public River getRiver()
+	{
+		return river;
+	}
+	
+	public void floodRiver()
+	{
+		if(river.getXLocation() > WIDTH - 800)
+			river.addXLocation(-5);
+	}
+	
+	public void recedeRiver()
+	{
+		if(river.getXLocation() < WIDTH - 200)
+			river.addXLocation(5);
+	}
 
+	public void checkPlants()
+	{
+		int sum = 0;
+		for(Plant plant: plants)
+		{	
+			sum = sum + plant.health;
+		}
+		if(sum == 0)
+		{
+			floodRiver();
+		}
+		else if(sum > 0)
+		{
+			recedeRiver();
+		}
+	}
 	/**
 	 * Generates a new Litter object with random x and y coordinates, as well as
 	 * generates a random imgID for the object.
@@ -458,14 +514,23 @@ public class Model implements java.io.Serializable{
 			// add and health == 0
 			if (plant.health == 0 && plant.getCollidesWith(this.player)) 
 			{
-				//this.player.growPlant(i);
-				setRandPlant();
 				plant.health = 100;
 				changeScore(10);
 				return true;
 			}
 		}
+		
 
+		if(this.player.getCollidesWith(river))
+		{
+			this.player.setSpeed(5);
+		}
+		else
+		{
+			this.player.setSpeed(10);
+		}
+	
+		
 		if(this.player.getHasLitter()) {
 			if(this.player.getCollidesWith(this.tBin) && this.pickedUp.getType() == LitterType.TRASH) {
 				this.tBin.takeLitter(this.player);

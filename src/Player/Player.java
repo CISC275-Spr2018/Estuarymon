@@ -22,7 +22,7 @@ public class Player extends Interactable implements java.io.Serializable{
 	 */
 	private int dy = 0;
 	/** Movement speed */
-	private static final int SPEED = 10;
+	private static int SPEED = 10;
 	/** Movement direction.
 	 *  Gets recalculated when {@link #dx} and {@link #dy} are changed to match their behaviour. Initial value is EAST.
 	 */
@@ -167,5 +167,10 @@ public class Player extends Interactable implements java.io.Serializable{
 	 */
 	public void setDirection(Direction d) {
 		this.direction = d;
+	}
+	
+	public void setSpeed(int speed)
+	{
+		this.SPEED = speed;
 	}
 }

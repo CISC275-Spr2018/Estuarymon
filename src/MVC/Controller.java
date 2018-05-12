@@ -67,28 +67,8 @@ public class Controller implements KeyListener {
 			model.getPlayer().getHasLitter(),
 			model.getAnimalEatenLitter(),
 			model.getScore(),
-			model.getPlants(),model.getTrashVictory(),model.getRecycleVictory());
-	}
-	
-	/**
-	 * TimerTask that handles damaging plants in a certain interval. 
-	 * 
-	 * @author Hunter Suchyj
-	 *
-	 */
-	class damagePlantTask extends TimerTask 
-	{
-		/**
-		 * Method that calls the model method to damage the plant. 
-		 * 
-		 * @param None
-		 * @return None. 
-		 */
-		public void run()
-		{
-			model.damagePlant();
-
-		}
+			model.getPlants(),model.getTrashVictory(),model.getRecycleVictory(),
+			model.getRiver());
 	}
 	
 	/**
@@ -244,6 +224,27 @@ public class Controller implements KeyListener {
 		
 		
 			
+		}
+	}
+	
+	/**
+	 * TimerTask that handles damaging plants in a certain interval. 
+	 * 
+	 * @author Hunter Suchyj
+	 *
+	 */
+	class damagePlantTask extends TimerTask 
+	{
+		/**
+		 * Method that calls the model method to damage the plant. 
+		 * 
+		 * @param None
+		 * @return None. 
+		 */
+		public void run()
+		{
+			model.damagePlant();
+
 		}
 	}
 }
