@@ -17,7 +17,6 @@ import MapObjects.Animal;
 import MapObjects.Plant;
 import Player.Player;
 
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -55,6 +54,7 @@ public class Controller implements KeyListener {
 	 */
 	private void step() {
 		// increment the x and y coordinates, alter direction if necessary
+		if(model.getModelStatus()) {
 		model.updateModel();
 		view.update(		
 			model.getPlayer().getXLocation(),
@@ -67,7 +67,14 @@ public class Controller implements KeyListener {
 			model.getPlayer().getHasLitter(),
 			model.getAnimalEatenLitter(),
 			model.getScore(),
-			model.getPlants(),model.getTrashVictory(),model.getRecycleVictory());
+			model.getPlants(),model.getTrashVictory(),model.getRecycleVictory(),model.getStartTime(),model.getEndTime());
+		}
+		else {
+			stepTimer.stop(); //Maybe try wait in the future
+			trashTimer.cancel(); // wait here too
+			taskTimer.cancel(); // and here
+			System.out.println("game over");
+		}
 	}
 	
 	/**

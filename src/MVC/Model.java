@@ -14,7 +14,6 @@ import MapObjects.ReceptacleType;
 import Player.Direction;
 import Player.Player;
 
-
 /**
  * Model: Contains all the state and logic Does not contain anything about
  * images or graphics, must ask {@link View} for that
@@ -55,9 +54,9 @@ public class Model implements java.io.Serializable{
 	private Receptacle rBin = new Receptacle(128,128,ReceptacleType.RECYCLINGBIN);
 
 	/** Whether the trash bin recently received a piece of Litter */
-	public static boolean trashVictory = false;
+	private static boolean trashVictory = false;
 	/** Whether the recycle bin recently received a piece of Litter */
-	public static boolean recycleVictory = false;
+	private static boolean recycleVictory = false;
 	/** A count of the number of frames the trash bin has been in glowing victory state for*/
 	private int trashGlow = 1;
 	/** A count of the number of frames the recycle bin has been in glowing victory state for*/
@@ -88,6 +87,13 @@ public class Model implements java.io.Serializable{
 	private ArrayList<Plant> plants = new ArrayList<Plant>();
 	/**Random index of next plant**/
 	private int randPlant = (int) Math.floor(Math.random() * 4);
+	/**Boolean value to represent if the game is in progress or over */
+	private boolean running = true;
+	/** The time in milliseconds that the game has begun */
+	private long startTime;
+	/** How many milliseconds the game should last */
+	private int endTimeMilli = 6*10000;
+	
 
 	/**
 	 * Constructor for the Model. It creates a new animal and initializes a hashset
@@ -102,6 +108,7 @@ public class Model implements java.io.Serializable{
 	 * 
 	 */
 	public Model(int width, int height) {
+		startTime = System.currentTimeMillis();
 		this.crab = new Animal();
 		animals = new HashSet<Animal>();
 		animals.add(crab);
@@ -213,6 +220,7 @@ public class Model implements java.io.Serializable{
 	 *  Moves {@link #player}, checks for collisions, runs collision handlers, and moves the {@link #animals}. 
 	 *  Should be called once per expected screen frame. */
 	public void updateModel() {
+		if(System.currentTimeMillis() - startTime <= endTimeMilli) {
 		if(playerMove)
 			this.player.move();
 		this.checkCollision();
@@ -222,6 +230,10 @@ public class Model implements java.io.Serializable{
 		}
 		if(recycleVictory && ((recycleGlow++)% 14 < 1)) {
 			recycleVictory = false;
+		}
+		}
+		else {
+			running = false;
 		}
 
 	}
@@ -560,5 +572,23 @@ public class Model implements java.io.Serializable{
 	 */
 	public void setPickedUpLitter(Litter l) {
 		this.pickedUp = l;
+	}
+	/** Method to determine the game's status 
+	 *  @return running A boolean which is true if the game is running false otherwise 
+	 * */
+	public boolean getModelStatus() {
+		return running;
+	}
+	/** Method to determine the game's start time 
+	 *  @return startTime A long representing when the game began in milliseconds 
+	 * */
+	public long getStartTime() {
+		return startTime;
+	}
+	/** Method that returns how long the game should last in milliseconds 
+	 *  @return endTime An integer representing the game length in milliseconds 
+	 * */
+	public int getEndTime() {
+		return endTimeMilli;
 	}
 }

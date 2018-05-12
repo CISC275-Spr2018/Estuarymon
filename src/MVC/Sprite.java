@@ -80,7 +80,13 @@ public class Sprite {
 		/** A recycle bin */
 		RECYCLEBIN("MapObjects/recycling-bin.png",128,128),
 		/** A glowing recycle bin */
-		RECYCLEGLOW("MapObjects/recyclegreen.png",128,128);
+		RECYCLEGLOW("MapObjects/recyclegreen.png",128,128),
+		/** A garbage truck for timer  */
+		GARBAGETRUCK("Map/garbage-truck.png",128,128),
+		/** The path on which the garbage truck timer travels */ 
+		REDPATH("Map/Red-path.png",1500,60),
+		/** Flag marking the destination of the garbage truck */
+		FLAG("Map/finish-flag.png",128,128);
 		
 		// These values are set to the enum instances. When a Sprite object is instantiated, it copies these values.
 
