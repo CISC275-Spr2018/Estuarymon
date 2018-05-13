@@ -37,21 +37,20 @@ public class Model implements java.io.Serializable{
 
 	/** The only controllable object in the game. 
 	 *  @see Player */
-	private Player player = new Player(240,240, 165,165);
-	/** Current state of the overall game */
-	private GameState gameState = GameState.TUTORIAL;
+	private Player player;
+	/** The current game phase */
+	private GamePhase gamePhase = GamePhase.TITLE_SCREEN;
 	/** Current state of the tutorial */
-	private GameState tutorialState = GameState.TUTORIAL_SPAWNTRASH;
+	private TutorialState tutorialState;
 	
 	/** Whether the Player is carrying {@link Litter}. */
 	private boolean hasLitter = false;
-	
-	
+
 	/** Whether the space key is currently pressed down. */
 	private boolean spacePressed = false;
 
 	/** The current movement direction of the {@link #crab}. */
-	private int crabDirection = 3;
+	private int crabDirection;
 
 	/** The amount of health to detract from the Plant every time it is damaged */
 	private static final int plantDamage = 20;
@@ -83,9 +82,9 @@ public class Model implements java.io.Serializable{
 	private HashSet<ArrayList<Integer>> litterAttrSet = new HashSet<ArrayList<Integer>>();
 	
 	/** The horizontal speed of the Crab */
-	private int animalXIncr = 4;
+	private int animalXIncr;
 	/** The vertical speed of the Crab */
-	private int animalYIncr = 4;
+	private int animalYIncr;
 
 	/** Whether the player is allowed to move this frame. Set to false under specific circumstances, i.e. when colliding with an Animal */
 	private boolean playerMove = true;
@@ -101,15 +100,16 @@ public class Model implements java.io.Serializable{
 	/**Contains plant objects**/
 	private ArrayList<Plant> plants = new ArrayList<Plant>();
 	/**Random index of next plant**/
-	private int randPlant = 0;
+	private int randPlant;
+
 	/** Boolean variable that represents whether the player has planted the plant that despawns in the tutorial */
-	private boolean plantGrown = false;
+	private boolean tutorialPlantGrown;
 	/** Boolean variable that represents whether the animal has eaten the Litter in the tutorial */
-	private boolean animalAteLitter = false;
+	private boolean tutorialAnimalAteLitter;
 	/** Boolean that represents whether the arrow key prompt should be shown on screen. */ 
-	private boolean arrowKeyPrompt = true;
+	private boolean tutorialArrowKeyPrompt;
 	/** Boolean that represents whether or not the Player is hovering, but not picking up a Litter object */
-	private boolean hoverLitter = false;
+	private boolean tutorialHoverLitter;
 	/**onscreen river**/
 	River river;
 	/**Boolean value to represent if the game is in progress or over */
@@ -131,9 +131,6 @@ public class Model implements java.io.Serializable{
 	 * 
 	 */
 	public Model(int width, int height) {
-		this.crab = new Animal();
-		animals = new HashSet<Animal>();
-		animals.add(crab);
 		this.HEIGHT = height;
 		this.WIDTH = width;
 		int count = 0;
@@ -144,6 +141,8 @@ public class Model implements java.io.Serializable{
 			plants.add(new Plant(plantHealth, river.getXLocation() - 200, 50+(WIDTH / 90) + count));//sets location of plants
 			count = count + 200;
 		}
+
+		this.resetEverything();
 	}
 	public void setTrashVictory(boolean trashVictory) {
 		this.trashVictory = trashVictory;
@@ -164,22 +163,22 @@ public class Model implements java.io.Serializable{
 		return litterSet;
 	}
 	/**
-	 * Returns the hoverLitter boolean of Model. 
+	 * Returns the tutorialHoverLitter boolean of Model. 
 	 * 
 	 * @param
 	 * @return True if the Player is hovering, but not picking up a Litter object, false otherwise. 
 	 */
 	public boolean isHoverLitter() {
-		return hoverLitter;
+		return tutorialHoverLitter;
 	}
 
-	/** Returns the arrowKeyPrompt
+	/** Returns the tutorialArrowKeyPrompt
 	 * 
 	 * @param
 	 * @return True if the player hasn't moved and the arrow key prompt needs to be shown, false otherwise. 
 	 */
 	public boolean isArrowKeyPrompt() {
-		return arrowKeyPrompt;
+		return tutorialArrowKeyPrompt;
 	}
 
 	
@@ -222,31 +221,12 @@ public class Model implements java.io.Serializable{
 	 * 
 	 * @return
 	 */
-	public GameState getTutorialState() {
+	public TutorialState getTutorialState() {
 		return tutorialState;
 	}
 
-	public void setTutorialState(GameState tutorialState) {
+	public void setTutorialState(TutorialState tutorialState) {
 		this.tutorialState = tutorialState;
-	}
-	
-	/**
-	 * Returns the current state of the game (regular or tutorial mode)
-	 * 
-	 * @param
-	 * @return The current state of the game. 
-	 */
-	public GameState getGameState() {
-		return gameState;
-	}
-	/**
-	 * Sets the current state of the game. 
-	 * 
-	 * @param gameState The game state the game will be set to. 
-	 * @return None. 
-	 */
-	public void setGameState(GameState gameState) {
-		this.gameState = gameState;
 	}
 
 	/**
@@ -342,8 +322,10 @@ public class Model implements java.io.Serializable{
 	 *  @return
 	 *   */
 	public void updateModel() {
-		if(playerMove)
-			this.player.move();
+		if(!this.gamePhase.isPlayable()) return;
+
+		if(playerMove) this.player.move();
+		this.checkCollision();
 		checkCollision();
 		if(trashVictory && ((trashGlow++)% 14 < 1)) {
 			trashVictory = false;
@@ -352,22 +334,18 @@ public class Model implements java.io.Serializable{
 			recycleVictory = false;
 		}
 		
-		if(gameState == GameState.TUTORIAL) {
+		if(gamePhase == GamePhase.TUTORIAL) {
 			checkTutorialStates();
 		}
 		else {
-			if(startTime == -1) {
-				startTime = System.currentTimeMillis();
-			}
 			updatingAnimalLocation();
 			checkPlants();
-			if(System.currentTimeMillis() - startTime >= endTimeMilli) {
-				running = false;
+			if(startTime != -1 && (System.currentTimeMillis()) - startTime >= endTimeMilli) {
+				this.startEndGame();
 			}
 		}
 	}
-	
-	
+
 	/**
 	 * Checks the current state of the tutorial, and calls tutorial events and changes tutorial states as the player progresses through the tutorial.
 	 * 
@@ -376,50 +354,50 @@ public class Model implements java.io.Serializable{
 	 */
 	public void checkTutorialStates() {
 		switch(tutorialState) {
-		case TUTORIAL_SPAWNTRASH:
+		case SPAWNTRASH:
 			//
 			spawnLitter(LitterType.TRASH);
-			this.tutorialState = GameState.TUTORIAL_SIGNALTRASH;
+			this.tutorialState = TutorialState.SIGNALTRASH;
 			break;
-		case TUTORIAL_SIGNALTRASH:
+		case SIGNALTRASH:
 			if(player.getXLocation() != 240 || player.getYLocation() != 240)
-				this.arrowKeyPrompt = false;
+				this.tutorialArrowKeyPrompt = false;
 			if(hasLitter)
-				this.tutorialState = GameState.TUTORIAL_SIGNALTRASHCAN;
+				this.tutorialState = TutorialState.SIGNALTRASHCAN;
 			break;
-		case TUTORIAL_SIGNALTRASHCAN:
+		case SIGNALTRASHCAN:
 			if(trashVictory) 
-				this.tutorialState = GameState.TUTORIAL_SPAWNRECYCLABLE;
+				this.tutorialState = TutorialState.SPAWNRECYCLABLE;
 			break;
-		case TUTORIAL_SPAWNRECYCLABLE:
+		case SPAWNRECYCLABLE:
 			spawnLitter(LitterType.RECYCLABLE);
-			this.tutorialState = GameState.TUTORIAL_SIGNALRECYCLABLE;
+			this.tutorialState = TutorialState.SIGNALRECYCLABLE;
 			break;
-		case TUTORIAL_SIGNALRECYCLABLE:
+		case SIGNALRECYCLABLE:
 			if(hasLitter)
-				this.tutorialState = GameState.TUTORIAL_SIGNALRECYCLINGBIN;
+				this.tutorialState = TutorialState.SIGNALRECYCLINGBIN;
 			break;
-		case TUTORIAL_SIGNALRECYCLINGBIN:
+		case SIGNALRECYCLINGBIN:
 			if(recycleVictory)
-				this.tutorialState = GameState.TUTORIAL_DAMAGEPLANT;
+				this.tutorialState = TutorialState.DAMAGEPLANT;
 			break;
-		case TUTORIAL_DAMAGEPLANT:
+		case DAMAGEPLANT:
 			this.damagePlant();
 			if(plants.get(this.randPlant).getHealth() == 0) {
-				this.tutorialState = GameState.TUTORIAL_SIGNALPLANT;
+				this.tutorialState = TutorialState.SIGNALPLANT;
 			}
 			break;
-		case TUTORIAL_SIGNALPLANT:
-			if(this.plantGrown) {
+		case SIGNALPLANT:
+			if(this.tutorialPlantGrown) {
 				spawnLitter(LitterType.RECYCLABLE);
-				this.tutorialState = GameState.TUTORIAL_CRABEATLITTER;
+				this.tutorialState = TutorialState.CRABEATLITTER;
 			}
 			break;
-		case TUTORIAL_CRABEATLITTER:
-			if(!this.animalAteLitter)
+		case CRABEATLITTER:
+			if(!this.tutorialAnimalAteLitter)
 				updatingTutorialAnimalLocation();
 			else
-				this.gameState = GameState.REGULARGAME;
+				this.startNormal();
 			//decrease score, show animal sick etc. 
 			
 			break;
@@ -442,7 +420,7 @@ public class Model implements java.io.Serializable{
 		this.spacePressed = true;
 	}
 
-	/**Method called when the space key is released. Sets the spacePressed boolean value to false;
+	/** Sets {@link #spacePressed} to false, and exits the title screen if necessary.
 	 * 
 	 * @param None.
 	 * @return None.
@@ -450,6 +428,9 @@ public class Model implements java.io.Serializable{
 	 */
 	public void spaceKeyReleased() {
 		this.spacePressed = false;
+		if(this.gamePhase == GamePhase.TITLE_SCREEN) {
+			this.startTutorial();
+		}
 	}
 
 	/**
@@ -727,9 +708,9 @@ public class Model implements java.io.Serializable{
 		if (!hasLitter) {
 			for (Litter litter : new HashSet<Litter>(litterSet)) {
 				if (litter.getCollidesWith(this.player)) {
-					hoverLitter = true;
+					tutorialHoverLitter = true;
 					if (spacePressed) {
-						hoverLitter = false;
+						tutorialHoverLitter = false;
 						this.pickedUp = pickUpLitter(litter);
 						System.out.println(this.pickedUp);
 						this.pickedUpAttr = new ArrayList<Integer>();
@@ -749,7 +730,7 @@ public class Model implements java.io.Serializable{
 			if (plant.health == 0 && plant.getCollidesWith(this.player)) 
 			{
 				plant.health = 100;
-				this.plantGrown = true;
+				this.tutorialPlantGrown = true;
 				changeScore(10);
 				return true;
 			}
@@ -823,7 +804,7 @@ public class Model implements java.io.Serializable{
 					changeScore(-20);
 					litterAttrSet.remove(getLitterAttr(litter));
 					litterIterator.remove();
-					this.animalAteLitter = true;
+					this.tutorialAnimalAteLitter = true;
 					return true;
 				}
 			}
@@ -891,12 +872,79 @@ public class Model implements java.io.Serializable{
 		return HEIGHT;
 	}
 
+	/** Gets the current game phase of the Model */
+	public GamePhase getGamePhase() {
+		return this.gamePhase;
+	}
+
 	/** Sets the last picked up litter to the parameter
 	 *  @param l The new Litter
 	 */
 	public void setPickedUpLitter(Litter l) {
 		this.pickedUp = l;
 	}
+
+	/** Alters the player's velocity, only works in the NORMAL {@link GamePhase}. 
+	 *  When outside that phase, does nothing.
+	 *  @param ddx The change in x-velocity of the player
+	 *  @param ddy The change in y-velocity of the player
+	 */
+	public void normalAlterPlayerVelocity(int ddx, int ddy) {
+		if(this.gamePhase.isPlayable())
+			this.getPlayer().alterVelocity(ddx, ddy);
+	}
+
+	/** Initializes the title screen */
+	public void startTitleScreen() {
+		this.resetEverything();
+		this.gamePhase = GamePhase.TITLE_SCREEN;
+	}
+
+	/** Initializes the tutorial */
+	public void startTutorial() {
+		this.resetEverything();
+		this.gamePhase = GamePhase.TUTORIAL;
+		this.tutorialState = TutorialState.SPAWNTRASH;
+		this.tutorialPlantGrown = false;
+		this.tutorialAnimalAteLitter = false;
+		this.tutorialArrowKeyPrompt = false;
+		this.tutorialHoverLitter = false;
+	}
+
+	/** Moves to the Normal game state (does NOT reset!) */
+	public void startNormal() {
+		this.gamePhase = GamePhase.NORMAL;
+		this.startTime = System.currentTimeMillis();
+	}
+
+	/** Moves to the ending game state (does NOT reset!) */
+	public void startEndGame() {
+		this.gamePhase = GamePhase.GAME_END;
+		this.player.stop();
+	}
+
+	/** Resets everything to the 'initial game' state.
+	 *  Resets the Player position.
+	 *  Resets the Crab position.
+	 *  Resets all Plants' health.
+	 *  Removes all existing Litter */
+	public void resetEverything() {
+		this.player = new Player(240,240, 165,165);
+		this.crabDirection = 3;
+		this.score = 0;
+		this.pickedUp = null;
+		this.animalEatenLitter = null;
+		this.animalXIncr = 4;
+		this.animalYIncr = 4;
+		for(Plant p : this.plants) {
+			p.setHealth(100);
+		}
+		this.randPlant = 0;
+		this.crab = new Animal();
+		animals = new HashSet<Animal>();
+		animals.add(crab);
+	}
+
 	/** Method to determine the game's status 
 	 *  @return running A boolean which is true if the game is running false otherwise 
 	 * */

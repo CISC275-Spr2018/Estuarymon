@@ -29,6 +29,9 @@ public class Sprite {
 		/** The background image */
 		BACKGROUND("Map/Background.jpg", View.WORLD_WIDTH, View.WORLD_HEIGHT),
 
+		/** The Title Screen */
+		TITLE_SCREEN("overlays/titleScreen.png", View.WORLD_WIDTH*18/20, View.WORLD_HEIGHT*18/20),
+
 		/** Orc walkig north */
 		ORC_WALK_NORTH("orc/orc_forward_north.png", 165, 165, 10, 1),
 		/** Orc walking south */
