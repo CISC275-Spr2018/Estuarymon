@@ -564,6 +564,18 @@ public class Model implements java.io.Serializable {
 			crab.setDirection(Direction.SOUTHEAST);
 		}
 	}
+	
+	public void animalBinCollision() {
+		if(crab.getCollidesWith(rBin) || crab.getCollidesWith(tBin)) {
+			if(crab.getDirection() == Direction.NORTHEAST) {
+				crab.setDirection(Direction.SOUTHWEST);
+			}else if(crab.getDirection() == Direction.WEST || crab.getDirection() == Direction.SOUTH || crab.getDirection() == Direction.SOUTHEAST) {
+				crab.setDirection(Direction.NORTHEAST);
+			}else if(crab.getDirection() == Direction.SOUTHWEST || crab.getDirection() == Direction.NORTHWEST) {
+				crab.setDirection(Direction.SOUTHEAST);
+			}
+		}
+	}
 
 	public void updatingTutorialAnimalLocation() {
 		crab.setYLocation(crab.getYLocation() + 10);
@@ -959,6 +971,7 @@ public class Model implements java.io.Serializable {
 
 
 		animalWallCollision();
+		animalBinCollision();
 
 		Iterator<Litter> litterIterator = litterSet.iterator();
 		while (litterIterator.hasNext()) {

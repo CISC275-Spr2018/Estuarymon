@@ -85,7 +85,7 @@ public class Sprite {
 //=======
 //		DECAY_PLANT("MapObjects/dazal.png", 100, 100),
 		/** spot of dirt where plant resided*/	
-		DIRT("MapObjects/dirtPatch.png", 100, 100),
+		DIRT("MapObjects/spot.png", 100, 100),
 		/** spot of mud where plant resided*/	
 		MUD("MapObjects/mud.png", 100, 100),
 		/** A banana peel */
