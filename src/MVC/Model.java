@@ -910,6 +910,7 @@ public class Model implements java.io.Serializable{
 	/** Moves to the ending game state (does NOT reset!) */
 	public void startEndGame() {
 		this.gamePhase = GamePhase.GAME_END;
+		this.player.stop();
 	}
 
 	/** Resets everything to the 'initial game' state.
