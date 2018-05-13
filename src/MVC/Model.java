@@ -661,6 +661,7 @@ public class Model implements java.io.Serializable{
 			this.litterAttrSet.add(litterAttr);
 			System.out.println(l);
 			return l;
+		}
 		/**
 		 * Method that spawns Litter for tutorial purposes. Spawns the Litter at a set location with the specified type. 
 		 * 

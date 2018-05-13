@@ -104,7 +104,7 @@ public class View extends JPanel{
 	/** A Boolean to decide if the recycling bin is in the glowing deposit state */
 	private boolean rGlow = false;
 	/**river onmap**/
-	private River river;
+	private River river = new River(0,0,0,0);
 	
 	/** Boolean that determines whether the arrow key prompt should be shown on screen. */
 	private boolean arrowKeyPrompt = false;
@@ -383,7 +383,7 @@ public class View extends JPanel{
 	 * @param rVictory Whether the recycle bin should be glowing
 	 * @return None. 
 	 */
-	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,ArrayList<Integer> pickedUpAttr,boolean hasLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory, GameState tutorialState,River river, HashSet<ArrayList<Integer>> litterAttrSet, boolean arrowKeyPrompt,boolean hoverLitter) {
+	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,ArrayList<Integer> pickedUpAttr,boolean hasLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory,River river, GameState tutorialState, HashSet<ArrayList<Integer>> litterAttrSet, boolean arrowKeyPrompt,boolean hoverLitter) {
 		//Updating crab and player locations
 		playerXLoc = playerX;
 		playerYLoc = playerY;

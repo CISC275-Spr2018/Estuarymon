@@ -86,7 +86,7 @@ public class Sprite {
 		/** A glowing recycle bin */
 		RECYCLEGLOW("MapObjects/recyclegreen.png",128,128),
 		/** Onscreen river*/
-		RIVER("MapObjects/river.png", View.WORLD_HEIGHT, View.WORLD_HEIGHT);
+		RIVER("MapObjects/river.png", View.WORLD_HEIGHT, View.WORLD_HEIGHT),
 		/** The arrow key prompts for the tutorial*/
 		ARROWKEYS("Tutorial/arrow_key.png",80,60),
 		/** The arrow prompt for the tutorial */
