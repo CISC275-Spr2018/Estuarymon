@@ -1,4 +1,5 @@
 package MapObjects;
+import MVC.Model;
 import Player.Player;
 /**Class of the Receptacles in which the Litter objects are placed into. 
  * A subclass of Interactable
@@ -34,8 +35,8 @@ public class Receptacle extends Interactable implements java.io.Serializable{
 	 * @param p the player Object interacting with the receptacle 
 	 * @return
 	 */
-	public void takeLitter(Player p) {
-		Player.hasLitter = false;
+	public void takeLitter(Player p, Model model) {
+		model.setHasLitter(false);
 	}
 	/** Method that returns the ReceptacleType
 	 *
