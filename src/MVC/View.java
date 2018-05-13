@@ -65,9 +65,9 @@ public class View extends JPanel{
 	/** The status of the player, i.e.&nbdp;idle, moving, etc. */
 	private static PlayerStatus playerStatus = PlayerStatus.IDLE;
 	/** The x location of the crab in world coordinates */
-	private static int crabXLoc = 200;
+	private static int crabXLoc = 0;
 	/** The y location of the crab in world coordinates */
-	private static int crabYLoc = 400;
+	private static int crabYLoc = 0;
 	
 	/** The current direction of the player */
 	private static Direction playerDirection = Direction.EAST;
@@ -80,26 +80,36 @@ public class View extends JPanel{
 	private static final int recImgCount = 2;
 	/** The number of distinct litter sprites */
 	private static final int litterCount = trashImgCount + recImgCount;
-	/** The litter currently being help by the player, or null. */
-	private Litter pickedUpLitter = null;
+	/** The image attributes of the Litter object most recently held by the Player */
+	private ArrayList<Integer> pickedUpAttr = new ArrayList<Integer>();
 	/** Whether the player is holding on to litter */
 	private boolean hasLitter = false;
 	
 	/** A list containing lists of litter sprite ids. Organized into how they may be deposited, i.e. trash vs. recyclable. */
 	private static ArrayList<ArrayList<Sprite.ID>> litterImgLists = new ArrayList<ArrayList<Sprite.ID>>();
 	/** Contains all Litter objects to be rendered onscreen, maps them to a Sprite.ID. */
-	private static HashMap<Litter, Sprite.ID> litterImgMap = new HashMap<Litter, Sprite.ID>();
+	private HashSet<ArrayList<Integer>> litterAttrSet = new HashSet<ArrayList<Integer>>();
 	/** Contains all plant objects onscreen*/
 	private ArrayList<Plant> plants = new ArrayList<Plant>();
 	/** The current score of the game */
 	private int score = 0;
+	/**contains all of the Litter objects on-screen */
+	private HashSet<Litter> litterSet = new HashSet<Litter>();
+	
+	/**Gamestate variable that represents the current stage of the tutorial the player is at */
+	GameState tutorialState = GameState.TUTORIAL_SIGNALTRASH;
 
 	/** A Boolean to decide if the trash bin is in the glowing deposit state */
 	private boolean tGlow = false;
 	/** A Boolean to decide if the recycling bin is in the glowing deposit state */
 	private boolean rGlow = false;
 	/**river onmap**/
-	private River river;
+	private River river = new River(0,0,0,0);
+	
+	/** Boolean that determines whether the arrow key prompt should be shown on screen. */
+	private boolean arrowKeyPrompt = false;
+	/** Boolean that represents whether or not the Player is hovering, but not picking up a Litter object */
+	private boolean hoverLitter = false;
 
 	/** Creates a new View, places it in a new JPanel, arranges everything, and makes it visible. */
 	public View() {	
@@ -172,10 +182,11 @@ public class View extends JPanel{
 			drawImage(g,Sprite.ID.RECYCLEBIN,0,Receptacle.recyclingYpos);
 		}
 		
+		
 		//traverse through litter set and draw them, had to make a copy of litter set everytime to avoid ConcurrentModificationExceptions.
-		for(Map.Entry<Litter, Sprite.ID>entry: new HashMap<Litter,Sprite.ID>(litterImgMap).entrySet()) {
-			drawImage(g,entry.getValue(), entry.getKey().getXLocation(), entry.getKey().getYLocation());
-		}
+		
+		for(ArrayList<Integer> arr: new HashSet<ArrayList<Integer>>(this.litterAttrSet))
+			drawImage(g,getSpriteID(arr.get(3),arr.get(2)),arr.get(0), arr.get(1));
 
 		// Draw the crab
 		drawImage(g, Sprite.ID.CRAB, crabXLoc, crabYLoc);
@@ -187,9 +198,34 @@ public class View extends JPanel{
 		// Draw the litter in the box
 		drawImage(g, Sprite.ID.LITTERFRAME,0,0);
 		if(hasLitter) {
-			drawImage(g,getSpriteID(pickedUpLitter),10,10);
+			drawImage(g,getSpriteID(pickedUpAttr.get(1),pickedUpAttr.get(0)),10,10);
 		}
 		
+		if(arrowKeyPrompt)
+			drawImage(g, Sprite.ID.ARROWKEYS, 240,200);
+		
+		switch(this.tutorialState) {
+		case TUTORIAL_SIGNALTRASH:
+		case TUTORIAL_SIGNALRECYCLABLE:
+			if(hoverLitter) {
+				drawImage(g, Sprite.ID.SPACEKEY,playerXLoc, playerYLoc - 20);
+			}
+			else {
+				drawImage(g, Sprite.ID.ARROW, 360,400);
+			}
+			break;
+		case TUTORIAL_SIGNALPLANT:
+			drawImage(g, Sprite.ID.ARROW,plants.get(0).getXLocation(), 0);
+			break;
+		case TUTORIAL_SIGNALTRASHCAN:
+			drawImage(g, Sprite.ID.ARROW, 50, Receptacle.trashYpos - 60);
+			break;
+		case TUTORIAL_SIGNALRECYCLINGBIN:
+			drawImage(g, Sprite.ID.ARROW, 50, Receptacle.recyclingYpos - 60);
+			break;
+				
+			
+		}
 	}
 
 	/** Determines which {@link Sprite.ID} to use to render the player. Determines this based on the player's {@link #playerStatus status} and {@link #playerDirection direction}.
@@ -347,7 +383,7 @@ public class View extends JPanel{
 	 * @param rVictory Whether the recycle bin should be glowing
 	 * @return None. 
 	 */
-	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory, River river) {
+	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,ArrayList<Integer> pickedUpAttr,boolean hasLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory,River river, GameState tutorialState, HashSet<ArrayList<Integer>> litterAttrSet, boolean arrowKeyPrompt,boolean hoverLitter) {
 		//Updating crab and player locations
 		playerXLoc = playerX;
 		playerYLoc = playerY;
@@ -362,24 +398,14 @@ public class View extends JPanel{
 		rGlow = rVictory;
 		
 		
-		//Remove both litter parameter from HashMap so it does not get painted.
-		litterImgMap.remove(playerPickedUp);
-		litterImgMap.remove(animalEatenLitter);
-		this.pickedUpLitter = playerPickedUp;
+		this.tutorialState = tutorialState;
+		this.litterAttrSet = litterAttrSet;
+		
+		this.pickedUpAttr = pickedUpAttr;
 		this.hasLitter = hasLitter;
+		this.arrowKeyPrompt = arrowKeyPrompt;
+		this.hoverLitter = hoverLitter;
 		frame.repaint();
-	}
-	
-	/**Adds a Litter object to the other Litter objects being rendered on the View
-	 * 
-	 * @param l The Litter object that will be added for rendering.
-	 * @return None. 
-	 */
-	public void addLitter(Litter l) {
-		Sprite.ID curSpriteID = getSpriteID(l);
-		litterImgMap.put(l, curSpriteID);
-		
-		
 	}
 	
 	/**
@@ -389,9 +415,9 @@ public class View extends JPanel{
 	 * @param l the Litter object whose Sprite ID will be chosen.
 	 * @return Sprite ID representing the parameter. 
 	 */
-	public Sprite.ID getSpriteID(Litter l) {
-		ArrayList<Sprite.ID> litterImgList = litterImgLists.get(l.getType().getID());
-		return litterImgList.get(l.getImgID()%(litterImgList.size()));
+	public Sprite.ID getSpriteID(int lType, int imgID) {
+		ArrayList<Sprite.ID> litterImgList = litterImgLists.get(lType);
+		return litterImgList.get(imgID%(litterImgList.size()));
 	}
 	
 	

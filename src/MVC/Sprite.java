@@ -60,7 +60,7 @@ public class Sprite {
 		/** A star intended to house the current score */
 		SCORESTAR("MapObjects/FlatIcon-074.png", 100, 100),
 		/** A box intended to house a type of litter */
-		LITTERFRAME("MapObjects/litterbox.png", 75,75),
+		LITTERFRAME("MapObjects/litterbox.png", 85,85),
 		/** A plant */
 		PLANT("MapObjects/azalea.png", 100, 100),
 		/** A decaying plant */
@@ -70,13 +70,13 @@ public class Sprite {
 		/** spot of mud where plant resided*/	
 		MUD("MapObjects/mud.png", 100, 100),
 		/** A banana peel */
-		BANANAPEEL("MapObjects/bananaSkin.png",40,40),
+		BANANAPEEL("MapObjects/bananaSkin.png",50,50),
 		/** A soda can */
 		SODACAN("MapObjects/Soda-Can.png",40,40),
 		/** A crumpled up piece of paper */
 		PAPER("MapObjects/paper.png",40,40),
 		/** A eaten apple */
-		APPLE("MapObjects/CompostA.png",50,50),
+		APPLE("MapObjects/CompostA.png",60,60),
 		/** A trash bin */
 		TRASHBIN("MapObjects/garbage.png",128,128),
 		/** A glowing trash bin */
@@ -86,7 +86,13 @@ public class Sprite {
 		/** A glowing recycle bin */
 		RECYCLEGLOW("MapObjects/recyclegreen.png",128,128),
 		/** Onscreen river*/
-		RIVER("MapObjects/river.png", View.WORLD_HEIGHT, View.WORLD_HEIGHT);
+		RIVER("MapObjects/river.png", View.WORLD_HEIGHT, View.WORLD_HEIGHT),
+		/** The arrow key prompts for the tutorial*/
+		ARROWKEYS("Tutorial/arrow_key.png",80,60),
+		/** The arrow prompt for the tutorial */
+		ARROW("Tutorial/arrow.png",40,60),
+		SPACEKEY("Tutorial/Key_space_Icon.png",60,50),
+		;
 		
 		// These values are set to the enum instances. When a Sprite object is instantiated, it copies these values.
 
