@@ -15,8 +15,6 @@ public class Litter extends Interactable implements Serializable {
 	int imgID;
 	/** Enum from LitterType that represents the type of Litter this object is */
 	LitterType lType;
-	/** Static hashSet that contains all of the Litter objects currently on the game map */
-	public static HashSet<Litter> litterSet = new HashSet<Litter>();
 	
 	/** Constructor for all Litter objects. Width and height are set at 60 and the collision rectangle at 60X60
 	 *

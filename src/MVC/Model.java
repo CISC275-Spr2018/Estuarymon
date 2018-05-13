@@ -15,6 +15,7 @@ import MapObjects.LitterType;
 import MapObjects.Plant;
 import MapObjects.Receptacle;
 import MapObjects.ReceptacleType;
+import MapObjects.River;
 import Player.Direction;
 import Player.Player;
 import Player.PlayerStatus;
@@ -42,12 +43,22 @@ public class Model implements java.io.Serializable {
 	 * @see Player
 	 */
 	private Player player = new Player(0, 0, 165, 165);
+	/** The only controllable object in the game. 
+	 *  @see Player */
+	//private Player player;
+	/** The current game phase */
+	private GamePhase gamePhase = GamePhase.TITLE_SCREEN;
+	/** Current state of the tutorial */
+	private TutorialState tutorialState;
+	
+	/** Whether the Player is carrying {@link Litter}. */
+	private boolean hasLitter = false;
 
 	/** Whether the space key is currently pressed down. */
 	private boolean spacePressed = false;
 
 	/** The current movement direction of the {@link #crab}. */
-	private int crabDirection = 3;
+	private int crabDirection;
 
 	/** The amount of health to detract from the Plant every time it is damaged */
 	private static final int plantDamage = 10;
@@ -60,13 +71,16 @@ public class Model implements java.io.Serializable {
 	private Receptacle rBin = new Receptacle(128, 128, ReceptacleType.RECYCLINGBIN);
 
 	/** Whether the trash bin recently received a piece of Litter */
-	public static boolean trashVictory = false;
+	private static boolean trashVictory = false;
 	/** Whether the recycle bin recently received a piece of Litter */
+
 	public static boolean recycleVictory = false;
 	/**
 	 * A count of the number of frames the trash bin has been in glowing victory
 	 * state for
 	 */
+	//private static boolean recycleVictory = false;
+	/** A count of the number of frames the trash bin has been in glowing victory state for*/
 	private int trashGlow = 1;
 	/**
 	 * A count of the number of frames the recycle bin has been in glowing victory
@@ -77,12 +91,16 @@ public class Model implements java.io.Serializable {
 	/** The Crab, currently the only Animal in the game. */
 	private Animal crab;
 	/** Every animal in the world. Currently only the crab. */
-	//private HashSet<Animal> animals;
-
+	private HashSet<Animal> animals;
+	/** HashSet of all of the current Litter objects in the game */
+	private HashSet<Litter> litterSet = new HashSet<Litter>();
+	/** HashSet where every element is an ArrayList containing the x and y coordinates of the Litter objects, as well as the imgID and LitterType to send to View */
+	private HashSet<ArrayList<Integer>> litterAttrSet = new HashSet<ArrayList<Integer>>();
+	
 	/** The horizontal speed of the Crab */
-	private int animalXIncr = 4;
+	private int animalXIncr;
 	/** The vertical speed of the Crab */
-	private int animalYIncr = 4;
+	private int animalYIncr;
 
 	/**
 	 * Whether the player is allowed to move this frame. Set to false under specific
@@ -95,21 +113,45 @@ public class Model implements java.io.Serializable {
 
 	/** The last Litter to be picked up by the {@link #player} */
 	private Litter pickedUp;
+	/** ArrayList of Litter imgID and LitterType of Model.pickedUp Litter attribute to send to View */
+	ArrayList<Integer> pickedUpAttr = new ArrayList<Integer>();
 	/** The last Litter to be picked up by an {@link #animals animal} */
 	private Litter animalEatenLitter;
 	/** Contains plant objects **/
 	private ArrayList<Plant> plants = new ArrayList<Plant>();
+
 	/** Random index of next plant **/
 	private int randPlant = (int) Math.floor(Math.random() * 4);
 
-	Timer timer;
-	Timer timer2;
-	int count = 0;
-	int count2 = 0;
-	
-	long lStartTime;
-	long lEndTime;
-	long output;
+//	Timer timer;
+//	Timer timer2;
+//	int count = 0;
+//	int count2 = 0;
+//	
+//	long lStartTime;
+//	long lEndTime;
+//	long output;
+
+
+	/**Random index of next plant**/
+	//private int randPlant;
+
+	/** Boolean variable that represents whether the player has planted the plant that despawns in the tutorial */
+	private boolean tutorialPlantGrown;
+	/** Boolean variable that represents whether the animal has eaten the Litter in the tutorial */
+	private boolean tutorialAnimalAteLitter;
+	/** Boolean that represents whether the arrow key prompt should be shown on screen. */ 
+	private boolean tutorialArrowKeyPrompt;
+	/** Boolean that represents whether or not the Player is hovering, but not picking up a Litter object */
+	private boolean tutorialHoverLitter;
+	/**onscreen river**/
+	River river;
+	/**Boolean value to represent if the game is in progress or over */
+	private boolean running = true;
+	/** The time in milliseconds that the game has begun */
+	private long startTime = -1;
+	/** How many milliseconds the game should last */
+	private int endTimeMilli = 6*10000;
 
 	/**
 	 * Constructor for the Model. It creates a new animal and initializes a hashset
@@ -127,19 +169,96 @@ public class Model implements java.io.Serializable {
 	 */
 	public Model(int width, int height) {
 		this.crab = new Animal();
-//		animals = new HashSet<Animal>();
-//		animals.add(crab);
+		animals = new HashSet<Animal>();
+		animals.add(crab);
 		this.HEIGHT = height;
 		this.WIDTH = width;
-		System.out.println("The width is " + width + " The height is " + height);
-
+//		System.out.println("The width is " + width + " The height is " + height);
+//
+//		int count = 0;
+//		// fills plant array
+//		for (int i = 0; i < 4; i++) {
+//			plants.add(new Plant(plantHealth, WIDTH - (WIDTH / 3), 50 + (WIDTH / 90) + count));// sets location of
+//
+//		this.HEIGHT = height;
+//		this.WIDTH = width;
 		int count = 0;
-		// fills plant array
-		for (int i = 0; i < 4; i++) {
-			plants.add(new Plant(plantHealth, WIDTH - (WIDTH / 3), 50 + (WIDTH / 90) + count));// sets location of
-																								// plants
+		river = new River(WIDTH - 200, 0, WIDTH, HEIGHT);
+		//fills plant array
+		for(int i = 0; i < 4; i++)
+		{
+			plants.add(new Plant(plantHealth, WIDTH - (WIDTH/3), 50+(WIDTH / 90) + count));//sets location of plants
+
 			count = count + 200;
 		}
+
+		this.resetEverything();
+	}
+	/**
+	 * Returns the tutorialHoverLitter boolean of Model. 
+	 * 
+	 * @param
+	 * @return True if the Player is hovering, but not picking up a Litter object, false otherwise. 
+	 */
+	public boolean isHoverLitter() {
+		return tutorialHoverLitter;
+	}
+
+	/** Returns the tutorialArrowKeyPrompt
+	 * 
+	 * @param
+	 * @return True if the player hasn't moved and the arrow key prompt needs to be shown, false otherwise. 
+	 */
+	public boolean isArrowKeyPrompt() {
+		return tutorialArrowKeyPrompt;
+	}
+
+	
+	/**
+	 * Returns the ArrayList<Integer> corresponding to the Litter object of the player's most recently picked up Litter object
+	 * 
+	 * @param
+	 * @return ArrayList<Integer> corresponding to the Litter object of the player's most recently picked up Litter object
+	 */
+	public ArrayList<Integer> getPickedUpAttr() {
+		return pickedUpAttr;
+	}
+
+	
+	public HashSet<ArrayList<Integer>> getLitterAttrSet(){
+		return this.litterAttrSet;
+	}
+	
+	/**Returns a boolean depending on whether or not the player is currently holding a Litter object that needs to be disposed of. 
+	 * 
+	 * @param None
+	 * @return True if the player is holding a piece of Litter, false otherwise. 
+	 */
+	public boolean isHasLitter() {
+		return hasLitter;
+	}
+	
+	/**
+	 * Sets the hasLitter boolean of the model 
+	 * 
+	 * @param hasLitter The boolean variable hasLitter will be set to. 
+	 */
+	public void setHasLitter(boolean hasLitter) {
+		this.hasLitter = hasLitter;
+	}
+	
+	/**
+	 * Returns the current state of the tutorial, more specifically which stage of the tutorial the player is on. 
+	 * If the player is finished the tutorial, this method will simply return the last stage of the tutorial. 
+	 * 
+	 * @return
+	 */
+	public TutorialState getTutorialState() {
+		return tutorialState;
+	}
+
+	public void setTutorialState(TutorialState tutorialState) {
+		this.tutorialState = tutorialState;
 	}
 
 	/**
@@ -204,7 +323,6 @@ public class Model implements java.io.Serializable {
 	public boolean getSpacePressed() {
 		return this.spacePressed;
 	}
-
 	/**
 	 * Gets the {@link Litter} most recently eaten by an {@link Animal}.
 	 * 
@@ -218,6 +336,8 @@ public class Model implements java.io.Serializable {
 	 * Gets the {@link #rBin recycle bin}.
 	 * 
 	 * @return The {@link #rBin recycle bin}.
+	/** Gets the {@link #rBin recycle bin}.
+	 *  @return The {@link #rBin recycle bin}.
 	 */
 	public Receptacle getRBin() {
 		return rBin;
@@ -250,28 +370,117 @@ public class Model implements java.io.Serializable {
 		return recycleVictory;
 	}
 
+
 	/**
 	 * Advances the Model by one frame. Moves {@link #player}, checks for
 	 * collisions, runs collision handlers, and moves the {@link #animals}. Should
 	 * be called once per expected screen frame.
 	 */
+//	public void updateModel(long num) {
+//		System.out.println("num is " + num);
+//		if (playerMove)
+//			this.player.move();
+//		this.checkCollision();
+//		updatingAnimalLocation();
+//		checkPlayerAnimalCollision(num);
+//	}
+//		if (trashVictory && ((trashGlow++) % 14 < 1)) {
+	/**
+	 * Checks the current state of the game, and calls the appropriate updateModel function depending on whether the game is currently
+	 * in tutorial or regular mode
+	 *  
+	 *  @param
+	 *  @return
+	 *   */
 	public void updateModel(long num) {
-		System.out.println("num is " + num);
-		if (playerMove)
-			this.player.move();
-		this.checkCollision();
-		updatingAnimalLocation();
 		checkPlayerAnimalCollision(num);
+		if(!this.gamePhase.isPlayable()) return;
 
-		if (trashVictory && ((trashGlow++) % 14 < 1)) {
+		if(playerMove) this.player.move();
+		this.checkCollision();
+		checkCollision();
+		if(trashVictory && ((trashGlow++)% 14 < 1)) {
 			trashVictory = false;
 		}
 		if (recycleVictory && ((recycleGlow++) % 14 < 1)) {
 			recycleVictory = false;
 		}
-
+		
+		if(gamePhase == GamePhase.TUTORIAL) {
+			checkTutorialStates();
+		}else if(player.getHealth() == 0 || crab.getHealth() == 0) {
+			gamePhase = GamePhase.GAME_END;
+		}
+		else {
+			updatingAnimalLocation();
+			checkPlants();
+			if(startTime != -1 && (System.currentTimeMillis()) - startTime >= endTimeMilli) {
+				this.startEndGame();
+			}
+		}
 	}
 
+	/**
+	 * Checks the current state of the tutorial, and calls tutorial events and changes tutorial states as the player progresses through the tutorial.
+	 * 
+	 * @param
+	 * @return 
+	 */
+	public void checkTutorialStates() {
+		switch(tutorialState) {
+		case SPAWNTRASH:
+			//
+			spawnLitter(LitterType.TRASH);
+			this.tutorialState = TutorialState.SIGNALTRASH;
+			break;
+		case SIGNALTRASH:
+			if(player.getXLocation() != 240 || player.getYLocation() != 240)
+				this.tutorialArrowKeyPrompt = false;
+			if(hasLitter)
+				this.tutorialState = TutorialState.SIGNALTRASHCAN;
+			break;
+		case SIGNALTRASHCAN:
+			if(trashVictory) 
+				this.tutorialState = TutorialState.SPAWNRECYCLABLE;
+			break;
+		case SPAWNRECYCLABLE:
+			spawnLitter(LitterType.RECYCLABLE);
+			this.tutorialState = TutorialState.SIGNALRECYCLABLE;
+			break;
+		case SIGNALRECYCLABLE:
+			if(hasLitter)
+				this.tutorialState = TutorialState.SIGNALRECYCLINGBIN;
+			break;
+		case SIGNALRECYCLINGBIN:
+			if(recycleVictory)
+				this.tutorialState = TutorialState.DAMAGEPLANT;
+			break;
+		case DAMAGEPLANT:
+			this.damagePlant();
+			if(plants.get(this.randPlant).getHealth() == 0) {
+				this.tutorialState = TutorialState.SIGNALPLANT;
+			}
+			break;
+		case SIGNALPLANT:
+			if(this.tutorialPlantGrown) {
+				spawnLitter(LitterType.RECYCLABLE);
+				this.tutorialState = TutorialState.CRABEATLITTER;
+			}
+			break;
+		case CRABEATLITTER:
+			if(!this.tutorialAnimalAteLitter)
+				updatingTutorialAnimalLocation();
+			else
+				this.startNormal();
+			//decrease score, show animal sick etc. 
+			
+			break;
+			
+			
+			
+		}
+	}
+	
 	/**
 	 * Method called when the space key is pressed. Sets the spacePressed boolean
 	 * value to true;
@@ -284,9 +493,11 @@ public class Model implements java.io.Serializable {
 		this.spacePressed = true;
 	}
 
+
 	/**
 	 * Method called when the space key is released. Sets the spacePressed boolean
 	 * value to false;
+	/** Sets {@link #spacePressed} to false, and exits the title screen if necessary.
 	 * 
 	 * @param None.
 	 * @return None.
@@ -294,6 +505,9 @@ public class Model implements java.io.Serializable {
 	 */
 	public void spaceKeyReleased() {
 		this.spacePressed = false;
+		if(this.gamePhase == GamePhase.TITLE_SCREEN) {
+			this.startTutorial();
+		}
 	}
 
 	/**
@@ -351,6 +565,9 @@ public class Model implements java.io.Serializable {
 		}
 	}
 
+	public void updatingTutorialAnimalLocation() {
+		crab.setYLocation(crab.getYLocation() + 10);
+	}
 	/**
 	 * Method that updates the x and y coordinates of the crab depending on its
 	 * current direction.
@@ -418,9 +635,33 @@ public class Model implements java.io.Serializable {
 		if (plants.get(randPlant).getHealth() > 0) {
 			plants.get(randPlant).health = plants.get(randPlant).health - plantDamage;
 		}
+		else if(plants.get(randPlant).getHealth() == 0)
+		{
+			setRandPlant();
+		}
 	}
 
-	public void setRandPlant() {
+//	public void setRandPlant() {
+
+	/**
+	 * Method called to damage a specific plant by the plantdamage integer value
+	 * 
+	 * @param i The index in the plant arrayList of the plant to be damaged. 
+	 * @return None. 
+	 */
+	public void damagePlant(int i) {
+		if(plants.get(i).getHealth() > 0)
+			plants.get(i).health -= plantDamage;
+	}
+	
+	/**
+	 * Method called to set randPlant index
+	 * 
+	 * @param
+	 * @return
+	 */
+	public void setRandPlant()
+	{
 		this.randPlant = (int) Math.floor(Math.random() * 4);
 	}
 
@@ -434,14 +675,64 @@ public class Model implements java.io.Serializable {
 		return randPlant;
 	}
 
-	public ArrayList<Plant> getPlants() {
+	//public ArrayList<Plant> getPlants() {
+	/**
+	 * Method called to return plant array
+	 * 
+	 * @param
+	 * @return plants the array of plants
+	 */
+	public ArrayList<Plant> getPlants()
+	{
 		return plants;
 	}
+	/**
+	 * Method called to return river
+	 * 
+	 * @param
+	 * @return river object that represents in game river
+	 */
+	public River getRiver()
+	{
+		return river;
+	}
+	
+	public void floodRiver()
+	{
+		if(river.getXLocation() > WIDTH - 800)
+			river.addXLocation(-5);
+	}
+	
+	public void recedeRiver()
+	{
+		if(river.getXLocation() < WIDTH - 200)
+			river.addXLocation(5);
+	}
 
+	public void checkPlants()
+	{
+		int sum = 0;
+		for(Plant plant: plants)
+		{	
+			sum = sum + plant.health;
+
+		}
+		if(sum == 0)
+		{
+			floodRiver();
+		}
+		else if(sum > 0)
+		{
+			recedeRiver();
+		}
+	}
+
+	
 	/**
 	 * Generates a new Litter object with random x and y coordinates, as well as
 	 * generates a random imgID for the object.
 	 * 
+	 * @param 
 	 * @return the new Litter object created.
 	 * 
 	 */
@@ -451,15 +742,20 @@ public class Model implements java.io.Serializable {
 		l.setType(LitterType.randomLitter());
 		int litterXCoord = r.nextInt((WIDTH - l.getWidth()) - (rBin.getXLocation() + rBin.getWidth()))
 				+ rBin.getXLocation() + rBin.getWidth();// generates random coordinates
+		//int litterXCoord = r.nextInt((plants.get(0).getXLocation() - l.getWidth())-(rBin.getXLocation()+rBin.getWidth())) + rBin.getXLocation() + rBin.getWidth();// generates random coordinates
 		int litterYCoord = r.nextInt((HEIGHT - l.getHeight()));
 		l.setXLocation(litterXCoord);//
 		l.setYLocation(litterYCoord);
 		l.setImgID(Math.abs(r.nextInt()));
-		Litter.litterSet.add(l);// Adds them to hashset of litter, prevents exact duplicates in terms of
-		// coordinates.
+		this.litterSet.add(l);// Adds them to hashset of litter, prevents exact duplicates in terms of coordinates.
+		ArrayList<Integer> litterAttr = new ArrayList<Integer>();
+		litterAttr.add(l.getXLocation());
+		litterAttr.add(l.getYLocation());
+		litterAttr.add(l.getImgID());
+		litterAttr.add(l.getType().getID());
+		this.litterAttrSet.add(litterAttr);
 		System.out.println(l);
 		return l;
-
 	}
 
 	/**
@@ -468,6 +764,28 @@ public class Model implements java.io.Serializable {
 	 * 
 	 * @see #checkCollision
 	 * @see ModelTest
+=======
+	/**
+	 * Method that spawns Litter for tutorial purposes. Spawns the Litter at a set location with the specified type. 
+	 * 
+	 * @param lt The litterType of the new Litter object
+	 * @return The new Litter object spawned on the map. 
+	 */
+	public Litter spawnLitter(LitterType lt) {
+		Random r = new Random();
+		Litter l = new Litter();
+		l.setType(lt);
+		l.setXLocation(360);
+		l.setYLocation(480);
+		l.setImgID(Math.abs(r.nextInt()));
+		this.litterSet.add(l);
+		this.litterAttrSet.add(getLitterAttr(l));
+		return l;
+	}
+	/** A public version of {@link #checkCollision} only for use by the {@link ModelTest} class.
+	 *  @see #checkCollision
+	 *  @see ModelTest
+>>>>>>> master
 	 */
 	public boolean testCheckColl() {
 		return checkCollision();
@@ -550,38 +868,6 @@ public class Model implements java.io.Serializable {
 		return false;
 	}
 
-	/*
-	 * private void checkPlayerAnimalCollision() {
-	 * 
-	 * timer = new Timer(0, new ActionListener() {
-	 * 
-	 * @Override public void actionPerformed(ActionEvent e) { if(timer.getDelay() ==
-	 * 0) { timer.setDelay(1000); } count += timer.getDelay();
-	 * System.out.println("The count is " + count);
-	 * 
-	 * if(count % 4000 == 0 && player.getCollidesWith(crab)) { player.loseHealth();
-	 * 
-	 * playerMove = false; animalXIncr = 6;// * crab.getSpeed(); animalYIncr = 6;//
-	 * * crab.getSpeed() if (player.getDirection() == Direction.EAST) {
-	 * crab.setDirection(Direction.EAST); } else if (player.getDirection() ==
-	 * Direction.WEST) { crab.setDirection(Direction.WEST); } else if
-	 * (player.getDirection() == Direction.NORTH) {
-	 * crab.setDirection(Direction.NORTH); } else if (player.getDirection() ==
-	 * Direction.SOUTH) { crab.setDirection(Direction.SOUTH); } else if
-	 * (player.getDirection() == Direction.NORTHEAST) {
-	 * crab.setDirection(Direction.NORTHEAST); } else if (player.getDirection() ==
-	 * Direction.NORTHWEST) { crab.setDirection(Direction.NORTHWEST); } else if
-	 * (player.getDirection() == Direction.SOUTHWEST) {
-	 * crab.setDirection(Direction.SOUTHWEST); } else if (player.getDirection() ==
-	 * Direction.SOUTHEAST) { crab.setDirection(Direction.SOUTHEAST); }
-	 * 
-	 * 
-	 * } else { playerMove = true; animalXIncr = 4; animalYIncr = 4; } timer.stop();
-	 * }}); //timer.setDelay(3000); timer.setRepeats(true); timer.restart(); // Go
-	 * go go!
-	 * 
-	 * }
-	 */
 	/**
 	 * Method that deals with all the various collisions in the game. If the player
 	 * collides with the crab, the player is slowed down, the crab goes in the same
@@ -603,12 +889,20 @@ public class Model implements java.io.Serializable {
 	 */
 	private boolean checkCollision() {
 
-		if (!Player.hasLitter) {
-			for (Litter litter : new HashSet<Litter>(Litter.litterSet)) {
+		if (!hasLitter) {
+			for (Litter litter : new HashSet<Litter>(litterSet)) {
 				if (litter.getCollidesWith(this.player)) {
-					if (spacePressed)
-						this.pickedUp = this.player.pickUpLitter(litter);
+					tutorialHoverLitter = true;
+					if (spacePressed) {
+						tutorialHoverLitter = false;
+						this.pickedUp = pickUpLitter(litter);
+						System.out.println(this.pickedUp);
+						this.pickedUpAttr = new ArrayList<Integer>();
+						pickedUpAttr.add(this.pickedUp.getImgID());
+						pickedUpAttr.add(this.pickedUp.getType().getID());
+					}
 					return true;
+					
 				}
 
 			}
@@ -619,45 +913,67 @@ public class Model implements java.io.Serializable {
 			if (plant.health == 0 && plant.getCollidesWith(this.player)) {
 				// this.player.growPlant(i);
 				setRandPlant();
+//			if (plant.health == 0 && plant.getCollidesWith(this.player)) 
+//			{
 				plant.health = 100;
-				changeScore(10);
+				this.tutorialPlantGrown = true;
+				//changeScore(10);
 				return true;
 			}
 		}
 
-		if (this.player.getHasLitter()) {
-			if (this.player.getCollidesWith(this.tBin) && this.pickedUp.getType() == LitterType.TRASH) {
-				this.tBin.takeLitter(this.player);
+//		if (this.player.getHasLitter()) {
+//			if (this.player.getCollidesWith(this.tBin) && this.pickedUp.getType() == LitterType.TRASH) {
+//				this.tBin.takeLitter(this.player);
+		
+		
+		if(this.player.getCollidesWith(river))
+		{
+			this.player.setSpeed(5);
+		}
+		else
+		{
+			this.player.setSpeed(10);
+		}
+		
+		
+		if(this.hasLitter) {
+			if(this.player.getCollidesWith(this.tBin) && this.pickedUp.getType() == LitterType.TRASH) {
+				this.tBin.takeLitter(this.player, this);
 				System.out.println("DEPOSITED TRASH");
-				changeScore(10);
+				//changeScore(10);
 				trashVictory = true;
 				return true;
 			}
-			if (this.player.getCollidesWith(this.rBin) && this.pickedUp.getType() == LitterType.RECYCLABLE) {
-				this.rBin.takeLitter(this.player);
+//			if (this.player.getCollidesWith(this.rBin) && this.pickedUp.getType() == LitterType.RECYCLABLE) {
+//				this.rBin.takeLitter(this.player);
+
+			}	
+			if(this.player.getCollidesWith(this.rBin) && this.pickedUp.getType() == LitterType.RECYCLABLE) {
+				this.rBin.takeLitter(this.player, this);
 				System.out.println("DEPOSITED RECYCLABLE");
-				changeScore(10);
+				//changeScore(10);
 				recycleVictory = true;
 				return true;
 			}
 
-		}
 
 		animalWallCollision();
 
-		Iterator<Litter> litterIterator = Litter.litterSet.iterator();
+		Iterator<Litter> litterIterator = litterSet.iterator();
 		while (litterIterator.hasNext()) {
 			Litter litter = litterIterator.next();
-			if (litter.getCollidesWith(crab)) {
-				crab.loseHealth();
-				changeScore(-20);
-				this.animalEatenLitter = litter;
-				litterIterator.remove();
-				return true;
+			for (Animal animal : this.animals) {
+				if (litter.getCollidesWith(animal)) {
+					if(gamePhase == GamePhase.NORMAL) {
+					crab.loseHealth();
+					}
+					litterAttrSet.remove(getLitterAttr(litter));
+					litterIterator.remove();
+					this.tutorialAnimalAteLitter = true;
+					return true;
+				}
 			}
-//			for (Animal animal : this.animals) {
-//				
-//			}
 		}
 		return false;
 	}
@@ -670,14 +986,35 @@ public class Model implements java.io.Serializable {
 	 *            (negative integer) from the score.
 	 * @return None.
 	 */
-	public void changeScore(int i) {
-		if (this.score + i < 0) {
-			this.score = 0;
-		} else {
-			this.score += i;
-		}
-	}
 
+	/**"Picks up" a Litter object the Player is colliding with. Removes the Litter from the Litter hashSet and sets Model.hasLitter to true 
+	 * 
+	 * @param l The Litter object being picked up 
+	 * @return The Litter object being picked up
+	 */
+	public Litter pickUpLitter(Litter l) {
+		System.out.println("Player pick up litter " + l.toString());
+		this.hasLitter = true;
+		litterAttrSet.remove(getLitterAttr(l));
+		litterSet.remove(l);
+		return l;
+	}
+	
+	/**
+	 * Take a litter object and adds its attributes to an ArrayList of Integers that can be passed on to view 
+	 * 
+	 * @param l The litter object 
+	 * @return An ArrayList of Integers of the Litter object's attributes. 
+	 */
+	public ArrayList<Integer> getLitterAttr(Litter l){
+		ArrayList litterAttr = new ArrayList<Integer>();
+		litterAttr.add(l.getXLocation());
+		litterAttr.add(l.getYLocation());
+		litterAttr.add(l.getImgID());
+		litterAttr.add(l.getType().getID());
+		return litterAttr;
+	}
+	
 	/** Gets the width of the Model */
 	public int getWidth() {
 		return WIDTH;
@@ -693,8 +1030,96 @@ public class Model implements java.io.Serializable {
 	 * 
 	 * @param l
 	 *            The new Litter
+=======
+	/** Gets the current game phase of the Model */
+	public GamePhase getGamePhase() {
+		return this.gamePhase;
+	}
+
+	/** Sets the last picked up litter to the parameter
+	 *  @param l The new Litter
 	 */
 	public void setPickedUpLitter(Litter l) {
 		this.pickedUp = l;
+	}
+
+	/** Alters the player's velocity, only works in the NORMAL {@link GamePhase}. 
+	 *  When outside that phase, does nothing.
+	 *  @param ddx The change in x-velocity of the player
+	 *  @param ddy The change in y-velocity of the player
+	 */
+	public void normalAlterPlayerVelocity(int ddx, int ddy) {
+		if(this.gamePhase.isPlayable())
+			this.getPlayer().alterVelocity(ddx, ddy);
+	}
+
+	/** Initializes the title screen */
+	public void startTitleScreen() {
+		this.resetEverything();
+		this.gamePhase = GamePhase.TITLE_SCREEN;
+	}
+
+	/** Initializes the tutorial */
+	public void startTutorial() {
+		this.resetEverything();
+		this.gamePhase = GamePhase.TUTORIAL;
+		this.tutorialState = TutorialState.SPAWNTRASH;
+		this.tutorialPlantGrown = false;
+		this.tutorialAnimalAteLitter = false;
+		this.tutorialArrowKeyPrompt = false;
+		this.tutorialHoverLitter = false;
+	}
+
+	/** Moves to the Normal game state (does NOT reset!) */
+	public void startNormal() {
+		this.gamePhase = GamePhase.NORMAL;
+		this.startTime = System.currentTimeMillis();
+	}
+
+	/** Moves to the ending game state (does NOT reset!) */
+	public void startEndGame() {
+		this.gamePhase = GamePhase.GAME_END;
+		this.player.stop();
+	}
+
+	/** Resets everything to the 'initial game' state.
+	 *  Resets the Player position.
+	 *  Resets the Crab position.
+	 *  Resets all Plants' health.
+	 *  Removes all existing Litter */
+	public void resetEverything() {
+		this.player = new Player(240,240, 165,165);
+		this.crabDirection = 3;
+		this.score = 0;
+		this.pickedUp = null;
+		this.animalEatenLitter = null;
+		this.animalXIncr = 4;
+		this.animalYIncr = 4;
+		for(Plant p : this.plants) {
+			p.setHealth(100);
+		}
+		this.randPlant = 0;
+		this.crab = new Animal();
+		animals = new HashSet<Animal>();
+		animals.add(crab);
+	}
+
+	/** Method to determine the game's status 
+	 *  @return running A boolean which is true if the game is running false otherwise 
+	 * */
+	public boolean getModelStatus() {
+		return running;
+	}
+	/** Method to determine the game's start time 
+	 *  @return startTime A long representing when the game began in milliseconds 
+	 * */
+	public long getStartTime() {
+		return startTime;
+	}
+	/** Method that returns how long the game should last in milliseconds 
+	 *  @return endTime An integer representing the game length in milliseconds 
+	 * */
+	public int getEndTime() {
+		return endTimeMilli;
 	}
 }

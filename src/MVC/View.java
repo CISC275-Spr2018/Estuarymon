@@ -32,6 +32,7 @@ import MVC.Sprite.ID;
 import MapObjects.Litter;
 import MapObjects.Plant;
 import MapObjects.Receptacle;
+import MapObjects.River;
 import Player.Direction;
 import Player.Player;
 import Player.PlayerStatus;
@@ -80,27 +81,48 @@ public class View extends JPanel{
 	private static final int recImgCount = 2;
 	/** The number of distinct litter sprites */
 	private static final int litterCount = trashImgCount + recImgCount;
-	/** The litter currently being help by the player, or null. */
-	private Litter pickedUpLitter = null;
+	/** The image attributes of the Litter object most recently held by the Player */
+	private ArrayList<Integer> pickedUpAttr = new ArrayList<Integer>();
 	/** Whether the player is holding on to litter */
 	private boolean hasLitter = false;
 	
 	/** A list containing lists of litter sprite ids. Organized into how they may be deposited, i.e. trash vs. recyclable. */
 	private static ArrayList<ArrayList<Sprite.ID>> litterImgLists = new ArrayList<ArrayList<Sprite.ID>>();
 	/** Contains all Litter objects to be rendered onscreen, maps them to a Sprite.ID. */
-	private static HashMap<Litter, Sprite.ID> litterImgMap = new HashMap<Litter, Sprite.ID>();
+	private HashSet<ArrayList<Integer>> litterAttrSet = new HashSet<ArrayList<Integer>>();
 	/** Contains all plant objects onscreen*/
 	private ArrayList<Plant> plants = new ArrayList<Plant>();
 	/** The current score of the game */
 	private int score = 0;
-
+	/**contains all of the Litter objects on-screen */
+	private HashSet<Litter> litterSet = new HashSet<Litter>();
+	
+	/**Gamestate variable that represents the current stage of the tutorial the player is at */
+	TutorialState tutorialState = TutorialState.SIGNALTRASH;
 	/** A Boolean to decide if the trash bin is in the glowing deposit state */
 	private boolean tGlow = false;
 	/** A Boolean to decide if the recycling bin is in the glowing deposit state */
 	private boolean rGlow = false;
+
 	
 	private int playerHealth = 0;
 	private int animalHealth = 0;
+
+	/**river onmap**/
+	private River river = new River(0,0,0,0);
+	
+	/** A long representing when the game started in order to draw the truck timer in the correct spot*/
+	private long startTime;
+	/** A long representing when the game should end in order to draw the truck timer in the correct spot*/
+	private int endTime;
+	
+	/** Boolean that determines whether the arrow key prompt should be shown on screen. */
+	private boolean arrowKeyPrompt = false;
+	/** Boolean that represents whether or not the Player is hovering, but not picking up a Litter object */
+	private boolean hoverLitter = false;
+
+	/** The current phase of the game */
+	GamePhase gamePhase = GamePhase.TITLE_SCREEN;
 
 	/** Creates a new View, places it in a new JPanel, arranges everything, and makes it visible. */
 	public View() {	
@@ -131,7 +153,7 @@ public class View extends JPanel{
 	
 	/** Paints this view
 	 * 
-	 * @param g The {@link java.awt.Graphics} object to use for painting
+	 * @param g The {@link java.awt.Graphics} object to use for ainting
 	 * @return None. 
 	 */
 	public void paint(Graphics g) {
@@ -140,8 +162,26 @@ public class View extends JPanel{
 		Sprite.incrementFrameCounter();
 		// Draw the background
 		drawImage(g, Sprite.ID.BACKGROUND, 0, 0);
+		drawImage(g, Sprite.ID.RIVER, river.getXLocation(), river.getYLocation());
 		
-		// Draw receptacles
+		// Draw all plants
+		for(Plant plant : plants) 
+		{
+			if(plant.health < 100 && plant.health != 0) // If decaying...
+			{
+				drawImage(g, Sprite.ID.DECAY_PLANT, plant.getXLocation(), plant.getYLocation());
+			}
+			else if(plant.health == 100) // If fully alive...
+			{
+				drawImage(g, Sprite.ID.PLANT, plant.getXLocation(), plant.getYLocation());
+			}
+			else
+			{
+				drawImage(g, Sprite.ID.DIRT, plant.getXLocation(), plant.getYLocation());
+			}
+		}
+		
+		//Draw Receptacles
 		if(tGlow) {
 			drawImage(g,Sprite.ID.TRASHGLOW,0,Receptacle.trashYpos);
 		}
@@ -155,36 +195,81 @@ public class View extends JPanel{
 			drawImage(g,Sprite.ID.RECYCLEBIN,0,Receptacle.recyclingYpos);
 		}
 		
-		// Draw all plants
-		for(Plant plant : plants) 
-		{
-			if(plant.health < 100 && plant.health != 0) // If decaying...
-			{
-				drawImage(g, Sprite.ID.DECAY_PLANT, plant.getXLocation(), plant.getYLocation());
-			}
-			else if(plant.health == 100) // If fully alive...
-			{
-				drawImage(g, Sprite.ID.PLANT, plant.getXLocation(), plant.getYLocation());
-			}
-		}
 		
 		//traverse through litter set and draw them, had to make a copy of litter set everytime to avoid ConcurrentModificationExceptions.
-		for(Map.Entry<Litter, Sprite.ID>entry: new HashMap<Litter,Sprite.ID>(litterImgMap).entrySet()) {
-			drawImage(g,entry.getValue(), entry.getKey().getXLocation(), entry.getKey().getYLocation());
-		}
-
+				
+		for(ArrayList<Integer> arr: new HashSet<ArrayList<Integer>>(this.litterAttrSet))
+			drawImage(g,getSpriteID(arr.get(3),arr.get(2)),arr.get(0), arr.get(1));
 		// Draw the crab
 		drawImage(g, Sprite.ID.CRAB, crabXLoc, crabYLoc);
 		// Draw the player
 		drawImage(g, getPlayerSprite(), playerXLoc, playerYLoc);
+
 		// Draw the score
 //		drawImage(g, Sprite.ID.SCORESTAR, WORLD_WIDTH-100, 0);
 //		drawString(g, Integer.toString(score), 100, WORLD_WIDTH-100, 65);
+
+
+		// Draw overlays depending on the game phase
+		switch(this.gamePhase) {
+			case TITLE_SCREEN:
+				this.drawOverlayBox(g);
+				this.drawStartScreenText(g);
+				break;
+			case TUTORIAL:
+				this.drawLitterContainerOverlay(g);
+				this.drawTutorialOverlays(g);
+				break;
+			case NORMAL:
+				this.drawLitterContainerOverlay(g);
+				this.drawScoreOverlay(g);
+				this.drawTimer(g);
+				break;
+			case GAME_END:
+				this.drawOverlayBox(g);
+				break;
+		}
+	}
+
+	/** Draws the litter container overlay */
+	private void drawLitterContainerOverlay(Graphics g) {
+
 		// Draw the litter in the box
 		drawImage(g, Sprite.ID.LITTERFRAME,0,0);
 		if(hasLitter) {
-			drawImage(g,getSpriteID(pickedUpLitter),10,10);
+			drawImage(g,getSpriteID(pickedUpAttr.get(1),pickedUpAttr.get(0)),10,10);
 		}
+	}
+
+	private void drawTutorialOverlays(Graphics g) {
+		if(arrowKeyPrompt)
+			drawImage(g, Sprite.ID.ARROWKEYS, 240,200);
+
+		switch(this.tutorialState) {
+		case SIGNALTRASH:
+		case SIGNALRECYCLABLE:
+			if(hoverLitter) {
+				drawImage(g, Sprite.ID.SPACEKEY,playerXLoc, playerYLoc - 20);
+			}
+			else {
+				drawImage(g, Sprite.ID.ARROW, 360,400);
+			}
+			break;
+		case SIGNALPLANT:
+			drawImage(g, Sprite.ID.ARROW,plants.get(0).getXLocation(), 0);
+			break;
+		case SIGNALTRASHCAN:
+			drawImage(g, Sprite.ID.ARROW, 50, Receptacle.trashYpos - 60);
+			break;
+		case SIGNALRECYCLINGBIN:
+			drawImage(g, Sprite.ID.ARROW, 50, Receptacle.recyclingYpos - 60);
+			break;
+			
+		}
+	}
+
+	/** Draws the score overlay on the screen */
+	private void drawScoreOverlay(Graphics g) {
 		if(playerHealth <= 120 && playerHealth > 90) {
 			drawImage(g, Sprite.ID.HEART, WORLD_WIDTH-100, 0);
 			drawImage(g, Sprite.ID.HEART, WORLD_WIDTH-175, 0);
@@ -211,6 +296,35 @@ public class View extends JPanel{
 		}else if(animalHealth <= 30 && animalHealth > 0) {
 			drawImage(g, Sprite.ID.CRABHEART, WORLD_WIDTH-130, 60);
 		}
+	}
+		// Draw the score
+//		drawImage(g, Sprite.ID.SCORESTAR, WORLD_WIDTH-100, 0);
+//		drawString(g, Integer.toString(score), 100, WORLD_WIDTH-100, 65);
+
+	/** Draws a box on the screen appropriate for title screen, end score, etc. */
+	private void drawOverlayBox(Graphics g) {
+		g.setColor(new Color(0, 0, 0, 128));
+		g.fillRoundRect(
+			worldXToPixelX(WORLD_WIDTH/20), // X
+			worldYToPixelY(WORLD_HEIGHT/20), // Y
+			worldWidthToPixelWidth(WORLD_WIDTH*18/20), // WIDTH
+			worldHeightToPixelHeight(WORLD_HEIGHT*18/20), // HEIGHT
+			worldWidthToPixelWidth(150), // ARC WIDTH
+			worldHeightToPixelHeight(150)); // ARC HEIGHT
+		g.setColor(Color.WHITE);
+	}
+
+	private void drawTimer(Graphics g) {
+		drawImage(g, Sprite.ID.REDPATH,0,WORLD_HEIGHT - 64);
+		drawImage(g,Sprite.ID.FLAG,WORLD_WIDTH -128, WORLD_HEIGHT - 164);
+		
+		int truckX = (int)(Math.floor(((System.currentTimeMillis()-startTime)/(double)endTime) *(WORLD_WIDTH-128)));
+		drawImage(g, Sprite.ID.GARBAGETRUCK,truckX,WORLD_HEIGHT - 128);
+	}
+
+	/** Draws the start screen text onto the screen. Does not draw the box. */
+	private void drawStartScreenText(Graphics g) {
+		this.drawImage(g, Sprite.ID.TITLE_SCREEN, 50, 50);
 	}
 
 	/** Determines which {@link Sprite.ID} to use to render the player. Determines this based on the player's {@link #playerStatus status} and {@link #playerDirection direction}.
@@ -300,6 +414,24 @@ public class View extends JPanel{
 		return getFrameVertOffset() + (world_y * getFrameHeight() / WORLD_HEIGHT);
 	}
 
+	/** Consumes a width in <em>world</em> coordinates, computes the
+	 *  expected width in the window (i.e.&nbsp;<em>pixel</em> coordinates).
+	 *  @param width in <em>world</em> coordinates.
+	 *  @return The width in <em>pixel</em> coordinates.
+	 */
+	private int worldWidthToPixelWidth(int world_width) {
+		return (world_width * getFrameWidth() / WORLD_WIDTH);
+	}
+
+	/** Consumes a height in <em>world</em> coordinates, computes the
+	 *  expected height in the window (i.e.&nbsp;<em>pixel</em> coordinates).
+	 *  @param height in <em>world</em> coordinates.
+	 *  @return The height in <em>pixel</em> coordinates.
+	 */
+	private int worldHeightToPixelHeight(int height) {
+		return (height * getFrameHeight() / WORLD_HEIGHT);
+	}
+
 	/** Returns the width in pixels of the inner frame.
 	 *  @return The width of the inner frame in pixels.
 	 */
@@ -353,6 +485,7 @@ public class View extends JPanel{
 	 * Updates the most recently held {@link Litter}, whether the player is currently holding a {@link Litter}, and the most recent {@link Litter} eaten by the animal.
 	 * Updates the current game score.
 	 * 
+	 * @param phase The current game phase.
 	 * @param playerX The Player's X-location in <em>world</em> coordinates.
 	 * @param playerY The Player's Y-location in <em>world</em> coordinates.
 	 * @param dir The current Direction of the Player. 
@@ -366,10 +499,16 @@ public class View extends JPanel{
 	 * @param plants the array of plants in the game
 	 * @param tVictory Whether the trash bin should be glowing
 	 * @param rVictory Whether the recycle bin should be glowing
+	 * @param startTime When the game began
+	 * @param endTime When the truck visual timer should end
 	 * @return None. 
 	 */
-	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory, int playerHealth, int animalHealth) {
+
+//	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory, int playerHealth, int animalHealth) {
+
+	public void update(GamePhase gamePhase, int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,ArrayList<Integer> pickedUpAttr,boolean hasLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory,  int playerHealth, int animalHealth, River river, TutorialState tutorialState, HashSet<ArrayList<Integer>> litterAttrSet, boolean arrowKeyPrompt,boolean hoverLitter, long startTime, int endTime){
 		//Updating crab and player locations
+		this.gamePhase = gamePhase;
 		playerXLoc = playerX;
 		playerYLoc = playerY;
 		playerDirection = dir;
@@ -377,31 +516,27 @@ public class View extends JPanel{
 		crabXLoc = crabX;
 		crabYLoc = crabY;
 		this.plants = plants;
+		this.river = river;
 		this.score = score;
 		tGlow = tVictory;
 		rGlow = rVictory;
+
+		this.tutorialState = tutorialState;
+		this.litterAttrSet = litterAttrSet;
 		
-		//Remove both litter parameter from HashMap so it does not get painted.
-		litterImgMap.remove(playerPickedUp);
-		litterImgMap.remove(animalEatenLitter);
-		this.pickedUpLitter = playerPickedUp;
+		this.pickedUpAttr = pickedUpAttr;
 		this.hasLitter = hasLitter;
+
 		
 		this.playerHealth = playerHealth;
 		this.animalHealth = animalHealth;
+		
+		this.arrowKeyPrompt = arrowKeyPrompt;
+		this.hoverLitter = hoverLitter;
+		this.startTime = startTime;
+		this.endTime = endTime;
+
 		frame.repaint();
-	}
-	
-	/**Adds a Litter object to the other Litter objects being rendered on the View
-	 * 
-	 * @param l The Litter object that will be added for rendering.
-	 * @return None. 
-	 */
-	public void addLitter(Litter l) {
-		Sprite.ID curSpriteID = getSpriteID(l);
-		litterImgMap.put(l, curSpriteID);
-		
-		
 	}
 	
 	/**
@@ -411,9 +546,9 @@ public class View extends JPanel{
 	 * @param l the Litter object whose Sprite ID will be chosen.
 	 * @return Sprite ID representing the parameter. 
 	 */
-	public Sprite.ID getSpriteID(Litter l) {
-		ArrayList<Sprite.ID> litterImgList = litterImgLists.get(l.getType().getID());
-		return litterImgList.get(l.getImgID()%(litterImgList.size()));
+	public Sprite.ID getSpriteID(int lType, int imgID) {
+		ArrayList<Sprite.ID> litterImgList = litterImgLists.get(lType);
+		return litterImgList.get(imgID%(litterImgList.size()));
 	}
 	
 	

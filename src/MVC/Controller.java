@@ -40,6 +40,9 @@ public class Controller implements KeyListener {
 
 	/** The delay between game frames */
 	private static final int DRAW_DELAY = 1000/30; // 30fps
+
+	/** The stage of counting "cheat" typing */
+	private int cheatState = 0;
 	
 	private long num = 0;
 	
@@ -57,20 +60,38 @@ public class Controller implements KeyListener {
 	 */
 	private void step() {
 		// increment the x and y coordinates, alter direction if necessary
+
 		num += 1;
+		//model.updateModel(num);
+		if(model.getModelStatus()) {
 		model.updateModel(num);
+
 		view.update(		
+			model.getGamePhase(),
 			model.getPlayer().getXLocation(),
 			model.getPlayer().getYLocation(),
 			model.getPlayer().getDirection(),
 			model.getPlayer().getStatus(),
 			model.getAnimal().getXLocation(),
 			model.getAnimal().getYLocation(),
-			model.getPickedUpLitter(),
-			model.getPlayer().getHasLitter(),
-			model.getAnimalEatenLitter(),
+			model.getPickedUpAttr(),
+			model.isHasLitter(),
 			model.getScore(),
-			model.getPlants(),model.getTrashVictory(),model.getRecycleVictory(), model.getPlayer().getHealth(), model.getAnimal().getHealth());
+			model.getPlants(),model.getTrashVictory(),model.getRecycleVictory(), model.getPlayer().getHealth(), model.getAnimal().getHealth(),
+			model.getRiver(),
+			model.getTutorialState(),
+			model.getLitterAttrSet(),
+			model.isArrowKeyPrompt(),
+			model.isHoverLitter(),
+			model.getStartTime(),
+			model.getEndTime());
+		}
+		else {
+			stepTimer.stop(); //Maybe try wait in the future
+			trashTimer.cancel(); // wait here too
+			taskTimer.cancel(); // and here
+			System.out.println("game over");
+		}
 	}
 	
 	/**
@@ -89,7 +110,8 @@ public class Controller implements KeyListener {
 		 */
 		public void run()
 		{
-			model.damagePlant();
+			if(model.getGamePhase()==GamePhase.NORMAL)
+				model.damagePlant();
 
 		}
 	}
@@ -111,7 +133,7 @@ public class Controller implements KeyListener {
 				stepTimer = new Timer(DRAW_DELAY, stepAction);
 				stepTimer.start();
 				taskTimer.scheduleAtFixedRate(new damagePlantTask(),500,1000);//damages plants every ten seconds
-				trashTimer.scheduleAtFixedRate(new TrashTask(), 0, 10000);
+				trashTimer.scheduleAtFixedRate(new TrashTask(), 0, 6000);
 			}
 		});
 	}
@@ -124,16 +146,16 @@ public class Controller implements KeyListener {
 		int key = e.getKeyCode();
 		switch(key) {
 		case KeyEvent.VK_UP:
-			model.getPlayer().alterVelocity(0, -1);
+			model.normalAlterPlayerVelocity(0, -1);
 			break;
 		case KeyEvent.VK_DOWN:
-			model.getPlayer().alterVelocity(0, 1);
+			model.normalAlterPlayerVelocity(0, 1);
 			break;
 		case KeyEvent.VK_RIGHT:
-			model.getPlayer().alterVelocity(1, 0);
+			model.normalAlterPlayerVelocity(1, 0);
 			break;
 		case KeyEvent.VK_LEFT:
-			model.getPlayer().alterVelocity(-1, 0);
+			model.normalAlterPlayerVelocity(-1, 0);
 			break;
 		case KeyEvent.VK_SPACE:
 			model.spaceKeyPressed();
@@ -201,16 +223,16 @@ public class Controller implements KeyListener {
 
 		switch(key) {
 		case KeyEvent.VK_UP:
-			model.getPlayer().alterVelocity(0, 1);
+			model.normalAlterPlayerVelocity(0, 1);
 			break;
 		case KeyEvent.VK_DOWN:
-			model.getPlayer().alterVelocity(0, -1); 
+			model.normalAlterPlayerVelocity(0, -1); 
 			break;
 		case KeyEvent.VK_RIGHT:
-			model.getPlayer().alterVelocity(-1, 0);
+			model.normalAlterPlayerVelocity(-1, 0);
 			break;
 		case KeyEvent.VK_LEFT:
-			model.getPlayer().alterVelocity(1, 0);
+			model.normalAlterPlayerVelocity(1, 0);
 			break;
 		case KeyEvent.VK_SPACE:
 			model.spaceKeyReleased();
@@ -218,13 +240,65 @@ public class Controller implements KeyListener {
 		}
 	}
 
-	/** Does nothing
+	/** 
 	 *  @param e Ignored
 	 */
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
+		char key = e.getKeyChar();
+		
+		if(this.cheatState != 5) {
+			switch(key) {
+			// Typing "cheat"
+			case 'c':
+				if(this.cheatState == 0) this.cheatState = 1;
+				else this.cheatState = 0;
+				break;
+			case 'h':
+				if(this.cheatState == 1) this.cheatState = 2;
+				else this.cheatState = 0;
+				break;
+			case 'e':
+				if(this.cheatState == 2) this.cheatState = 3;
+				else this.cheatState = 0;
+				break;
+			case 'a':
+				if(this.cheatState == 3) this.cheatState = 4;
+				else this.cheatState = 0;
+				break;
+			case 't':
+				if(this.cheatState == 4) this.cheatState = 5;
+				else this.cheatState = 0;
+				break;
+			default:
+				this.cheatState = 0;
+			}
+		} else {
+			// Actually run a cheat
+			System.out.println("Running cheat code "+key);
+			this.cheatState = 0;
 
+			switch(key) {
+			case 'T':
+				this.model.startTitleScreen();
+				break;
+			case 't':
+				this.model.startTutorial();
+				break;
+			case 'n':
+				this.model.startNormal();
+				break;
+			case 'r':
+				this.model.resetEverything();
+				break;
+			case 'e':
+				this.model.startEndGame();
+				break;
+			default:
+				System.out.println("Unrecognised cheat.");
+			}
+		}
 	}
 	
 	
@@ -241,12 +315,8 @@ public class Controller implements KeyListener {
 		 * @return None
 		 */
 		public void run() {
-			
-			view.addLitter(model.spawnLitter());
-			
-		
-		
-			
+			if(model.getGamePhase()==GamePhase.NORMAL)
+				model.spawnLitter();
 		}
 	}
 }
