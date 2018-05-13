@@ -102,7 +102,7 @@ public class Sprite {
 		/** A glowing recycle bin */
 		RECYCLEGLOW("MapObjects/recyclegreen.png",128,128),
 		/** Onscreen river*/
-		RIVER("MapObjects/river.png", View.WORLD_HEIGHT, View.WORLD_HEIGHT),
+		RIVER("MapObjects/river2.png", View.WORLD_HEIGHT, View.WORLD_HEIGHT),
 		/** A garbage truck for timer  */
 		GARBAGETRUCK("Map/garbage-truck.png",128,128),   // <div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 		/** The path on which the garbage truck timer travels */ 
