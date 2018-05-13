@@ -123,18 +123,6 @@ public class Model implements java.io.Serializable {
 	/** Random index of next plant **/
 	private int randPlant = (int) Math.floor(Math.random() * 4);
 
-//	Timer timer;
-//	Timer timer2;
-//	int count = 0;
-//	int count2 = 0;
-//	
-//	long lStartTime;
-//	long lEndTime;
-//	long output;
-
-
-	/**Random index of next plant**/
-	//private int randPlant;
 
 	/** Boolean variable that represents whether the player has planted the plant that despawns in the tutorial */
 	private boolean tutorialPlantGrown;
@@ -173,15 +161,6 @@ public class Model implements java.io.Serializable {
 		animals.add(crab);
 		this.HEIGHT = height;
 		this.WIDTH = width;
-//		System.out.println("The width is " + width + " The height is " + height);
-//
-//		int count = 0;
-//		// fills plant array
-//		for (int i = 0; i < 4; i++) {
-//			plants.add(new Plant(plantHealth, WIDTH - (WIDTH / 3), 50 + (WIDTH / 90) + count));// sets location of
-//
-//		this.HEIGHT = height;
-//		this.WIDTH = width;
 		int count = 0;
 		river = new River(WIDTH - 200, 0, WIDTH, HEIGHT);
 		//fills plant array
@@ -370,21 +349,6 @@ public class Model implements java.io.Serializable {
 		return recycleVictory;
 	}
 
-
-	/**
-	 * Advances the Model by one frame. Moves {@link #player}, checks for
-	 * collisions, runs collision handlers, and moves the {@link #animals}. Should
-	 * be called once per expected screen frame.
-	 */
-//	public void updateModel(long num) {
-//		System.out.println("num is " + num);
-//		if (playerMove)
-//			this.player.move();
-//		this.checkCollision();
-//		updatingAnimalLocation();
-//		checkPlayerAnimalCollision(num);
-//	}
-//		if (trashVictory && ((trashGlow++) % 14 < 1)) {
 	/**
 	 * Checks the current state of the game, and calls the appropriate updateModel function depending on whether the game is currently
 	 * in tutorial or regular mode
@@ -576,7 +540,6 @@ public class Model implements java.io.Serializable {
 	 * @return empty
 	 */
 	public void updatingAnimalLocation() {
-		// System.out.println(crab.getDirection().ordinal());
 		switch (crab.getDirection().ordinal()) {
 		case 0: // going north
 			crab.setYLocation(crab.getYLocation() - animalYIncr);
@@ -641,7 +604,6 @@ public class Model implements java.io.Serializable {
 		}
 	}
 
-//	public void setRandPlant() {
 
 	/**
 	 * Method called to damage a specific plant by the plantdamage integer value
@@ -675,7 +637,6 @@ public class Model implements java.io.Serializable {
 		return randPlant;
 	}
 
-	//public ArrayList<Plant> getPlants() {
 	/**
 	 * Method called to return plant array
 	 * 
@@ -742,7 +703,6 @@ public class Model implements java.io.Serializable {
 		l.setType(LitterType.randomLitter());
 		int litterXCoord = r.nextInt((WIDTH - l.getWidth()) - (rBin.getXLocation() + rBin.getWidth()))
 				+ rBin.getXLocation() + rBin.getWidth();// generates random coordinates
-		//int litterXCoord = r.nextInt((plants.get(0).getXLocation() - l.getWidth())-(rBin.getXLocation()+rBin.getWidth())) + rBin.getXLocation() + rBin.getWidth();// generates random coordinates
 		int litterYCoord = r.nextInt((HEIGHT - l.getHeight()));
 		l.setXLocation(litterXCoord);//
 		l.setYLocation(litterYCoord);
@@ -792,35 +752,7 @@ public class Model implements java.io.Serializable {
 	}
 
 	private boolean checkPlayerAnimalCollision(long num) {
-		 	
-
-
-
-	       
-
-
-		if (this.player.getCollidesWith(this.crab)) { //this checks if the player has collided with the crab
-//			lStartTime = System.currentTimeMillis();
-//			lEndTime = 0;
-//			timer = new Timer(0, new ActionListener() {
-//
-//				@Override
-//				public void actionPerformed(ActionEvent e) {
-//					if (timer.getDelay() == 0) {
-//						timer.setDelay(1000);
-//					}
-//					count += timer.getDelay();
-//					System.out.println("The count is " + count);
-//
-//					if (count % 3000 == 0 && player.getStatus() == PlayerStatus.WALKING) { //this is for when the player is running into the crab
-//						player.loseHealth();
-//					}
-//					timer.stop();
-//				}
-//			});
-//	
-//			timer.setRepeats(true);
-//			timer.restart();
+			if (this.player.getCollidesWith(this.crab)) { //this checks if the player has collided with the crab
 			if(num % 2 == 0 && player.getStatus() == PlayerStatus.IDLE) {
 			player.loseHealth();
 			}else if(num % 3 == 0 && player.getStatus() == PlayerStatus.WALKING) {
@@ -849,22 +781,11 @@ public class Model implements java.io.Serializable {
 			return true;
 
 		} else {
-		//	lEndTime = System.currentTimeMillis();
 			playerMove = true;
 			animalXIncr = 4;
 			animalYIncr = 4;
 		}
 		
-//		 output = lEndTime - lStartTime;
-//		 lEndTime = 0;
-//		 lStartTime = 0;
-//
-//	        System.out.println("Elapsed time in milliseconds: " + output);
-//	        
-//	        if(output < 100 && player.getStatus() == PlayerStatus.IDLE) {
-//	        	player.loseHealth();
-//	        }
-
 		return false;
 	}
 
@@ -911,21 +832,12 @@ public class Model implements java.io.Serializable {
 		for (Plant plant : plants) {
 			// add and health == 0
 			if (plant.health == 0 && plant.getCollidesWith(this.player)) {
-				// this.player.growPlant(i);
 				setRandPlant();
-//			if (plant.health == 0 && plant.getCollidesWith(this.player)) 
-//			{
 				plant.health = 100;
 				this.tutorialPlantGrown = true;
-				//changeScore(10);
 				return true;
 			}
 		}
-
-//		if (this.player.getHasLitter()) {
-//			if (this.player.getCollidesWith(this.tBin) && this.pickedUp.getType() == LitterType.TRASH) {
-//				this.tBin.takeLitter(this.player);
-		
 		
 		if(this.player.getCollidesWith(river))
 		{
@@ -945,9 +857,6 @@ public class Model implements java.io.Serializable {
 				trashVictory = true;
 				return true;
 			}
-//			if (this.player.getCollidesWith(this.rBin) && this.pickedUp.getType() == LitterType.RECYCLABLE) {
-//				this.rBin.takeLitter(this.player);
-
 			}	
 			if(this.player.getCollidesWith(this.rBin) && this.pickedUp.getType() == LitterType.RECYCLABLE) {
 				this.rBin.takeLitter(this.player, this);
@@ -1030,7 +939,6 @@ public class Model implements java.io.Serializable {
 	 * 
 	 * @param l
 	 *            The new Litter
-=======
 	/** Gets the current game phase of the Model */
 	public GamePhase getGamePhase() {
 		return this.gamePhase;
