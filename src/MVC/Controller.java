@@ -17,6 +17,7 @@ import MapObjects.Animal;
 import MapObjects.Plant;
 import Player.Player;
 
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -63,11 +64,15 @@ public class Controller implements KeyListener {
 			model.getPlayer().getStatus(),
 			model.getAnimal().getXLocation(),
 			model.getAnimal().getYLocation(),
-			model.getPickedUpLitter(),
-			model.getPlayer().getHasLitter(),
-			model.getAnimalEatenLitter(),
+			model.getPickedUpAttr(),
+			model.isHasLitter(),
 			model.getScore(),
-			model.getPlants());
+			model.getPlants(),model.getTrashVictory(),model.getRecycleVictory(),
+			model.getRiver(),
+			model.getTutorialState(),
+			model.getLitterAttrSet(),
+			model.isArrowKeyPrompt(),
+			model.isHoverLitter());
 	}
 	
 	/**
@@ -86,7 +91,8 @@ public class Controller implements KeyListener {
 		 */
 		public void run()
 		{
-			model.damagePlant();
+			if(model.getGameState()==GameState.REGULARGAME)
+				model.damagePlant();
 
 		}
 	}
@@ -108,7 +114,7 @@ public class Controller implements KeyListener {
 				stepTimer = new Timer(DRAW_DELAY, stepAction);
 				stepTimer.start();
 				taskTimer.scheduleAtFixedRate(new damagePlantTask(),500,1000);//damages plants every ten seconds
-				trashTimer.scheduleAtFixedRate(new TrashTask(), 0, 10000);
+				trashTimer.scheduleAtFixedRate(new TrashTask(), 0, 6000);
 			}
 		});
 	}
@@ -191,7 +197,7 @@ public class Controller implements KeyListener {
 
 	
 	/** Changes the player's velocity according to the arrow keys being released, or mark that the space key is no longer pressed down.
-	 *  @param e The KeyEvent containing the key that was rseleased. */
+	 *  @param e The KeyEvent containing the key that was released. */
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int key = e.getKeyCode();
@@ -238,12 +244,13 @@ public class Controller implements KeyListener {
 		 * @return None
 		 */
 		public void run() {
-			
-			view.addLitter(model.spawnLitter());
+			if(model.getGameState()==GameState.REGULARGAME)
+				model.spawnLitter();
 			
 		
 		
 			
 		}
 	}
+	
 }
