@@ -41,7 +41,7 @@ public class Model implements java.io.Serializable{
 	/** The current game phase */
 	private GamePhase gamePhase = GamePhase.TITLE_SCREEN;
 	/** Current state of the tutorial */
-	private TutorialState tutorialState = TutorialState.SPAWNTRASH;
+	private TutorialState tutorialState;
 	
 	/** Whether the Player is carrying {@link Litter}. */
 	private boolean hasLitter = false;
@@ -104,13 +104,13 @@ public class Model implements java.io.Serializable{
 	private int randPlant;
 
 	/** Boolean variable that represents whether the player has planted the plant that despawns in the tutorial */
-	private boolean plantGrown = false;
+	private boolean tutorialPlantGrown;
 	/** Boolean variable that represents whether the animal has eaten the Litter in the tutorial */
-	private boolean animalAteLitter = false;
+	private boolean tutorialAnimalAteLitter;
 	/** Boolean that represents whether the arrow key prompt should be shown on screen. */ 
-	private boolean arrowKeyPrompt = true;
+	private boolean tutorialArrowKeyPrompt;
 	/** Boolean that represents whether or not the Player is hovering, but not picking up a Litter object */
-	private boolean hoverLitter = false;
+	private boolean tutorialHoverLitter;
 	/**onscreen river**/
 	River river;
 	/**
@@ -140,22 +140,22 @@ public class Model implements java.io.Serializable{
 		this.resetEverything();
 	}
 	/**
-	 * Returns the hoverLitter boolean of Model. 
+	 * Returns the tutorialHoverLitter boolean of Model. 
 	 * 
 	 * @param
 	 * @return True if the Player is hovering, but not picking up a Litter object, false otherwise. 
 	 */
 	public boolean isHoverLitter() {
-		return hoverLitter;
+		return tutorialHoverLitter;
 	}
 
-	/** Returns the arrowKeyPrompt
+	/** Returns the tutorialArrowKeyPrompt
 	 * 
 	 * @param
 	 * @return True if the player hasn't moved and the arrow key prompt needs to be shown, false otherwise. 
 	 */
 	public boolean isArrowKeyPrompt() {
-		return arrowKeyPrompt;
+		return tutorialArrowKeyPrompt;
 	}
 
 	
@@ -330,7 +330,7 @@ public class Model implements java.io.Serializable{
 			break;
 		case SIGNALTRASH:
 			if(player.getXLocation() != 240 || player.getYLocation() != 240)
-				this.arrowKeyPrompt = false;
+				this.tutorialArrowKeyPrompt = false;
 			if(hasLitter)
 				this.tutorialState = TutorialState.SIGNALTRASHCAN;
 			break;
@@ -357,13 +357,13 @@ public class Model implements java.io.Serializable{
 			}
 			break;
 		case SIGNALPLANT:
-			if(this.plantGrown) {
+			if(this.tutorialPlantGrown) {
 				spawnLitter(LitterType.RECYCLABLE);
 				this.tutorialState = TutorialState.CRABEATLITTER;
 			}
 			break;
 		case CRABEATLITTER:
-			if(!this.animalAteLitter)
+			if(!this.tutorialAnimalAteLitter)
 				updatingTutorialAnimalLocation();
 			else
 				this.gamePhase = GamePhase.NORMAL;
@@ -692,9 +692,9 @@ public class Model implements java.io.Serializable{
 		if (!hasLitter) {
 			for (Litter litter : new HashSet<Litter>(litterSet)) {
 				if (litter.getCollidesWith(this.player)) {
-					hoverLitter = true;
+					tutorialHoverLitter = true;
 					if (spacePressed) {
-						hoverLitter = false;
+						tutorialHoverLitter = false;
 						this.pickedUp = pickUpLitter(litter);
 						System.out.println(this.pickedUp);
 						this.pickedUpAttr = new ArrayList<Integer>();
@@ -714,7 +714,7 @@ public class Model implements java.io.Serializable{
 			if (plant.health == 0 && plant.getCollidesWith(this.player)) 
 			{
 				plant.health = 100;
-				this.plantGrown = true;
+				this.tutorialPlantGrown = true;
 				changeScore(10);
 				return true;
 			}
@@ -788,7 +788,7 @@ public class Model implements java.io.Serializable{
 					changeScore(-20);
 					litterAttrSet.remove(getLitterAttr(litter));
 					litterIterator.remove();
-					this.animalAteLitter = true;
+					this.tutorialAnimalAteLitter = true;
 					return true;
 				}
 			}
@@ -881,6 +881,11 @@ public class Model implements java.io.Serializable{
 	public void startTutorial() {
 		this.resetEverything();
 		this.gamePhase = GamePhase.TUTORIAL;
+		this.tutorialState = TutorialState.SPAWNTRASH;
+		this.tutorialPlantGrown = false;
+		this.tutorialAnimalAteLitter = false;
+		this.tutorialArrowKeyPrompt = false;
+		this.tutorialHoverLitter = false;
 		// TODO: Actually do tutorial stuff@
 	}
 
