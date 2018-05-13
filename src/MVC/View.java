@@ -216,6 +216,7 @@ public class View extends JPanel{
 				break;
 			case GAME_END:
 				this.drawOverlayBox(g);
+				this.drawEndScreenOverlay(g);
 				break;
 		}
 	}
@@ -287,6 +288,11 @@ public class View extends JPanel{
 	/** Draws the start screen text onto the screen. Does not draw the box. */
 	private void drawStartScreenText(Graphics g) {
 		this.drawImage(g, Sprite.ID.TITLE_SCREEN, 50, 50);
+	}
+
+	/** Draws the end screen text onto the screen. Does not draw that underlying box. */
+	private void drawEndScreenOverlay(Graphics g) {
+		this.drawImage(g, Sprite.ID.END_SCREEN, 50, 50);
 	}
 
 	/** Determines which {@link Sprite.ID} to use to render the player. Determines this based on the player's {@link #playerStatus status} and {@link #playerDirection direction}.
