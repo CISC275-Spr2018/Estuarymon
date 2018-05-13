@@ -764,6 +764,25 @@ class ModelTest {
 		assertTrue(model.getPlayer().getSpeed()==5);
 	}
 	
+	@Test
+	void testGetEndTime() {
+		Model model = new Model(1000,1000);
+		assertTrue(model.getEndTime()==6*10000);
+	}
+	
+	@Test
+	void testGetStartTime() {
+		Model model = new Model(1000,1000);
+		assertTrue(model.getStartTime()==-1);
+	}
+	
+	@Test
+	void testGetModelStatus() {
+		Model model = new Model(1000,1000);
+		assertTrue(model.getModelStatus()==true);
+	}
+	
+	
 	
 	
 	

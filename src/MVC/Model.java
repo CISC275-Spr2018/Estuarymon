@@ -54,7 +54,7 @@ public class Model implements java.io.Serializable{
 	private int crabDirection = 3;
 
 	/** The amount of health to detract from the Plant every time it is damaged */
-	private static final int plantDamage = 10;
+	private static final int plantDamage = 20;
 	/** The initial amount of health of each Plant */
 	private static final int plantHealth = 100;
 
@@ -874,12 +874,19 @@ public class Model implements java.io.Serializable{
 	}
 	
 	
-	/** Gets the width of the Model */
+	/** Gets the width of the Model
+	 * 
+	 * @param
+	 * @return The width of the Model
+	 *  */
 	public int getWidth() {
 		return WIDTH;
 	}
 
-	/** Gets the height of the Model */
+	/** Gets the height of the Model
+	 * 
+	 *  @param
+	 *  @return The height of the Model*/
 	public int getHeight() {
 		return HEIGHT;
 	}
