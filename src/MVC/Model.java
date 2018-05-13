@@ -321,13 +321,10 @@ public class Model implements java.io.Serializable{
 			checkTutorialStates();
 		}
 		else {
-			if(startTime == -1) {
-				startTime = System.currentTimeMillis();
-			}
 			updatingAnimalLocation();
 			checkPlants();
 			if(System.currentTimeMillis() - startTime >= endTimeMilli) {
-				running = false;
+				this.startEndGame();
 			}
 		}
 	}
@@ -907,6 +904,7 @@ public class Model implements java.io.Serializable{
 	/** Moves to the Normal game state (does NOT reset!) */
 	public void startNormal() {
 		this.gamePhase = GamePhase.NORMAL;
+		this.startTime = System.currentTimeMillis();
 	}
 
 	/** Moves to the ending game state (does NOT reset!) */
