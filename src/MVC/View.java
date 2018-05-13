@@ -307,31 +307,7 @@ public class View extends JPanel{
 		int pixelX = worldXToPixelX(worldX);
 		int pixelY = worldYToPixelY(worldY);
 
-		int targetHeight = worldHeightToPixelHeight(WORLD_HEIGHT/8);
-		int fontSize = 32;
-		System.out.println("Target "+targetHeight);
-		do {
-			fontSize *= 2;
-			System.out.println("Increasing to "+fontSize);
-			g.setFont(new Font("TimesRoman", Font.BOLD, fontSize));
-		} while (g.getFontMetrics().getHeight() < targetHeight);
-
-		int distance = fontSize/2;
-		while(distance > 0) {
-			g.setFont(new Font("TimesRoman", Font.BOLD, fontSize));
-			int height = g.getFontMetrics().getHeight();
-			System.out.println("Tryping "+fontSize+" : " + height);
-			if(height > targetHeight) {
-				fontSize -= distance;
-			} else if(height < targetHeight) {
-				fontSize += distance;
-			} else {
-				break;
-			}
-			distance /= 2;
-		}
-
-		System.out.println("Goin' with "+fontSize);
+		this.setFontSize(g, WORLD_HEIGHT/8); // Side-affect, adds font to Graphics.
 
 		g.drawString(String.valueOf(this.score), pixelX, pixelY);
 	}
@@ -487,6 +463,36 @@ public class View extends JPanel{
 			return new Dimension(this.getHeight() * WORLD_WIDTH / WORLD_HEIGHT, this.getHeight());
 		}
 	}
+
+	private int setFontSize(Graphics g, int worldHeight) {
+		int targetHeight = worldHeightToPixelHeight(worldHeight);
+		int fontSize = 32;
+		System.out.println("Target "+targetHeight);
+		do {
+			fontSize *= 2;
+			System.out.println("Increasing to "+fontSize);
+			g.setFont(new Font("TimesRoman", Font.BOLD, fontSize));
+		} while (g.getFontMetrics().getHeight() < targetHeight);
+
+		int distance = fontSize/2;
+		while(distance > 0) {
+			g.setFont(new Font("TimesRoman", Font.BOLD, fontSize));
+			int height = g.getFontMetrics().getHeight();
+			System.out.println("Tryping "+fontSize+" : " + height);
+			if(height > targetHeight) {
+				fontSize -= distance;
+			} else if(height < targetHeight) {
+				fontSize += distance;
+			} else {
+				break;
+			}
+			distance /= 2;
+		}
+
+		System.out.println("Goin' with "+fontSize);
+		return fontSize;
+	}
+	
 	
 	/**Updates the View based on the given parameters.
 	 * Updates the player's location, direction, and status. 
