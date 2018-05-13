@@ -301,6 +301,12 @@ public class Controller implements KeyListener {
 			case 'e':
 				this.model.startEndGame();
 				break;
+			case 's':
+				this.model.changeScore(10);
+				break;
+			case 'S':
+				this.model.changeScore(100);
+				break;
 			default:
 				System.out.println("Unrecognised cheat.");
 			}
