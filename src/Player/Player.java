@@ -153,4 +153,10 @@ public class Player extends Interactable implements java.io.Serializable{
 	{
 		this.SPEED = speed;
 	}
+
+	public void stop() {
+		this.dx = 0;
+		this.dy = 0;
+		this.status = PlayerStatus.IDLE;
+	}
 }
