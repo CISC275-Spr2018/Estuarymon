@@ -830,6 +830,218 @@ class ModelTest {
 		assertTrue(model.getRecycleVictory()==false);
 	}
 	
+	@Test
+	void testCrabMotion() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		
+	}
+	@Test
+	void testAnimalWallCollisionLeftWall() {
+		
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		crab.setXLocation(0);
+		crab.setDirection(Direction.WEST);
+		model.animalWallCollision();
+		assertTrue(crab.getDirection() == Direction.EAST);
+	}
+	
+	@Test
+	void testAnimalWallCollisionRightWall() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		crab.setXLocation(1000);
+		crab.setDirection(Direction.EAST);
+		model.animalWallCollision();
+		assertTrue(crab.getDirection() == Direction.WEST);
+	}
+	
+	@Test
+	void testAnimalWallCollisionTopWall() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		crab.setYLocation(0);
+		crab.setDirection(Direction.NORTH);
+		model.animalWallCollision();
+		assertTrue(crab.getDirection() == Direction.SOUTH);
+	}
+	
+	@Test
+	void testAnimalWallCollisionBottomWall() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		crab.setYLocation(1000);
+		crab.setDirection(Direction.SOUTH);
+		model.animalWallCollision();
+		assertTrue(crab.getDirection() == Direction.NORTH);
+	}
+	
+	@Test
+	void testAnimalWallCollisionRightNorthEast(){
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		crab.setXLocation(1000);
+		crab.setDirection(Direction.NORTHEAST);
+		model.animalWallCollision();
+		assertTrue(crab.getDirection() == Direction.NORTHWEST);
+	}
+	
+	@Test
+	void testAnimalWallCollisionRightSouthEast() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		crab.setXLocation(1000);
+		crab.setDirection(Direction.SOUTHEAST);
+		model.animalWallCollision();
+		assertTrue(crab.getDirection() == Direction.SOUTHWEST);
+	}
+	
+	@Test
+	void testAnimalWallCollisionTopNorthEast() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		crab.setYLocation(0);
+		crab.setDirection(Direction.NORTHEAST);
+		model.animalWallCollision();
+		assertTrue(crab.getDirection() == Direction.SOUTHEAST);
+	}
+	
+	@Test
+	void testAnimalWallCollisionTopNorthWest() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		crab.setYLocation(0);
+		crab.setDirection(Direction.NORTHWEST);
+		model.animalWallCollision();
+		assertTrue(crab.getDirection() == Direction.SOUTHWEST);
+	}
+	
+	@Test
+	void testAnimalWallCollisionBottomSouthEast() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		crab.setYLocation(1000);
+		crab.setDirection(Direction.SOUTHEAST);
+		model.animalWallCollision();
+		assertTrue(crab.getDirection() == Direction.NORTHEAST);
+	}
+	
+	@Test
+	void testAnimalWallCollisionBottomSouthWest() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		crab.setYLocation(1000);
+		crab.setDirection(Direction.SOUTHWEST);
+		model.animalWallCollision();
+		assertTrue(crab.getDirection() == Direction.NORTHWEST);
+	}
+	
+	@Test
+	void testAnimalWallCollisionLeftNorthWest() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		crab.setXLocation(0);
+		crab.setDirection(Direction.NORTHWEST);
+		model.animalWallCollision();
+		assertTrue(crab.getDirection() == Direction.NORTHEAST);
+	}
+	
+	@Test
+	void testAnimalWallCollisionLeftSouthWest() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		crab.setXLocation(0);
+		crab.setDirection(Direction.SOUTHWEST);
+		model.animalWallCollision();
+		assertTrue(crab.getDirection() == Direction.SOUTHEAST);
+	}
+	
+	@Test
+	void testUpdatingAnimalLocationNorth() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		crab.setYLocation(4);
+		crab.setDirection(Direction.NORTH);
+		model.updatingAnimalLocation();
+		assertTrue(crab.getYLocation()==0);
+	}
+	
+	@Test
+	void testUpdatingAnimalLocationEast() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		crab.setXLocation(0);
+		crab.setDirection(Direction.EAST);
+		model.updatingAnimalLocation();
+		assertTrue(crab.getXLocation()==4);
+	}
+	
+	@Test
+	void testUpdatingAnimalLocationSouth() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		crab.setYLocation(0);
+		crab.setDirection(Direction.SOUTH);
+		model.updatingAnimalLocation();
+		assertTrue(crab.getYLocation()==4);
+	}
+	
+	@Test
+	void testUpdatingAnimalLocationWest() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		crab.setXLocation(4);
+		crab.setDirection(Direction.WEST);
+		model.updatingAnimalLocation();
+		assertTrue(crab.getXLocation()==0);
+	}
+	
+	@Test
+	void testUpdatingAnimalLocationNorthEast() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		crab.setXLocation(0);
+		crab.setYLocation(4);
+		crab.setDirection(Direction.NORTHEAST);
+		model.updatingAnimalLocation();
+		assertTrue(crab.getXLocation()==4 && crab.getYLocation()==0);
+	}
+	
+	@Test
+	void testUpdatingAnimalLocationNorthWest() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		crab.setXLocation(4);
+		crab.setYLocation(4);
+		crab.setDirection(Direction.NORTHWEST);
+		model.updatingAnimalLocation();
+		assertTrue(crab.getXLocation()==0 && crab.getYLocation()==0);
+	}
+	
+	@Test
+	void testUpdatingAnimalLocationSouthEast() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		crab.setXLocation(0);
+		crab.setYLocation(0);
+		crab.setDirection(Direction.SOUTHEAST);
+		model.updatingAnimalLocation();
+		assertTrue(crab.getXLocation()==4 && crab.getYLocation()==4);
+	}
+	
+	@Test
+	void testUpdatingAnimalLocationSouthWest() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		crab.setXLocation(4);
+		crab.setYLocation(0);
+		crab.setDirection(Direction.SOUTHWEST);
+		model.updatingAnimalLocation();
+		assertTrue(crab.getXLocation()==0 && crab.getYLocation()==4);
+	}
+	
+	
 	
 	
 	

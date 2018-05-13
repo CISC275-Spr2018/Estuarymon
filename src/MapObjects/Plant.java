@@ -41,10 +41,6 @@ public class Plant extends Interactable implements java.io.Serializable{
 	{
 		return health;
 	}
-	@Override
-	public String toString()
-	{
-		return this.health+"";
-	}
+
 
 }
