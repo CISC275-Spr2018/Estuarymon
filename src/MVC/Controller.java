@@ -232,7 +232,16 @@ public class Controller implements KeyListener {
 			break;
 		case KeyEvent.VK_SPACE:
 			model.spaceKeyReleased();
+			if(model.getGamePhase() == GamePhase.TITLE_SCREEN)
+				model.startTutorial();
+			else if(model.getGamePhase() == GamePhase.GAME_END)
+				model.startTitleScreen();
 			break;
+		case KeyEvent.VK_R:
+			if(model.getGamePhase() == GamePhase.GAME_END) {
+				model.resetEverything();
+				model.startNormal();
+			}
 		}
 	}
 

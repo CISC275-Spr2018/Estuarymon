@@ -411,9 +411,6 @@ public class Model implements java.io.Serializable{
 	 */
 	public void spaceKeyReleased() {
 		this.spacePressed = false;
-		if(this.gamePhase == GamePhase.TITLE_SCREEN) {
-			this.startTutorial();
-		}
 	}
 
 	/**
