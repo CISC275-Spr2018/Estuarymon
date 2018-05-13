@@ -158,17 +158,6 @@ public class View extends JPanel{
 		drawImage(g, Sprite.ID.BACKGROUND, 0, 0);
 		drawImage(g, Sprite.ID.RIVER, river.getXLocation(), river.getYLocation());
 		
-		drawImage(g, Sprite.ID.REDPATH,0,WORLD_HEIGHT - 64);
-		drawImage(g,Sprite.ID.FLAG,WORLD_WIDTH -128, WORLD_HEIGHT - 164);
-		int truckX;
-		if(startTime == - 1) {
-			truckX = 0;
-		}
-		else {
-			truckX = (int)(Math.floor(((System.currentTimeMillis()-startTime)/(double)endTime) *(WORLD_WIDTH-128)));
-		}
-		drawImage(g, Sprite.ID.GARBAGETRUCK,truckX,WORLD_HEIGHT - 128);
-		
 		// Draw all plants
 		for(Plant plant : plants) 
 		{
@@ -223,6 +212,7 @@ public class View extends JPanel{
 			case NORMAL:
 				this.drawLitterContainerOverlay(g);
 				this.drawScoreOverlay(g);
+				this.drawTimer(g);
 				break;
 			case GAME_END:
 				this.drawOverlayBox(g);
@@ -284,6 +274,14 @@ public class View extends JPanel{
 			worldWidthToPixelWidth(150), // ARC WIDTH
 			worldHeightToPixelHeight(150)); // ARC HEIGHT
 		g.setColor(Color.WHITE);
+	}
+
+	private void drawTimer(Graphics g) {
+		drawImage(g, Sprite.ID.REDPATH,0,WORLD_HEIGHT - 64);
+		drawImage(g,Sprite.ID.FLAG,WORLD_WIDTH -128, WORLD_HEIGHT - 164);
+		
+		int truckX = (int)(Math.floor(((System.currentTimeMillis()-startTime)/(double)endTime) *(WORLD_WIDTH-128)));
+		drawImage(g, Sprite.ID.GARBAGETRUCK,truckX,WORLD_HEIGHT - 128);
 	}
 
 	/** Draws the start screen text onto the screen. Does not draw the box. */
