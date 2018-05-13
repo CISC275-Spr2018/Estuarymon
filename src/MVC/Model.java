@@ -53,7 +53,7 @@ public class Model implements java.io.Serializable{
 	private int crabDirection;
 
 	/** The amount of health to detract from the Plant every time it is damaged */
-	private static final int plantDamage = 10;
+	private final int plantDamage = 20;
 	/** The initial amount of health of each Plant */
 	private static final int plantHealth = 100;
 
@@ -63,9 +63,9 @@ public class Model implements java.io.Serializable{
 	private Receptacle rBin = new Receptacle(128,128,ReceptacleType.RECYCLINGBIN);
 
 	/** Whether the trash bin recently received a piece of Litter */
-	private static boolean trashVictory = false;
+	private boolean trashVictory = false;
 	/** Whether the recycle bin recently received a piece of Litter */
-	private static boolean recycleVictory = false;
+	private boolean recycleVictory = false;
 	/** A count of the number of frames the trash bin has been in glowing victory state for*/
 	private int trashGlow = 1;
 	/** A count of the number of frames the recycle bin has been in glowing victory state for*/
@@ -96,8 +96,7 @@ public class Model implements java.io.Serializable{
 	private Litter pickedUp;
 	/** ArrayList of Litter imgID and LitterType of Model.pickedUp Litter attribute to send to View */
 	ArrayList<Integer> pickedUpAttr = new ArrayList<Integer>();
-	/** The last Litter to be picked up by an {@link #animals animal} */
-	private Litter animalEatenLitter;
+
 	/**Contains plant objects**/
 	private ArrayList<Plant> plants = new ArrayList<Plant>();
 	/**Random index of next plant**/
@@ -144,6 +143,24 @@ public class Model implements java.io.Serializable{
 		}
 
 		this.resetEverything();
+	}
+	public void setTrashVictory(boolean trashVictory) {
+		this.trashVictory = trashVictory;
+	}
+	public void setRecycleVictory(boolean recycleVictory) {
+		this.recycleVictory = recycleVictory;
+	}
+	public void setPlantGrown(boolean plantGrown) {
+		this.tutorialPlantGrown = plantGrown;
+	}
+	public boolean isAnimalAteLitter() {
+		return tutorialAnimalAteLitter;
+	}
+	public void setAnimalAteLitter(boolean animalAteLitter) {
+		this.tutorialAnimalAteLitter = animalAteLitter;
+	}
+	public HashSet<Litter> getLitterSet() {
+		return litterSet;
 	}
 	/**
 	 * Returns the tutorialHoverLitter boolean of Model. 
@@ -305,7 +322,7 @@ public class Model implements java.io.Serializable{
 	 *  @return
 	 *   */
 	public void updateModel() {
-		if(!this.gamePhase.isPlayable()) return;
+		if(!this.gamePhase.isPlayable()) return; 
 
 		if(playerMove) this.player.move();
 		this.checkCollision();
@@ -508,10 +525,6 @@ public class Model implements java.io.Serializable{
 			crab.setYLocation(crab.getYLocation() + animalYIncr);
 			crab.setXLocation(crab.getXLocation() - animalXIncr);
 			break;
-		default:
-			crab.setXLocation(0);
-			crab.setYLocation(0);
-
 		}
 	}
 
@@ -541,7 +554,7 @@ public class Model implements java.io.Serializable{
 		}
 		else if(plants.get(randPlant).getHealth() == 0)
 		{
-			setRandPlant();
+			this.randPlant = (int) Math.floor(Math.random() * 4);
 		}
 	}
 
@@ -556,16 +569,6 @@ public class Model implements java.io.Serializable{
 			plants.get(i).health -= plantDamage;
 	}
 	
-	/**
-	 * Method called to set randPlant index
-	 * 
-	 * @param
-	 * @return
-	 */
-	public void setRandPlant()
-	{
-		this.randPlant = (int) Math.floor(Math.random() * 4);
-	}
 	
 	/**
 	 * Method called to return randPlant index
@@ -868,12 +871,19 @@ public class Model implements java.io.Serializable{
 	}
 	
 	
-	/** Gets the width of the Model */
+	/** Gets the width of the Model
+	 * 
+	 * @param
+	 * @return The width of the Model
+	 *  */
 	public int getWidth() {
 		return WIDTH;
 	}
 
-	/** Gets the height of the Model */
+	/** Gets the height of the Model
+	 * 
+	 *  @param
+	 *  @return The height of the Model*/
 	public int getHeight() {
 		return HEIGHT;
 	}
@@ -881,6 +891,16 @@ public class Model implements java.io.Serializable{
 	/** Gets the current game phase of the Model */
 	public GamePhase getGamePhase() {
 		return this.gamePhase;
+	}
+	
+	/**
+	 * Sets the game phase of the Model. 
+	 * 
+	 * @param gp The game phase to be set to the Model. 
+	 * @return 
+	 */
+	public void setGamePhase(GamePhase gp) {
+		this.gamePhase = gp;
 	}
 
 	/** Sets the last picked up litter to the parameter
@@ -913,7 +933,7 @@ public class Model implements java.io.Serializable{
 		this.tutorialState = TutorialState.SPAWNTRASH;
 		this.tutorialPlantGrown = false;
 		this.tutorialAnimalAteLitter = false;
-		this.tutorialArrowKeyPrompt = false;
+		this.tutorialArrowKeyPrompt = true;
 		this.tutorialHoverLitter = false;
 	}
 
@@ -939,7 +959,6 @@ public class Model implements java.io.Serializable{
 		this.crabDirection = 3;
 		this.score = 0;
 		this.pickedUp = null;
-		this.animalEatenLitter = null;
 		this.animalXIncr = 4;
 		this.animalYIncr = 4;
 		for(Plant p : this.plants) {

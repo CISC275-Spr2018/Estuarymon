@@ -1,17 +1,25 @@
 package tests;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.awt.Rectangle;
+
 import org.junit.jupiter.api.Test;
 
 import MVC.Controller;
+import MVC.GamePhase;
 import MVC.Model;
+import MVC.TutorialState;
 import MVC.View;
 import MapObjects.Animal;
+import MapObjects.Interactable;
 import MapObjects.Litter;
 import MapObjects.LitterType;
 import MapObjects.Plant;
+import MapObjects.Receptacle;
+import MapObjects.ReceptacleType;
 import Player.Direction;
 import Player.Player;
+import Player.PlayerStatus;
 /**
  * 
  * @author Juan Villacis 
@@ -27,8 +35,16 @@ class ModelTest {
 	{
 		Model model = new Model(1000,1000);
 		model.damagePlant();
-		assertTrue(model.getPlants().get(model.getRandPlant()).getHealth()==90);
+		assertTrue(model.getPlants().get(model.getRandPlant()).getHealth()==80);
 		
+	}
+	
+	@Test
+	void testDamagePlantChange() {
+		Model model = new Model(1000,1000);
+		model.getPlants().get(model.getRandPlant()).setHealth(0);
+		model.damagePlant();
+		assertTrue(model.getRandPlant() >= 0 && model.getRandPlant() <= model.getPlants().size());
 	}
 	
 	@Test
@@ -90,9 +106,9 @@ class ModelTest {
 		Litter l = new Litter();
 		l.setXLocation(1);
 		l.setYLocation(1);
-		Litter.litterSet.add(l);
+		model.getLitterSet().add(l);
 		assertTrue(model.testCheckColl()==true);
-		Litter.litterSet.remove(l);
+		
 	}
 	
 	@Test
@@ -103,9 +119,9 @@ class ModelTest {
 		Litter l = new Litter();
 		l.setXLocation(200);
 		l.setYLocation(200);
-		Litter.litterSet.add(l);
+		model.getLitterSet().add(l);
 		assertTrue(model.testCheckColl()==false);
-		Litter.litterSet.remove(l);
+		
 	}
 	
 	@Test
@@ -129,7 +145,7 @@ class ModelTest {
 	@Test
 	void testPlayerTrashBinCollision() {
 		Model model = new Model(1000,1000);
-		model.getPlayer().hasLitter = true;
+		model.setHasLitter(true);
 		model.getPlayer().setXLocation(model.getTBin().getXLocation());
 		model.getPlayer().setYLocation(model.getTBin().getYLocation());
 		Litter  l = new Litter();
@@ -141,7 +157,7 @@ class ModelTest {
 	@Test
 	void testPlayerTrashBinCollisionFalse() {
 		Model model = new Model(1000,1000);
-		model.getPlayer().hasLitter = true;
+		model.setHasLitter(true);
 		model.getPlayer().setXLocation(0);
 		model.getPlayer().setYLocation(0);
 		assertTrue(model.testCheckColl()==false);
@@ -150,7 +166,7 @@ class ModelTest {
 	@Test
 	void testPlayerRecycleBinCollision() {
 		Model model = new Model(1000,1000);
-		model.getPlayer().hasLitter = true;
+		model.setHasLitter(true);
 		model.getPlayer().setXLocation(model.getRBin().getXLocation());
 		model.getPlayer().setYLocation(model.getRBin().getYLocation());
 		Litter  l = new Litter();
@@ -167,9 +183,11 @@ class ModelTest {
 		Litter l = new Litter();
 		l.setXLocation(50);
 		l.setYLocation(50);
-		Litter.litterSet.add(l);
+		model.getLitterSet().add(l);
+		l.setType(LitterType.RECYCLABLE);
+		model.getLitterAttrSet().add(model.getLitterAttr(l));
 		assertTrue(model.testCheckColl()==true);
-		Litter.litterSet.remove(l);
+		
 	}
 	
 	@Test 
@@ -180,9 +198,9 @@ class ModelTest {
 		Litter l = new Litter();
 		l.setXLocation(900);
 		l.setYLocation(900);
-		Litter.litterSet.add(l);
-		assertTrue(model.testCheckColl()==true);
-		Litter.litterSet.remove(l);
+		model.getLitterSet().add(l);
+		assertTrue(model.testCheckColl()==false);
+		
 	}
 	
 	/*@Test
@@ -230,7 +248,7 @@ class ModelTest {
 		Model model = new Model(1000,1000);
 		Litter l = model.spawnLitter();
 		assertTrue(l.getXLocation() >=0 && l.getXLocation() <=(model.getWidth()-l.getWidth()));
-		Litter.litterSet.remove(l);
+		
 	}
 	
 	@Test
@@ -238,7 +256,7 @@ class ModelTest {
 		Model model = new Model(1000,1000);
 		Litter l = model.spawnLitter();
 		assertTrue(l.getYLocation() >=0 && l.getYLocation() <=(model.getHeight()-l.getHeight()));
-		Litter.litterSet.remove(l);
+		
 		
 	}
 	
@@ -249,12 +267,14 @@ class ModelTest {
 			model.getPlayer().setYLocation(1);
 			model.spaceKeyPressed();
 			Litter l = new Litter();
+			l.setType(LitterType.RECYCLABLE);
 			l.setXLocation(1);
 			l.setYLocation(1);
-			Litter.litterSet.add(l);
+			model.getLitterSet().add(l);
+			model.getLitterAttrSet().add(model.getLitterAttr(l));
 			model.testCheckColl();
 			assertTrue(model.getPickedUpLitter()==l);
-			Litter.litterSet.remove(l);
+			
 	}
 	
 	@Test
@@ -379,22 +399,448 @@ class ModelTest {
 	}
 	
 	@Test
-	void testLitterAdding() {
+	void testGetGameState() {
 		Model model = new Model(1000,1000);
-		Litter l = new Litter();
-		Litter.litterSet.add(l);
-		assertTrue(Litter.litterSet.contains(l)==true);
+		assertTrue(model.getGamePhase()==GamePhase.TITLE_SCREEN);
 	}
 	
 	@Test
-	void testLitterRemoving() {
+	void testGetRecycleVictory() {
 		Model model = new Model(1000,1000);
-		Litter l = new Litter();
-		Litter.litterSet.add(l);
-		Litter.litterSet.remove(l);
-		assertTrue(Litter.litterSet.contains(l)==false);
+		assertTrue(model.getRecycleVictory()==false);
 	}
 	
+	@Test
+	void testGetTrashVictory() {
+		Model model = new Model(1000,1000);
+		assertTrue(model.getTrashVictory()==false);
+	}
+	
+	@Test
+	void testGetTutorialState() {
+		Model model = new Model(1000,1000);
+		model.startTutorial();
+		assertTrue(model.getTutorialState()==TutorialState.SPAWNTRASH);
+	}
+	
+	@Test
+	void testIsArrowKeyPrompt() {
+		Model model = new Model(1000,1000);
+		assertTrue(model.isArrowKeyPrompt() == false);
+	}
+	
+	@Test
+	void testIsArrowKeyPromptFalse() {
+		Model model = new Model(1000,1000);
+		model.getPlayer().setXLocation(0);
+		model.setTutorialState(TutorialState.SIGNALTRASH);
+		model.checkTutorialStates();
+		assertTrue(model.isArrowKeyPrompt() == false);
+	}
+	
+	@Test
+	void testIsHasLitter() {
+		Model model = new Model(1000,1000);
+		assertTrue(model.isHasLitter()==false);
+	}
+	
+	@Test
+	void testIsHoverLitterFalse() {
+		Model model = new Model(1000,1000);
+		assertTrue(model.isHoverLitter()==false);
+	}
+	
+	@Test
+	void testIsHoverLitterTrue() {
+		Model model = new Model(1000,1000);
+		Litter l = new Litter();
+		l.setXLocation(0);
+		l.setYLocation(0);
+		l.setType(LitterType.RECYCLABLE);
+		model.getLitterSet().add(l);
+		model.getLitterAttrSet().add(model.getLitterAttr(l));
+		model.getPlayer().setXLocation(0);
+		model.getPlayer().setYLocation(0);
+		model.testCheckColl();
+		assertTrue(model.isHoverLitter()==true);
+	}
+	
+	@Test
+	void testCheckTutorialStatesSpawnTrash() {
+		Model model = new Model(1000,1000);
+		model.setTutorialState(TutorialState.SPAWNTRASH);
+		model.checkTutorialStates();
+		assertTrue(model.getTutorialState()==TutorialState.SIGNALTRASH);
+		
+	}
+	
+	@Test 
+	void testCheckTutorialStatesSignalTrash() {
+		Model model = new Model(1000,1000);
+		model.setTutorialState(TutorialState.SIGNALTRASH);
+		model.setHasLitter(true);
+		model.checkTutorialStates();
+		assertTrue(model.getTutorialState()==TutorialState.SIGNALTRASHCAN);
+	}
+	
+	@Test
+	void testCheckTutorialStatesSignalTrashCan() {
+		Model model = new Model(1000,1000);
+		model.setTutorialState(TutorialState.SIGNALTRASHCAN);
+		model.setTrashVictory(true);
+		model.checkTutorialStates();
+		assertTrue(model.getTutorialState() == TutorialState.SPAWNRECYCLABLE);
+	}
+	
+	
+	@Test
+	void testCheckTutorialStatesSpawnRec() {
+		Model model = new Model(1000,1000);
+		model.setTutorialState(TutorialState.SPAWNRECYCLABLE);
+		model.checkTutorialStates();
+		assertTrue(model.getTutorialState()==TutorialState.SIGNALRECYCLABLE);
+	}
+	
+	@Test 
+	void testCheckTutorialStatesSignalRecyclable() {
+		Model model = new Model(1000,1000);
+		model.setTutorialState(TutorialState.SIGNALRECYCLABLE);
+		model.setHasLitter(true);
+		model.checkTutorialStates();
+		assertTrue(model.getTutorialState()==TutorialState.SIGNALRECYCLINGBIN);
+	}
+	
+	@Test
+	void testCheckTutorialStatesSignalRecBin() {
+		Model model = new Model(1000,1000);
+		model.setTutorialState(TutorialState.SIGNALRECYCLINGBIN);
+		model.setRecycleVictory(true);
+		model.checkTutorialStates();
+		assertTrue(model.getTutorialState() == TutorialState.DAMAGEPLANT);
+	}
+	
+	@Test
+	void testCheckTutorialStatesDamagePlant() {
+		Model model = new Model(1000,1000);
+		model.setTutorialState(TutorialState.DAMAGEPLANT);
+		for(int i = 0;  i < 10; i++) {
+			model.checkTutorialStates();
+		}
+		assertTrue(model.getTutorialState() == TutorialState.SIGNALPLANT);
+	}
+	
+	@Test
+	void testCheckTutorialStatesSignalPlant() {
+		Model model = new Model(1000,1000);
+		model.setPlantGrown(true);
+		model.setTutorialState(TutorialState.SIGNALPLANT);
+		model.checkTutorialStates();
+		assertTrue(model.getTutorialState() == TutorialState.CRABEATLITTER);
+	}
+	
+	@Test
+	void testCheckTutorialStatesCrabEatLitter() {
+		Model model = new Model(1000,1000);
+		model.setAnimalAteLitter(true);
+		model.setTutorialState(TutorialState.CRABEATLITTER);
+		model.checkTutorialStates();
+		assertTrue(model.getGamePhase() == GamePhase.NORMAL);
+	}
+	
+	@Test
+	void testCheckTutorialStatesCrabEatLitterNoChange() {
+		Model model = new Model(1000,1000);
+		model.setAnimalAteLitter(false);
+		model.setTutorialState(TutorialState.CRABEATLITTER);
+		model.checkTutorialStates();
+		assertTrue(model.getTutorialState() == TutorialState.CRABEATLITTER);
+		
+	}
+	
+	@Test
+	void testCheckTutorialDamagePlant() {
+		Model model = new Model(1000,1000);
+		model.damagePlant(1);
+		assertTrue(model.getPlants().get(1).health == 80);
+	}
+	
+	@Test 
+	void testSetGameState() {
+		Model model = new Model(1000,1000);
+		model.setGamePhase(GamePhase.TITLE_SCREEN);
+		assertTrue(model.getGamePhase() == GamePhase.TITLE_SCREEN);
+	}
+	
+	
+	@Test
+	void testLitterEquality() {
+		Litter l = new Litter();
+		l.setXLocation(1);
+		l.setYLocation(1);
+		Litter l2 = new Litter();
+		l2.setXLocation(1);
+		l2.setYLocation(1);
+		assertTrue(l.equals(l2)==true);
+	}
+	
+	@Test
+	void testLitterInEquality() {
+		Litter l = new Litter();
+		l.setXLocation(1);
+		l.setYLocation(1);
+		Litter l2 = new Litter();
+		l2.setXLocation(1);
+		l2.setYLocation(0);
+		assertTrue(l.equals(l2)==false);
+	}
+	
+	@Test
+	void testReceptacleGetType() {
+		Receptacle r = new Receptacle(0,0,ReceptacleType.RECYCLINGBIN);
+		assertTrue(r.getType()==ReceptacleType.RECYCLINGBIN);
+	}
+	
+	@Test
+	void testPlantSetHealth() {
+		Plant p = new Plant(10,1,1);
+		p.setHealth(0);
+		assertTrue(p.getHealth() == 0);
+	}
+	
+	@Test
+	void testAddXLocation() {
+		Player p = new Player(10,10,10,10);
+		p.addXLocation(20);
+		assertTrue(p.getXLocation()==30);
+	}
+	
+	@Test
+	void testAddYLocation() {
+		Player p = new Player(10,10,10,10);
+		p.addYLocation(20);
+		assertTrue(p.getYLocation()==30);
+	}
+	
+	@Test
+	void testgetCollisionRectNull() {
+		Interactable i = new Interactable(1,1,1,1);
+		Rectangle r = new Rectangle(0,0,0,0);
+		assertTrue(i.getCollisionRect().equals(r));
+	}
+	
+	@Test
+	void testAlterVelocityLowerXCap() {
+		Player p = new Player(0,0,0,0);
+		p.alterVelocity(-2, 1);
+		assertTrue(p.getDx()==-1);
+	}
+	
+	@Test
+	void testAlterVelocityLowerYCap() {
+		Player p = new Player(0,0,0,0);
+		p.alterVelocity(1, -2);
+		assertTrue(p.getDy()==-1);
+	}
+	
+	@Test
+	void testAlterVelocityUpperXCap() {
+		Player p = new Player(0,0,0,0);
+		p.alterVelocity(2, 1);
+		assertTrue(p.getDx()==1);
+	}
+	
+	@Test
+	void testAlterVelocityUpperYCap() {
+		Player p = new Player(0,0,0,0);
+		p.alterVelocity(1, 2);
+		assertTrue(p.getDy()==1);
+	}
+	
+	@Test
+	void testAlterVelocityNorthWest() {
+		Player p = new Player(0,0,0,0);
+		p.alterVelocity(-1, -1);
+		assertTrue(p.getDirection()==Direction.NORTHWEST);
+	}
+	
+	@Test
+	void testAlterVelocityWest() {
+		Player p = new Player(0,0,0,0);
+		p.alterVelocity(-1, 0);
+		assertTrue(p.getDirection()==Direction.WEST);
+	}
+	
+	@Test
+	void testAlterVelocityEast() {
+		Player p = new Player(0,0,0,0);
+		p.alterVelocity(1, 0);
+		assertTrue(p.getDirection()==Direction.EAST);
+	}
+	
+	@Test
+	void testAlterVelocityNorth() {
+		Player p = new Player(0,0,0,0);
+		p.alterVelocity(0, -1);
+		assertTrue(p.getDirection()==Direction.NORTH);
+	}
+	
+	@Test
+	void testAlterVelocitySouth() {
+		Player p = new Player(0,0,0,0);
+		p.alterVelocity(0, 1);
+		assertTrue(p.getDirection()==Direction.SOUTH);
+	}
+	
+	@Test
+	void testAlterVelocityIdle() {
+		Player p = new Player(0,0,0,0);
+		p.alterVelocity(0, 0);
+		assertTrue(p.getStatus() == PlayerStatus.IDLE);
+	}
+	
+	@Test
+	void testPlayerMoveX() {
+		Player p = new Player(0,0,0,0);
+		p.alterVelocity(1, 1);
+		p.move();
+		assertTrue(p.getXLocation()==10);
+		
+	}
+	
+	@Test
+	void testPlayerMoveY() {
+		Player p = new Player(0,0,0,0);
+		p.alterVelocity(1, 1);
+		p.move();
+		assertTrue(p.getYLocation()==10);
+		
+	}
+	
+	@Test
+	void testFloodRiver() {
+		Model model = new Model(1000,1000);
+		model.getRiver().setXLocation(model.getWidth());
+		model.floodRiver();
+		assertTrue(model.getRiver().getXLocation()==995);
+	}
+	
+	@Test
+	void testRecedeRiver() {
+		Model model = new Model(1000,1000);
+		model.getRiver().setXLocation(0);
+		model.recedeRiver();
+		assertTrue(model.getRiver().getXLocation()==5);
+	}
+	
+	@Test
+	void testIsAnimalAteLitter() {
+		Model model = new Model(1000,1000);
+		assertTrue(model.isAnimalAteLitter()==false);
+	}
+	
+	@Test
+	void testCheckPlantsFlood() {
+		Model model = new Model(1000,1000);
+		model.getRiver().setXLocation(1000);
+		for(Plant p: model.getPlants()) {
+			p.setHealth(0);
+		}
+		model.checkPlants();
+		assertTrue(model.getRiver().getXLocation()==995);
+		
+	}
+	
+	@Test
+	void testCheckPlantsRecede() {
+		Model model = new Model(1000,1000);
+		model.getRiver().setXLocation(0);
+		model.checkPlants();
+		assertTrue(model.getRiver().getXLocation()==5);
+	}
+	
+	@Test
+	void testRiverPlayerCollision() {
+		Model model = new Model(1000,1000);
+		model.getPlayer().setXLocation(model.getRiver().getXLocation());
+		model.testCheckColl();
+		assertTrue(model.getPlayer().getSpeed()==5);
+	}
+	
+	@Test
+	void testGetEndTime() {
+		Model model = new Model(1000,1000);
+		assertTrue(model.getEndTime()==6*10000);
+	}
+	
+	@Test
+	void testGetStartTime() {
+		Model model = new Model(1000,1000);
+		assertTrue(model.getStartTime()==-1);
+	}
+	
+	@Test
+	void testGetModelStatus() {
+		Model model = new Model(1000,1000);
+		assertTrue(model.getModelStatus()==true);
+	}
+	
+	@Test
+	void testStartTitleScreen() {
+		Model model = new Model(1000,1000);
+		model.startTitleScreen();
+		assertTrue(model.getGamePhase()==GamePhase.TITLE_SCREEN);
+	}
+	
+	@Test
+	void testStartEndGame() {
+		Model model = new Model(1000,1000);
+		model.startEndGame();
+		assertTrue(model.getGamePhase()==GamePhase.GAME_END);
+	}
+	
+	@Test
+	void testAlterVelocityNormal() {
+		Model model = new Model(1000,1000);
+		model.startNormal();
+		model.normalAlterPlayerVelocity(1, 1);
+		assertTrue(model.getPlayer().getDx()==1&&model.getPlayer().getDy()==1);
+	}
+	
+	@Test
+	void testUpdateModelTrashVictory() {
+		Model model = new Model(1000,1000);
+		model.setTrashVictory(true);
+		model.setGamePhase(GamePhase.NORMAL);
+		for(int i = 0; i < 15; i++) {
+			model.updateModel();
+		}
+		
+		assertTrue(model.getTrashVictory()==false);
+	}
+	
+	@Test
+	void testUpdateModelRecVictory() {
+		Model model = new Model(1000,1000);
+		model.setRecycleVictory(true);
+		model.setGamePhase(GamePhase.NORMAL);
+		for(int i = 0; i < 15; i++) {
+			model.updateModel();
+		}
+		
+		assertTrue(model.getRecycleVictory()==false);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
 	
 	
 	
