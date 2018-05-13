@@ -63,7 +63,7 @@ public class Sprite {
 		/** A star intended to house the current score */
 		SCORESTAR("MapObjects/FlatIcon-074.png", 100, 100),
 		/** A box intended to house a type of litter */
-		LITTERFRAME("MapObjects/litterbox.png", 85,85),
+		LITTERFRAME("MapObjects/litterbox.png", 75,75),
 		/** A plant */
 		PLANT("MapObjects/azalea.png", 100, 100),
 		/** A decaying plant */
@@ -73,13 +73,13 @@ public class Sprite {
 		/** spot of mud where plant resided*/	
 		MUD("MapObjects/mud.png", 100, 100),
 		/** A banana peel */
-		BANANAPEEL("MapObjects/bananaSkin.png",50,50),
+		BANANAPEEL("MapObjects/bananaSkin.png",40,40),
 		/** A soda can */
 		SODACAN("MapObjects/Soda-Can.png",40,40),
 		/** A crumpled up piece of paper */
 		PAPER("MapObjects/paper.png",40,40),
 		/** A eaten apple */
-		APPLE("MapObjects/CompostA.png",60,60),
+		APPLE("MapObjects/CompostA.png",50,50),
 		/** A trash bin */
 		TRASHBIN("MapObjects/garbage.png",128,128),
 		/** A glowing trash bin */
@@ -90,6 +90,12 @@ public class Sprite {
 		RECYCLEGLOW("MapObjects/recyclegreen.png",128,128),
 		/** Onscreen river*/
 		RIVER("MapObjects/river.png", View.WORLD_HEIGHT, View.WORLD_HEIGHT),
+		/** A garbage truck for timer  */
+		GARBAGETRUCK("Map/garbage-truck.png",128,128),   // <div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+		/** The path on which the garbage truck timer travels */ 
+		REDPATH("Map/Red-path.png",1500,60),
+		/** Flag marking the destination of the garbage truck */
+		FLAG("Map/finish-flag.png",128,128),
 		/** The arrow key prompts for the tutorial*/
 		ARROWKEYS("Tutorial/arrow_key.png",80,60),
 		/** The arrow prompt for the tutorial */

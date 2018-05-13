@@ -58,6 +58,7 @@ public class Controller implements KeyListener {
 	 */
 	private void step() {
 		// increment the x and y coordinates, alter direction if necessary
+		if(model.getModelStatus()) {
 		model.updateModel();
 		view.update(		
 			model.getGamePhase(),
@@ -70,12 +71,23 @@ public class Controller implements KeyListener {
 			model.getPickedUpAttr(),
 			model.isHasLitter(),
 			model.getScore(),
-			model.getPlants(),model.getTrashVictory(),model.getRecycleVictory(),
+			model.getPlants(),
+			model.getTrashVictory(),
+			model.getRecycleVictory(),
 			model.getRiver(),
 			model.getTutorialState(),
 			model.getLitterAttrSet(),
 			model.isArrowKeyPrompt(),
-			model.isHoverLitter());
+			model.isHoverLitter(),
+			model.getStartTime(),
+			model.getEndTime());
+		}
+		else {
+			stepTimer.stop(); //Maybe try wait in the future
+			trashTimer.cancel(); // wait here too
+			taskTimer.cancel(); // and here
+			System.out.println("game over");
+		}
 	}
 	
 	/**
@@ -200,7 +212,7 @@ public class Controller implements KeyListener {
 
 	
 	/** Changes the player's velocity according to the arrow keys being released, or mark that the space key is no longer pressed down.
-	 *  @param e The KeyEvent containing the key that was released. */
+	 *  @param e The KeyEvent containing the key that was rseleased. */
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int key = e.getKeyCode();
@@ -301,11 +313,6 @@ public class Controller implements KeyListener {
 		public void run() {
 			if(model.getGamePhase()==GamePhase.NORMAL)
 				model.spawnLitter();
-			
-		
-		
-			
 		}
 	}
-	
 }
