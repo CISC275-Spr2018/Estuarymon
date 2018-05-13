@@ -65,9 +65,9 @@ public class View extends JPanel{
 	/** The status of the player, i.e.&nbdp;idle, moving, etc. */
 	private static PlayerStatus playerStatus = PlayerStatus.IDLE;
 	/** The x location of the crab in world coordinates */
-	private static int crabXLoc = 0;
+	private static int crabXLoc = 200;
 	/** The y location of the crab in world coordinates */
-	private static int crabYLoc = 0;
+	private static int crabYLoc = 400;
 	
 	/** The current direction of the player */
 	private static Direction playerDirection = Direction.EAST;
@@ -98,13 +98,18 @@ public class View extends JPanel{
 	
 	/**Gamestate variable that represents the current stage of the tutorial the player is at */
 	GameState tutorialState = GameState.TUTORIAL_SIGNALTRASH;
-
+	
 	/** A Boolean to decide if the trash bin is in the glowing deposit state */
 	private boolean tGlow = false;
 	/** A Boolean to decide if the recycling bin is in the glowing deposit state */
 	private boolean rGlow = false;
 	/**river onmap**/
 	private River river = new River(0,0,0,0);
+	
+	/** A long representing when the game started in order to draw the truck timer in the correct spot*/
+	private long startTime;
+	/** A long representing when the game should end in order to draw the truck timer in the correct spot*/
+	private int endTime;
 	
 	/** Boolean that determines whether the arrow key prompt should be shown on screen. */
 	private boolean arrowKeyPrompt = false;
@@ -149,9 +154,20 @@ public class View extends JPanel{
 		Sprite.incrementFrameCounter();
 		// Draw the background
 		drawImage(g, Sprite.ID.BACKGROUND, 0, 0);
-		// Draw receptacles
-		// Draw all plants
 		drawImage(g, Sprite.ID.RIVER, river.getXLocation(), river.getYLocation());
+		
+		drawImage(g, Sprite.ID.REDPATH,0,WORLD_HEIGHT - 64);
+		drawImage(g,Sprite.ID.FLAG,WORLD_WIDTH -128, WORLD_HEIGHT - 164);
+		int truckX;
+		if(startTime == - 1) {
+			truckX = 0;
+		}
+		else {
+			truckX = (int)(Math.floor(((System.currentTimeMillis()-startTime)/(double)endTime) *(WORLD_WIDTH-128)));
+		}
+		drawImage(g, Sprite.ID.GARBAGETRUCK,truckX,WORLD_HEIGHT - 128);
+		
+		// Draw all plants
 		for(Plant plant : plants) 
 		{
 			if(plant.health < 100 && plant.health != 0) // If decaying...
@@ -167,8 +183,8 @@ public class View extends JPanel{
 				drawImage(g, Sprite.ID.DIRT, plant.getXLocation(), plant.getYLocation());
 			}
 		}
-	
 		
+		//Draw Receptacles
 		if(tGlow) {
 			drawImage(g,Sprite.ID.TRASHGLOW,0,Receptacle.trashYpos);
 		}
@@ -184,10 +200,9 @@ public class View extends JPanel{
 		
 		
 		//traverse through litter set and draw them, had to make a copy of litter set everytime to avoid ConcurrentModificationExceptions.
-		
+				
 		for(ArrayList<Integer> arr: new HashSet<ArrayList<Integer>>(this.litterAttrSet))
 			drawImage(g,getSpriteID(arr.get(3),arr.get(2)),arr.get(0), arr.get(1));
-
 		// Draw the crab
 		drawImage(g, Sprite.ID.CRAB, crabXLoc, crabYLoc);
 		// Draw the player
@@ -200,6 +215,7 @@ public class View extends JPanel{
 		if(hasLitter) {
 			drawImage(g,getSpriteID(pickedUpAttr.get(1),pickedUpAttr.get(0)),10,10);
 		}
+		
 		
 		if(arrowKeyPrompt)
 			drawImage(g, Sprite.ID.ARROWKEYS, 240,200);
@@ -381,9 +397,11 @@ public class View extends JPanel{
 	 * @param plants the array of plants in the game
 	 * @param tVictory Whether the trash bin should be glowing
 	 * @param rVictory Whether the recycle bin should be glowing
+	 * @param startTime When the game began
+	 * @param endTime When the truck visual timer should end
 	 * @return None. 
 	 */
-	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,ArrayList<Integer> pickedUpAttr,boolean hasLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory,River river, GameState tutorialState, HashSet<ArrayList<Integer>> litterAttrSet, boolean arrowKeyPrompt,boolean hoverLitter) {
+	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,ArrayList<Integer> pickedUpAttr,boolean hasLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory, River river, GameState tutorialState, HashSet<ArrayList<Integer>> litterAttrSet, boolean arrowKeyPrompt,boolean hoverLitter, long startTime, int endTime){
 		//Updating crab and player locations
 		playerXLoc = playerX;
 		playerYLoc = playerY;
@@ -396,8 +414,7 @@ public class View extends JPanel{
 		this.score = score;
 		tGlow = tVictory;
 		rGlow = rVictory;
-		
-		
+
 		this.tutorialState = tutorialState;
 		this.litterAttrSet = litterAttrSet;
 		
@@ -405,6 +422,8 @@ public class View extends JPanel{
 		this.hasLitter = hasLitter;
 		this.arrowKeyPrompt = arrowKeyPrompt;
 		this.hoverLitter = hoverLitter;
+		this.startTime = startTime;
+		this.endTime = endTime;
 		frame.repaint();
 	}
 	
