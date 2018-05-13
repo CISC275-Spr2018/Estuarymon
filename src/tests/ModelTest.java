@@ -6,8 +6,9 @@ import java.awt.Rectangle;
 import org.junit.jupiter.api.Test;
 
 import MVC.Controller;
-import MVC.GameState;
+import MVC.GamePhase;
 import MVC.Model;
+import MVC.TutorialState;
 import MVC.View;
 import MapObjects.Animal;
 import MapObjects.Interactable;
@@ -400,7 +401,7 @@ class ModelTest {
 	@Test
 	void testGetGameState() {
 		Model model = new Model(1000,1000);
-		assertTrue(model.getGameState()==GameState.TUTORIAL);
+		assertTrue(model.getGamePhase()==GamePhase.TITLE_SCREEN);
 	}
 	
 	@Test
@@ -418,20 +419,21 @@ class ModelTest {
 	@Test
 	void testGetTutorialState() {
 		Model model = new Model(1000,1000);
-		assertTrue(model.getTutorialState()==GameState.TUTORIAL_SPAWNTRASH);
+		model.startTutorial();
+		assertTrue(model.getTutorialState()==TutorialState.SPAWNTRASH);
 	}
 	
 	@Test
 	void testIsArrowKeyPrompt() {
 		Model model = new Model(1000,1000);
-		assertTrue(model.isArrowKeyPrompt() == true);
+		assertTrue(model.isArrowKeyPrompt() == false);
 	}
 	
 	@Test
 	void testIsArrowKeyPromptFalse() {
 		Model model = new Model(1000,1000);
 		model.getPlayer().setXLocation(0);
-		model.setTutorialState(GameState.TUTORIAL_SIGNALTRASH);
+		model.setTutorialState(TutorialState.SIGNALTRASH);
 		model.checkTutorialStates();
 		assertTrue(model.isArrowKeyPrompt() == false);
 	}
@@ -466,92 +468,92 @@ class ModelTest {
 	@Test
 	void testCheckTutorialStatesSpawnTrash() {
 		Model model = new Model(1000,1000);
-		model.setTutorialState(GameState.TUTORIAL_SPAWNTRASH);
+		model.setTutorialState(TutorialState.SPAWNTRASH);
 		model.checkTutorialStates();
-		assertTrue(model.getTutorialState()==GameState.TUTORIAL_SIGNALTRASH);
+		assertTrue(model.getTutorialState()==TutorialState.SIGNALTRASH);
 		
 	}
 	
 	@Test 
 	void testCheckTutorialStatesSignalTrash() {
 		Model model = new Model(1000,1000);
-		model.setTutorialState(GameState.TUTORIAL_SIGNALTRASH);
+		model.setTutorialState(TutorialState.SIGNALTRASH);
 		model.setHasLitter(true);
 		model.checkTutorialStates();
-		assertTrue(model.getTutorialState()==GameState.TUTORIAL_SIGNALTRASHCAN);
+		assertTrue(model.getTutorialState()==TutorialState.SIGNALTRASHCAN);
 	}
 	
 	@Test
 	void testCheckTutorialStatesSignalTrashCan() {
 		Model model = new Model(1000,1000);
-		model.setTutorialState(GameState.TUTORIAL_SIGNALTRASHCAN);
+		model.setTutorialState(TutorialState.SIGNALTRASHCAN);
 		model.setTrashVictory(true);
 		model.checkTutorialStates();
-		assertTrue(model.getTutorialState() == GameState.TUTORIAL_SPAWNRECYCLABLE);
+		assertTrue(model.getTutorialState() == TutorialState.SPAWNRECYCLABLE);
 	}
 	
 	
 	@Test
 	void testCheckTutorialStatesSpawnRec() {
 		Model model = new Model(1000,1000);
-		model.setTutorialState(GameState.TUTORIAL_SPAWNRECYCLABLE);
+		model.setTutorialState(TutorialState.SPAWNRECYCLABLE);
 		model.checkTutorialStates();
-		assertTrue(model.getTutorialState()==GameState.TUTORIAL_SIGNALRECYCLABLE);
+		assertTrue(model.getTutorialState()==TutorialState.SIGNALRECYCLABLE);
 	}
 	
 	@Test 
 	void testCheckTutorialStatesSignalRecyclable() {
 		Model model = new Model(1000,1000);
-		model.setTutorialState(GameState.TUTORIAL_SIGNALRECYCLABLE);
+		model.setTutorialState(TutorialState.SIGNALRECYCLABLE);
 		model.setHasLitter(true);
 		model.checkTutorialStates();
-		assertTrue(model.getTutorialState()==GameState.TUTORIAL_SIGNALRECYCLINGBIN);
+		assertTrue(model.getTutorialState()==TutorialState.SIGNALRECYCLINGBIN);
 	}
 	
 	@Test
 	void testCheckTutorialStatesSignalRecBin() {
 		Model model = new Model(1000,1000);
-		model.setTutorialState(GameState.TUTORIAL_SIGNALRECYCLINGBIN);
+		model.setTutorialState(TutorialState.SIGNALRECYCLINGBIN);
 		model.setRecycleVictory(true);
 		model.checkTutorialStates();
-		assertTrue(model.getTutorialState() == GameState.TUTORIAL_DAMAGEPLANT);
+		assertTrue(model.getTutorialState() == TutorialState.DAMAGEPLANT);
 	}
 	
 	@Test
 	void testCheckTutorialStatesDamagePlant() {
 		Model model = new Model(1000,1000);
-		model.setTutorialState(GameState.TUTORIAL_DAMAGEPLANT);
+		model.setTutorialState(TutorialState.DAMAGEPLANT);
 		for(int i = 0;  i < 10; i++) {
 			model.checkTutorialStates();
 		}
-		assertTrue(model.getTutorialState() == GameState.TUTORIAL_SIGNALPLANT);
+		assertTrue(model.getTutorialState() == TutorialState.SIGNALPLANT);
 	}
 	
 	@Test
 	void testCheckTutorialStatesSignalPlant() {
 		Model model = new Model(1000,1000);
 		model.setPlantGrown(true);
-		model.setTutorialState(GameState.TUTORIAL_SIGNALPLANT);
+		model.setTutorialState(TutorialState.SIGNALPLANT);
 		model.checkTutorialStates();
-		assertTrue(model.getTutorialState() == GameState.TUTORIAL_CRABEATLITTER);
+		assertTrue(model.getTutorialState() == TutorialState.CRABEATLITTER);
 	}
 	
 	@Test
 	void testCheckTutorialStatesCrabEatLitter() {
 		Model model = new Model(1000,1000);
 		model.setAnimalAteLitter(true);
-		model.setTutorialState(GameState.TUTORIAL_CRABEATLITTER);
+		model.setTutorialState(TutorialState.CRABEATLITTER);
 		model.checkTutorialStates();
-		assertTrue(model.getGameState() == GameState.REGULARGAME);
+		assertTrue(model.getGamePhase() == GamePhase.NORMAL);
 	}
 	
 	@Test
 	void testCheckTutorialStatesCrabEatLitterNoChange() {
 		Model model = new Model(1000,1000);
 		model.setAnimalAteLitter(false);
-		model.setTutorialState(GameState.TUTORIAL_CRABEATLITTER);
+		model.setTutorialState(TutorialState.CRABEATLITTER);
 		model.checkTutorialStates();
-		assertTrue(model.getTutorialState() == GameState.TUTORIAL_CRABEATLITTER);
+		assertTrue(model.getTutorialState() == TutorialState.CRABEATLITTER);
 		
 	}
 	
@@ -565,8 +567,8 @@ class ModelTest {
 	@Test 
 	void testSetGameState() {
 		Model model = new Model(1000,1000);
-		model.setGameState(GameState.TUTORIAL);
-		assertTrue(model.getGameState() == GameState.TUTORIAL);
+		model.setGamePhase(GamePhase.TITLE_SCREEN);
+		assertTrue(model.getGamePhase() == GamePhase.TITLE_SCREEN);
 	}
 	
 	

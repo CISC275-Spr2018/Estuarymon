@@ -151,13 +151,13 @@ public class Model implements java.io.Serializable{
 		this.recycleVictory = recycleVictory;
 	}
 	public void setPlantGrown(boolean plantGrown) {
-		this.plantGrown = plantGrown;
+		this.tutorialPlantGrown = plantGrown;
 	}
 	public boolean isAnimalAteLitter() {
-		return animalAteLitter;
+		return tutorialAnimalAteLitter;
 	}
 	public void setAnimalAteLitter(boolean animalAteLitter) {
-		this.animalAteLitter = animalAteLitter;
+		this.tutorialAnimalAteLitter = animalAteLitter;
 	}
 	public HashSet<Litter> getLitterSet() {
 		return litterSet;
@@ -876,6 +876,16 @@ public class Model implements java.io.Serializable{
 	public GamePhase getGamePhase() {
 		return this.gamePhase;
 	}
+	
+	/**
+	 * Sets the game phase of the Model. 
+	 * 
+	 * @param gp The game phase to be set to the Model. 
+	 * @return 
+	 */
+	public void setGamePhase(GamePhase gp) {
+		this.gamePhase = gp;
+	}
 
 	/** Sets the last picked up litter to the parameter
 	 *  @param l The new Litter
@@ -907,7 +917,7 @@ public class Model implements java.io.Serializable{
 		this.tutorialState = TutorialState.SPAWNTRASH;
 		this.tutorialPlantGrown = false;
 		this.tutorialAnimalAteLitter = false;
-		this.tutorialArrowKeyPrompt = false;
+		this.tutorialArrowKeyPrompt = true;
 		this.tutorialHoverLitter = false;
 	}
 
@@ -933,7 +943,6 @@ public class Model implements java.io.Serializable{
 		this.crabDirection = 3;
 		this.score = 0;
 		this.pickedUp = null;
-		this.animalEatenLitter = null;
 		this.animalXIncr = 4;
 		this.animalYIncr = 4;
 		for(Plant p : this.plants) {
