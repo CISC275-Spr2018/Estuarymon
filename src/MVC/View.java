@@ -97,7 +97,7 @@ public class View extends JPanel{
 	private HashSet<Litter> litterSet = new HashSet<Litter>();
 	
 	/**Gamestate variable that represents the current stage of the tutorial the player is at */
-	GameState tutorialState = GameState.TUTORIAL_SIGNALTRASH;
+	TutorialState tutorialState = TutorialState.SIGNALTRASH;
 
 	/** A Boolean to decide if the trash bin is in the glowing deposit state */
 	private boolean tGlow = false;
@@ -204,6 +204,7 @@ public class View extends JPanel{
 				break;
 			case TUTORIAL:
 				this.drawLitterContainerOverlay(g);
+				this.drawTutorialOverlays(g);
 				break;
 			case NORMAL:
 				this.drawLitterContainerOverlay(g);
@@ -222,13 +223,15 @@ public class View extends JPanel{
 		if(hasLitter) {
 			drawImage(g,getSpriteID(pickedUpAttr.get(1),pickedUpAttr.get(0)),10,10);
 		}
-		
+	}
+
+	private void drawTutorialOverlays(Graphics g) {
 		if(arrowKeyPrompt)
 			drawImage(g, Sprite.ID.ARROWKEYS, 240,200);
-		
+
 		switch(this.tutorialState) {
-		case TUTORIAL_SIGNALTRASH:
-		case TUTORIAL_SIGNALRECYCLABLE:
+		case SIGNALTRASH:
+		case SIGNALRECYCLABLE:
 			if(hoverLitter) {
 				drawImage(g, Sprite.ID.SPACEKEY,playerXLoc, playerYLoc - 20);
 			}
@@ -236,16 +239,15 @@ public class View extends JPanel{
 				drawImage(g, Sprite.ID.ARROW, 360,400);
 			}
 			break;
-		case TUTORIAL_SIGNALPLANT:
+		case SIGNALPLANT:
 			drawImage(g, Sprite.ID.ARROW,plants.get(0).getXLocation(), 0);
 			break;
-		case TUTORIAL_SIGNALTRASHCAN:
+		case SIGNALTRASHCAN:
 			drawImage(g, Sprite.ID.ARROW, 50, Receptacle.trashYpos - 60);
 			break;
-		case TUTORIAL_SIGNALRECYCLINGBIN:
+		case SIGNALRECYCLINGBIN:
 			drawImage(g, Sprite.ID.ARROW, 50, Receptacle.recyclingYpos - 60);
 			break;
-				
 			
 		}
 	}
@@ -449,7 +451,7 @@ public class View extends JPanel{
 	 * @param rVictory Whether the recycle bin should be glowing
 	 * @return None. 
 	 */
-	public void update(GamePhase gamePhase, int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,ArrayList<Integer> pickedUpAttr,boolean hasLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory,River river, GameState tutorialState, HashSet<ArrayList<Integer>> litterAttrSet, boolean arrowKeyPrompt,boolean hoverLitter) {
+	public void update(GamePhase gamePhase, int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,ArrayList<Integer> pickedUpAttr,boolean hasLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory,River river, TutorialState tutorialState, HashSet<ArrayList<Integer>> litterAttrSet, boolean arrowKeyPrompt,boolean hoverLitter) {
 		//Updating crab and player locations
 		this.gamePhase = gamePhase;
 		playerXLoc = playerX;

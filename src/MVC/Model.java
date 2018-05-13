@@ -38,10 +38,10 @@ public class Model implements java.io.Serializable{
 	/** The only controllable object in the game. 
 	 *  @see Player */
 	private Player player;
-	/** Current state of the overall game */
-	private GameState gameState = GameState.TUTORIAL;
+	/** The current game phase */
+	private GamePhase gamePhase = GamePhase.TITLE_SCREEN;
 	/** Current state of the tutorial */
-	private GameState tutorialState = GameState.TUTORIAL_SPAWNTRASH;
+	private TutorialState tutorialState = TutorialState.SPAWNTRASH;
 	
 	/** Whether the Player is carrying {@link Litter}. */
 	private boolean hasLitter = false;
@@ -103,8 +103,6 @@ public class Model implements java.io.Serializable{
 	/**Random index of next plant**/
 	private int randPlant;
 
-	/** The current game phase */
-	private GamePhase gamePhase = GamePhase.TITLE_SCREEN;
 	/** Boolean variable that represents whether the player has planted the plant that despawns in the tutorial */
 	private boolean plantGrown = false;
 	/** Boolean variable that represents whether the animal has eaten the Litter in the tutorial */
@@ -195,31 +193,12 @@ public class Model implements java.io.Serializable{
 	 * 
 	 * @return
 	 */
-	public GameState getTutorialState() {
+	public TutorialState getTutorialState() {
 		return tutorialState;
 	}
 
-	public void setTutorialState(GameState tutorialState) {
+	public void setTutorialState(TutorialState tutorialState) {
 		this.tutorialState = tutorialState;
-	}
-	
-	/**
-	 * Returns the current state of the game (regular or tutorial mode)
-	 * 
-	 * @param
-	 * @return The current state of the game. 
-	 */
-	public GameState getGameState() {
-		return gameState;
-	}
-	/**
-	 * Sets the current state of the game. 
-	 * 
-	 * @param gameState The game state the game will be set to. 
-	 * @return None. 
-	 */
-	public void setGameState(GameState gameState) {
-		this.gameState = gameState;
 	}
 
 	/**
@@ -315,6 +294,8 @@ public class Model implements java.io.Serializable{
 	 *  @return
 	 *   */
 	public void updateModel() {
+		if(!this.gamePhase.isPlayable()) return;
+
 		if(playerMove) this.player.move();
 		this.checkCollision();
 		checkCollision();
@@ -325,7 +306,7 @@ public class Model implements java.io.Serializable{
 			recycleVictory = false;
 		}
 		
-		if(gameState == GameState.TUTORIAL) {
+		if(gamePhase == GamePhase.TUTORIAL) {
 			checkTutorialStates();
 		}
 		else {
@@ -342,50 +323,50 @@ public class Model implements java.io.Serializable{
 	 */
 	public void checkTutorialStates() {
 		switch(tutorialState) {
-		case TUTORIAL_SPAWNTRASH:
+		case SPAWNTRASH:
 			//
 			spawnLitter(LitterType.TRASH);
-			this.tutorialState = GameState.TUTORIAL_SIGNALTRASH;
+			this.tutorialState = TutorialState.SIGNALTRASH;
 			break;
-		case TUTORIAL_SIGNALTRASH:
+		case SIGNALTRASH:
 			if(player.getXLocation() != 240 || player.getYLocation() != 240)
 				this.arrowKeyPrompt = false;
 			if(hasLitter)
-				this.tutorialState = GameState.TUTORIAL_SIGNALTRASHCAN;
+				this.tutorialState = TutorialState.SIGNALTRASHCAN;
 			break;
-		case TUTORIAL_SIGNALTRASHCAN:
+		case SIGNALTRASHCAN:
 			if(trashVictory) 
-				this.tutorialState = GameState.TUTORIAL_SPAWNRECYCLABLE;
+				this.tutorialState = TutorialState.SPAWNRECYCLABLE;
 			break;
-		case TUTORIAL_SPAWNRECYCLABLE:
+		case SPAWNRECYCLABLE:
 			spawnLitter(LitterType.RECYCLABLE);
-			this.tutorialState = GameState.TUTORIAL_SIGNALRECYCLABLE;
+			this.tutorialState = TutorialState.SIGNALRECYCLABLE;
 			break;
-		case TUTORIAL_SIGNALRECYCLABLE:
+		case SIGNALRECYCLABLE:
 			if(hasLitter)
-				this.tutorialState = GameState.TUTORIAL_SIGNALRECYCLINGBIN;
+				this.tutorialState = TutorialState.SIGNALRECYCLINGBIN;
 			break;
-		case TUTORIAL_SIGNALRECYCLINGBIN:
+		case SIGNALRECYCLINGBIN:
 			if(recycleVictory)
-				this.tutorialState = GameState.TUTORIAL_DAMAGEPLANT;
+				this.tutorialState = TutorialState.DAMAGEPLANT;
 			break;
-		case TUTORIAL_DAMAGEPLANT:
+		case DAMAGEPLANT:
 			this.damagePlant();
 			if(plants.get(this.randPlant).getHealth() == 0) {
-				this.tutorialState = GameState.TUTORIAL_SIGNALPLANT;
+				this.tutorialState = TutorialState.SIGNALPLANT;
 			}
 			break;
-		case TUTORIAL_SIGNALPLANT:
+		case SIGNALPLANT:
 			if(this.plantGrown) {
 				spawnLitter(LitterType.RECYCLABLE);
-				this.tutorialState = GameState.TUTORIAL_CRABEATLITTER;
+				this.tutorialState = TutorialState.CRABEATLITTER;
 			}
 			break;
-		case TUTORIAL_CRABEATLITTER:
+		case CRABEATLITTER:
 			if(!this.animalAteLitter)
 				updatingTutorialAnimalLocation();
 			else
-				this.gameState = GameState.REGULARGAME;
+				this.gamePhase = GamePhase.NORMAL;
 			//decrease score, show animal sick etc. 
 			
 			break;

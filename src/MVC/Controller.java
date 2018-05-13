@@ -94,7 +94,7 @@ public class Controller implements KeyListener {
 		 */
 		public void run()
 		{
-			if(model.getGameState()==GameState.REGULARGAME)
+			if(model.getGamePhase()==GamePhase.NORMAL)
 				model.damagePlant();
 
 		}
@@ -299,7 +299,7 @@ public class Controller implements KeyListener {
 		 * @return None
 		 */
 		public void run() {
-			if(model.getGameState()==GameState.REGULARGAME)
+			if(model.getGamePhase()==GamePhase.NORMAL)
 				model.spawnLitter();
 			
 		
