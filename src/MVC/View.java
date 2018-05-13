@@ -449,6 +449,7 @@ public class View extends JPanel{
 	 */
 	public void update(GamePhase gamePhase, int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,ArrayList<Integer> pickedUpAttr,boolean hasLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory,River river, GameState tutorialState, HashSet<ArrayList<Integer>> litterAttrSet, boolean arrowKeyPrompt,boolean hoverLitter) {
 		//Updating crab and player locations
+		this.gamePhase = gamePhase;
 		playerXLoc = playerX;
 		playerYLoc = playerY;
 		playerDirection = dir;
