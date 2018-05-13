@@ -33,6 +33,7 @@ import MapObjects.Litter;
 import MapObjects.Plant;
 import MapObjects.Receptacle;
 import Player.Direction;
+import Player.Player;
 import Player.PlayerStatus;
 
 /**
@@ -97,6 +98,9 @@ public class View extends JPanel{
 	private boolean tGlow = false;
 	/** A Boolean to decide if the recycling bin is in the glowing deposit state */
 	private boolean rGlow = false;
+	
+	private int playerHealth = 0;
+	private int animalHealth = 0;
 
 	/** Creates a new View, places it in a new JPanel, arranges everything, and makes it visible. */
 	public View() {	
@@ -174,12 +178,38 @@ public class View extends JPanel{
 		// Draw the player
 		drawImage(g, getPlayerSprite(), playerXLoc, playerYLoc);
 		// Draw the score
-		drawImage(g, Sprite.ID.SCORESTAR, WORLD_WIDTH-100, 0);
-		drawString(g, Integer.toString(score), 100, WORLD_WIDTH-100, 65);
+//		drawImage(g, Sprite.ID.SCORESTAR, WORLD_WIDTH-100, 0);
+//		drawString(g, Integer.toString(score), 100, WORLD_WIDTH-100, 65);
 		// Draw the litter in the box
 		drawImage(g, Sprite.ID.LITTERFRAME,0,0);
 		if(hasLitter) {
 			drawImage(g,getSpriteID(pickedUpLitter),10,10);
+		}
+		if(playerHealth <= 120 && playerHealth > 90) {
+			drawImage(g, Sprite.ID.HEART, WORLD_WIDTH-100, 0);
+			drawImage(g, Sprite.ID.HEART, WORLD_WIDTH-175, 0);
+			drawImage(g, Sprite.ID.HEART, WORLD_WIDTH-250, 0);
+			drawImage(g, Sprite.ID.HEART, WORLD_WIDTH-325, 0);
+		}else if(playerHealth <= 90 && playerHealth > 60) {
+			drawImage(g, Sprite.ID.HEART, WORLD_WIDTH-100, 0);
+			drawImage(g, Sprite.ID.HEART, WORLD_WIDTH-175, 0);
+			drawImage(g, Sprite.ID.HEART, WORLD_WIDTH-250, 0);
+		}else if(playerHealth <= 60 && playerHealth > 30) {
+			drawImage(g, Sprite.ID.HEART, WORLD_WIDTH-100, 0);
+			drawImage(g, Sprite.ID.HEART, WORLD_WIDTH-175, 0);
+		}else if(playerHealth <= 30 && playerHealth > 0) {
+			drawImage(g, Sprite.ID.HEART, WORLD_WIDTH-100, 0);
+		}
+		
+		if(animalHealth <= 90 && animalHealth > 60) {
+			drawImage(g, Sprite.ID.CRABHEART, WORLD_WIDTH-130, 60);
+			drawImage(g, Sprite.ID.CRABHEART, WORLD_WIDTH-215, 60);
+			drawImage(g, Sprite.ID.CRABHEART, WORLD_WIDTH-300, 60);
+		}else if(animalHealth <= 60 && animalHealth > 30) {
+			drawImage(g, Sprite.ID.CRABHEART, WORLD_WIDTH-130, 60);
+			drawImage(g, Sprite.ID.CRABHEART, WORLD_WIDTH-215, 60);
+		}else if(animalHealth <= 30 && animalHealth > 0) {
+			drawImage(g, Sprite.ID.CRABHEART, WORLD_WIDTH-130, 60);
 		}
 	}
 
@@ -338,7 +368,7 @@ public class View extends JPanel{
 	 * @param rVictory Whether the recycle bin should be glowing
 	 * @return None. 
 	 */
-	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory) {
+	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory, int playerHealth, int animalHealth) {
 		//Updating crab and player locations
 		playerXLoc = playerX;
 		playerYLoc = playerY;
@@ -356,6 +386,9 @@ public class View extends JPanel{
 		litterImgMap.remove(animalEatenLitter);
 		this.pickedUpLitter = playerPickedUp;
 		this.hasLitter = hasLitter;
+		
+		this.playerHealth = playerHealth;
+		this.animalHealth = animalHealth;
 		frame.repaint();
 	}
 	

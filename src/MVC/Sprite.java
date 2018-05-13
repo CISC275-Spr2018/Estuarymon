@@ -75,9 +75,9 @@ public class Sprite {
 		/** A box intended to house a type of litter */
 		LITTERFRAME("MapObjects/litterbox.png", 75,75),
 		/** A plant */
-		PLANT("MapObjects/azalea.png", 100, 100),
+		PLANT("MapObjects/014.png", 100, 100),
 		/** A decaying plant */
-		DECAY_PLANT("MapObjects/dazal.png", 100, 100),
+		DECAY_PLANT("MapObjects/d014.png", 100, 100),
 		/** A banana peel */
 		BANANAPEEL("MapObjects/bananaSkin.png",40,40),
 		/** A soda can */
@@ -93,7 +93,9 @@ public class Sprite {
 		/** A recycle bin */
 		RECYCLEBIN("MapObjects/recycling-bin.png",128,128),
 		/** A glowing recycle bin */
-		RECYCLEGLOW("MapObjects/recyclegreen.png",128,128);
+		RECYCLEGLOW("MapObjects/recyclegreen.png",128,128),
+		HEART("MapObjects/FlatIcon-052.png", 75, 75),
+		CRABHEART("MapObjects/crablife.png", 125, 75);
 		
 		// These values are set to the enum instances. When a Sprite object is instantiated, it copies these values.
 

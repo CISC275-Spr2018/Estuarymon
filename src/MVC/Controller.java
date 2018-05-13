@@ -41,6 +41,8 @@ public class Controller implements KeyListener {
 	/** The delay between game frames */
 	private static final int DRAW_DELAY = 1000/30; // 30fps
 	
+	private long num = 0;
+	
 	/** The Action to run every frame. Simply calls the {@link #step} method. */
 	private final Action stepAction = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
@@ -55,7 +57,8 @@ public class Controller implements KeyListener {
 	 */
 	private void step() {
 		// increment the x and y coordinates, alter direction if necessary
-		model.updateModel();
+		num += 1;
+		model.updateModel(num);
 		view.update(		
 			model.getPlayer().getXLocation(),
 			model.getPlayer().getYLocation(),
@@ -67,7 +70,7 @@ public class Controller implements KeyListener {
 			model.getPlayer().getHasLitter(),
 			model.getAnimalEatenLitter(),
 			model.getScore(),
-			model.getPlants(),model.getTrashVictory(),model.getRecycleVictory());
+			model.getPlants(),model.getTrashVictory(),model.getRecycleVictory(), model.getPlayer().getHealth(), model.getAnimal().getHealth());
 	}
 	
 	/**

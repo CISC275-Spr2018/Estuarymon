@@ -21,6 +21,7 @@ public class Animal extends Interactable implements java.io.Serializable {
 	private static int imageHeight = 70;
 	/** Width of the Animal */
 	private static int imageWidth = 90;
+	private static int health = 90;
 
 	/**
 	 * Constructor for the animal object. The animal originally spawns at the x
@@ -62,6 +63,14 @@ public class Animal extends Interactable implements java.io.Serializable {
 	 */
 	public void setDirection(Direction direction) {
 		this.curDir = direction;
+	}
+	
+	public static int getHealth() {
+		return health;
+	}
+
+	public static void loseHealth() {
+		Animal.health -= 30;
 	}
 
 }
