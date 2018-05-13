@@ -53,7 +53,7 @@ public class Model implements java.io.Serializable{
 	private int crabDirection;
 
 	/** The amount of health to detract from the Plant every time it is damaged */
-	private static final int plantDamage = 20;
+	private final int plantDamage = 20;
 	/** The initial amount of health of each Plant */
 	private static final int plantHealth = 100;
 
@@ -138,7 +138,7 @@ public class Model implements java.io.Serializable{
 		//fills plant array
 		for(int i = 0; i < 4; i++)
 		{
-			plants.add(new Plant(plantHealth, river.getXLocation() - 200, 50+(WIDTH / 90) + count));//sets location of plants
+			plants.add(new Plant(plantHealth, river.getXLocation() - 120, 50+(WIDTH / 90) + count));//sets location of plants
 			count = count + 200;
 		}
 
@@ -605,18 +605,37 @@ public class Model implements java.io.Serializable{
 		return river;
 	}
 	
+	/**
+	 * Method called to flood the river onto land
+	 * 
+	 * @param
+	 * @return 
+	 */
 	public void floodRiver()
 	{
 		if(river.getXLocation() > WIDTH - 800)
 			river.addXLocation(-5);
 	}
 	
+	/**
+	 * Method called to return river to normal state
+	 * 
+	 * @param
+	 * @return 
+	 */
 	public void recedeRiver()
 	{
 		if(river.getXLocation() < WIDTH - 200)
 			river.addXLocation(5);
 	}
 
+	
+	/**
+	 * Method called to decide if all plants are gone and whether to flood the river
+	 * 
+	 * @param
+	 * @return 
+	 */
 	public void checkPlants()
 	{
 		int sum = 0;
