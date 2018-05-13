@@ -784,6 +784,52 @@ class ModelTest {
 		assertTrue(model.getModelStatus()==true);
 	}
 	
+	@Test
+	void testStartTitleScreen() {
+		Model model = new Model(1000,1000);
+		model.startTitleScreen();
+		assertTrue(model.getGamePhase()==GamePhase.TITLE_SCREEN);
+	}
+	
+	@Test
+	void testStartEndGame() {
+		Model model = new Model(1000,1000);
+		model.startEndGame();
+		assertTrue(model.getGamePhase()==GamePhase.GAME_END);
+	}
+	
+	@Test
+	void testAlterVelocityNormal() {
+		Model model = new Model(1000,1000);
+		model.startNormal();
+		model.normalAlterPlayerVelocity(1, 1);
+		assertTrue(model.getPlayer().getDx()==1&&model.getPlayer().getDy()==1);
+	}
+	
+	@Test
+	void testUpdateModelTrashVictory() {
+		Model model = new Model(1000,1000);
+		model.setTrashVictory(true);
+		model.setGamePhase(GamePhase.NORMAL);
+		for(int i = 0; i < 15; i++) {
+			model.updateModel();
+		}
+		
+		assertTrue(model.getTrashVictory()==false);
+	}
+	
+	@Test
+	void testUpdateModelRecVictory() {
+		Model model = new Model(1000,1000);
+		model.setRecycleVictory(true);
+		model.setGamePhase(GamePhase.NORMAL);
+		for(int i = 0; i < 15; i++) {
+			model.updateModel();
+		}
+		
+		assertTrue(model.getRecycleVictory()==false);
+	}
+	
 	
 	
 	

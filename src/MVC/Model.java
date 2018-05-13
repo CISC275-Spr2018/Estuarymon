@@ -322,7 +322,7 @@ public class Model implements java.io.Serializable{
 	 *  @return
 	 *   */
 	public void updateModel() {
-		if(!this.gamePhase.isPlayable()) return;
+		if(!this.gamePhase.isPlayable()) return; 
 
 		if(playerMove) this.player.move();
 		this.checkCollision();
