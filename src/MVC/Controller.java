@@ -67,6 +67,7 @@ public class Controller implements KeyListener {
 			model.isHasLitter(),
 			model.getScore(),
 			model.getPlants(),model.getTrashVictory(),model.getRecycleVictory(),
+			model.getRiver());
 			model.getTutorialState(),
 			model.getLitterAttrSet(),
 			model.isArrowKeyPrompt(),
@@ -250,4 +251,5 @@ public class Controller implements KeyListener {
 			
 		}
 	}
+	
 }

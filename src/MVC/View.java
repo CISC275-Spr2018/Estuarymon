@@ -32,6 +32,7 @@ import MVC.Sprite.ID;
 import MapObjects.Litter;
 import MapObjects.Plant;
 import MapObjects.Receptacle;
+import MapObjects.River;
 import Player.Direction;
 import Player.PlayerStatus;
 
@@ -102,6 +103,8 @@ public class View extends JPanel{
 	private boolean tGlow = false;
 	/** A Boolean to decide if the recycling bin is in the glowing deposit state */
 	private boolean rGlow = false;
+	/**river onmap**/
+	private River river;
 	
 	/** Boolean that determines whether the arrow key prompt should be shown on screen. */
 	private boolean arrowKeyPrompt = false;
@@ -146,8 +149,26 @@ public class View extends JPanel{
 		Sprite.incrementFrameCounter();
 		// Draw the background
 		drawImage(g, Sprite.ID.BACKGROUND, 0, 0);
-		
 		// Draw receptacles
+		// Draw all plants
+		drawImage(g, Sprite.ID.RIVER, river.getXLocation(), river.getYLocation());
+		for(Plant plant : plants) 
+		{
+			if(plant.health < 100 && plant.health != 0) // If decaying...
+			{
+				drawImage(g, Sprite.ID.DECAY_PLANT, plant.getXLocation(), plant.getYLocation());
+			}
+			else if(plant.health == 100) // If fully alive...
+			{
+				drawImage(g, Sprite.ID.PLANT, plant.getXLocation(), plant.getYLocation());
+			}
+			else
+			{
+				drawImage(g, Sprite.ID.DIRT, plant.getXLocation(), plant.getYLocation());
+			}
+		}
+	
+		
 		if(tGlow) {
 			drawImage(g,Sprite.ID.TRASHGLOW,0,Receptacle.trashYpos);
 		}
@@ -161,24 +182,8 @@ public class View extends JPanel{
 			drawImage(g,Sprite.ID.RECYCLEBIN,0,Receptacle.recyclingYpos);
 		}
 		
-		// Draw all plants
-		for(Plant plant : plants) 
-		{
-			if(plant.health < 100 && plant.health != 0) // If decaying...
-			{
-				drawImage(g, Sprite.ID.DECAY_PLANT, plant.getXLocation(), plant.getYLocation());
-			}
-			else if(plant.health == 100) // If fully alive...
-			{
-				drawImage(g, Sprite.ID.PLANT, plant.getXLocation(), plant.getYLocation());
-			}
-		}
-		
 		
 		//traverse through litter set and draw them, had to make a copy of litter set everytime to avoid ConcurrentModificationExceptions.
-		//for(Map.Entry<Litter, Sprite.ID>entry: new HashMap<Litter,Sprite.ID>(litterImgMap).entrySet()) {
-		//	drawImage(g,entry.getValue(), entry.getKey().getXLocation(), entry.getKey().getYLocation());
-		//}
 		
 		for(ArrayList<Integer> arr: new HashSet<ArrayList<Integer>>(this.litterAttrSet))
 			drawImage(g,getSpriteID(arr.get(3),arr.get(2)),arr.get(0), arr.get(1));
@@ -378,7 +383,7 @@ public class View extends JPanel{
 	 * @param rVictory Whether the recycle bin should be glowing
 	 * @return None. 
 	 */
-	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,ArrayList<Integer> pickedUpAttr,boolean hasLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory, GameState tutorialState, HashSet<ArrayList<Integer>> litterAttrSet, boolean arrowKeyPrompt,boolean hoverLitter) {
+	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,ArrayList<Integer> pickedUpAttr,boolean hasLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory, GameState tutorialState,River river, HashSet<ArrayList<Integer>> litterAttrSet, boolean arrowKeyPrompt,boolean hoverLitter) {
 		//Updating crab and player locations
 		playerXLoc = playerX;
 		playerYLoc = playerY;
@@ -387,9 +392,11 @@ public class View extends JPanel{
 		crabXLoc = crabX;
 		crabYLoc = crabY;
 		this.plants = plants;
+		this.river = river;
 		this.score = score;
 		tGlow = tVictory;
 		rGlow = rVictory;
+		
 		
 		this.tutorialState = tutorialState;
 		this.litterAttrSet = litterAttrSet;

@@ -7,8 +7,7 @@ package MapObjects;
  */
 public class Plant extends Interactable implements java.io.Serializable{
 	public int health = 0;
-	//public static Plant [] plants = new Plant[4];
-	public static int randPlant = (int) Math.floor(Math.random() * 4);
+	public int randPlant = (int) Math.floor(Math.random() * 4);
 	
 	/**Constructor for plant object
 	 * 

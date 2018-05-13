@@ -65,6 +65,10 @@ public class Sprite {
 		PLANT("MapObjects/azalea.png", 100, 100),
 		/** A decaying plant */
 		DECAY_PLANT("MapObjects/dazal.png", 100, 100),
+		/** spot of dirt where plant resided*/	
+		DIRT("MapObjects/dirtPatch.png", 100, 100),
+		/** spot of mud where plant resided*/	
+		MUD("MapObjects/mud.png", 100, 100),
 		/** A banana peel */
 		BANANAPEEL("MapObjects/bananaSkin.png",50,50),
 		/** A soda can */
@@ -81,6 +85,8 @@ public class Sprite {
 		RECYCLEBIN("MapObjects/recycling-bin.png",128,128),
 		/** A glowing recycle bin */
 		RECYCLEGLOW("MapObjects/recyclegreen.png",128,128),
+		/** Onscreen river*/
+		RIVER("MapObjects/river.png", View.WORLD_HEIGHT, View.WORLD_HEIGHT);
 		/** The arrow key prompts for the tutorial*/
 		ARROWKEYS("Tutorial/arrow_key.png",80,60),
 		/** The arrow prompt for the tutorial */
