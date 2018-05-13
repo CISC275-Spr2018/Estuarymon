@@ -191,6 +191,8 @@ public class View extends JPanel{
 				this.drawStartScreenText(g);
 				break;
 			case TUTORIAL:
+				this.drawLitterContainerOverlay(g);
+				break;
 			case NORMAL:
 				this.drawLitterContainerOverlay(g);
 				this.drawScoreOverlay(g);

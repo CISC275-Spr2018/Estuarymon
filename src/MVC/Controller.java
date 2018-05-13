@@ -39,6 +39,9 @@ public class Controller implements KeyListener {
 
 	/** The delay between game frames */
 	private static final int DRAW_DELAY = 1000/30; // 30fps
+
+	/** The stage of counting "cheat" typing */
+	private int cheatState = 0;
 	
 	/** The Action to run every frame. Simply calls the {@link #step} method. */
 	private final Action stepAction = new AbstractAction() {
@@ -215,13 +218,65 @@ public class Controller implements KeyListener {
 		}
 	}
 
-	/** Does nothing
+	/** 
 	 *  @param e Ignored
 	 */
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
+		char key = e.getKeyChar();
+		
+		if(this.cheatState != 5) {
+			switch(key) {
+			// Typing "cheat"
+			case 'c':
+				if(this.cheatState == 0) this.cheatState = 1;
+				else this.cheatState = 0;
+				break;
+			case 'h':
+				if(this.cheatState == 1) this.cheatState = 2;
+				else this.cheatState = 0;
+				break;
+			case 'e':
+				if(this.cheatState == 2) this.cheatState = 3;
+				else this.cheatState = 0;
+				break;
+			case 'a':
+				if(this.cheatState == 3) this.cheatState = 4;
+				else this.cheatState = 0;
+				break;
+			case 't':
+				if(this.cheatState == 4) this.cheatState = 5;
+				else this.cheatState = 0;
+				break;
+			default:
+				this.cheatState = 0;
+			}
+		} else {
+			// Actually run a cheat
+			System.out.println("Running cheat code "+key);
+			this.cheatState = 0;
 
+			switch(key) {
+			case 'T':
+				this.model.startTitleScreen();
+				break;
+			case 't':
+				this.model.startTutorial();
+				break;
+			case 'n':
+				this.model.startNormal();
+				break;
+			case 'r':
+				this.model.resetEverything();
+				break;
+			case 'e':
+				this.model.startEndGame();
+				break;
+			default:
+				System.out.println("Unrecognised cheat.");
+			}
+		}
 	}
 	
 	

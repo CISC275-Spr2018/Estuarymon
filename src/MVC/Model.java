@@ -557,11 +557,27 @@ public class Model implements java.io.Serializable{
 			this.getPlayer().alterVelocity(ddx, ddy);
 	}
 
-	/** Resets the entire game and does all setup necessary for the tutorial. */
-	private void startTutorial() {
+	/** Initializes the title screen */
+	public void startTitleScreen() {
 		this.resetEverything();
-		this.gamePhase = GamePhase.NORMAL;
+		this.gamePhase = GamePhase.TITLE_SCREEN;
+	}
+
+	/** Initializes the tutorial */
+	public void startTutorial() {
+		this.resetEverything();
+		this.gamePhase = GamePhase.TUTORIAL;
 		// TODO: Actually do tutorial stuff@
+	}
+
+	/** Moves to the Normal game state (does NOT reset!) */
+	public void startNormal() {
+		this.gamePhase = GamePhase.NORMAL;
+	}
+
+	/** Moves to the ending game state (does NOT reset!) */
+	public void startEndGame() {
+		this.gamePhase = GamePhase.GAME_END;
 	}
 
 	/** Resets everything to the 'initial game' state.
@@ -569,7 +585,7 @@ public class Model implements java.io.Serializable{
 	 *  Resets the Crab position.
 	 *  Resets all Plants' health.
 	 *  Removes all existing Litter */
-	private void resetEverything() {
+	public void resetEverything() {
 		this.player = new Player(0, 0, 165, 165);
 		this.crabDirection = 3;
 		this.score = 0;
