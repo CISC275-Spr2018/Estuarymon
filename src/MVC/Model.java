@@ -323,7 +323,7 @@ public class Model implements java.io.Serializable{
 		else {
 			updatingAnimalLocation();
 			checkPlants();
-			if(System.currentTimeMillis() - startTime >= endTimeMilli) {
+			if(startTime != -1 && (System.currentTimeMillis()) - startTime >= endTimeMilli) {
 				this.startEndGame();
 			}
 		}
@@ -380,7 +380,7 @@ public class Model implements java.io.Serializable{
 			if(!this.tutorialAnimalAteLitter)
 				updatingTutorialAnimalLocation();
 			else
-				this.gamePhase = GamePhase.NORMAL;
+				this.startNormal();
 			//decrease score, show animal sick etc. 
 			
 			break;
