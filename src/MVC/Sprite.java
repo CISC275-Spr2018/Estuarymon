@@ -42,6 +42,9 @@ public class Sprite {
 		//BACKGROUND("Map/Background.jpg", View.WORLD_WIDTH, View.WORLD_HEIGHT),
 
 
+		/** The Title Screen */
+		TITLE_SCREEN("overlays/titleScreen.png", View.WORLD_WIDTH*18/20, View.WORLD_HEIGHT*18/20),
+
 		/** Orc walkig north */
 		ORC_WALK_NORTH("orc/orc_forward_north.png", 165, 165, 10, 1),
 		/** Orc walking south */
@@ -78,6 +81,10 @@ public class Sprite {
 		PLANT("MapObjects/azalea.png", 100, 100),
 		/** A decaying plant */
 		DECAY_PLANT("MapObjects/dazal.png", 100, 100),
+		/** spot of dirt where plant resided*/	
+		DIRT("MapObjects/dirtPatch.png", 100, 100),
+		/** spot of mud where plant resided*/	
+		MUD("MapObjects/mud.png", 100, 100),
 		/** A banana peel */
 		BANANAPEEL("MapObjects/bananaSkin.png",40,40),
 		/** A soda can */
@@ -93,7 +100,21 @@ public class Sprite {
 		/** A recycle bin */
 		RECYCLEBIN("MapObjects/recycling-bin.png",128,128),
 		/** A glowing recycle bin */
-		RECYCLEGLOW("MapObjects/recyclegreen.png",128,128);
+		RECYCLEGLOW("MapObjects/recyclegreen.png",128,128),
+		/** Onscreen river*/
+		RIVER("MapObjects/river.png", View.WORLD_HEIGHT, View.WORLD_HEIGHT),
+		/** A garbage truck for timer  */
+		GARBAGETRUCK("Map/garbage-truck.png",128,128),   // <div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+		/** The path on which the garbage truck timer travels */ 
+		REDPATH("Map/Red-path.png",1500,60),
+		/** Flag marking the destination of the garbage truck */
+		FLAG("Map/finish-flag.png",128,128),
+		/** The arrow key prompts for the tutorial*/
+		ARROWKEYS("Tutorial/arrow_key.png",80,60),
+		/** The arrow prompt for the tutorial */
+		ARROW("Tutorial/arrow.png",40,60),
+		SPACEKEY("Tutorial/Key_space_Icon.png",60,50),
+		;
 		
 		// These values are set to the enum instances. When a Sprite object is instantiated, it copies these values.
 

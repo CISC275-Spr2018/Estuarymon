@@ -7,8 +7,7 @@ import MapObjects.Receptacle;
 
 /** A user-controlled character that can move around the screen and interact with other map objects */
 public class Player extends Interactable implements java.io.Serializable{
-	/** Whether the Player is carrying {@link Litter}. */
-	public static boolean hasLitter = false;
+
 	/** Horizontal movement direction. 
 	 *  <code>-1</code> for moving left,
 	 *  <code>0</code> for horizontally stable (initial value),
@@ -22,7 +21,7 @@ public class Player extends Interactable implements java.io.Serializable{
 	 */
 	private int dy = 0;
 	/** Movement speed */
-	private static final int SPEED = 10;
+	private static int SPEED = 10;
 	/** Movement direction.
 	 *  Gets recalculated when {@link #dx} and {@link #dy} are changed to match their behaviour. Initial value is EAST.
 	 */
@@ -43,27 +42,8 @@ public class Player extends Interactable implements java.io.Serializable{
 		// Set collision rectangle, 40px padding on each side
 		this.setRelativeCollisionRect(40, 40, rWidth - 80, rHeight - 80);
 	}
-
-	/**Returns a boolean depending on whether or not this player is currently holding a Litter object that needs to be disposed of. 
-	 * 
-	 * @param None
-	 * @return True if the player is holding a peice of Litter, false otherwise. 
-	 */
-	public boolean getHasLitter() {
-		return this.hasLitter;
-	}
 	
-	/**"Picks up" a Litter object the Player is colliding with. Removes the Litter from the Litter hashSet and sets Player.hasLitter to true 
-	 * 
-	 * @param l The Litter object being picked up 
-	 * @return The Litter object being picked up
-	 */
-	public Litter pickUpLitter(Litter l) {
-		System.out.println("Player pick up litter " + l.toString());
-		this.hasLitter = true;
-		Litter.litterSet.remove(l);
-		return l;
-	}
+	
 	/**
 	 * Method that restores a plants health as well as chooses a new plant to start fading. 
 	 * 
@@ -167,5 +147,16 @@ public class Player extends Interactable implements java.io.Serializable{
 	 */
 	public void setDirection(Direction d) {
 		this.direction = d;
+	}
+	
+	public void setSpeed(int speed)
+	{
+		this.SPEED = speed;
+	}
+
+	public void stop() {
+		this.dx = 0;
+		this.dy = 0;
+		this.status = PlayerStatus.IDLE;
 	}
 }

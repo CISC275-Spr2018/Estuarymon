@@ -24,7 +24,7 @@ public class Animal extends Interactable implements java.io.Serializable {
 
 	/**
 	 * Constructor for the animal object. The animal originally spawns at the x
-	 * coordinate 200 and y coordinate 400. Width is set to 90 and height is set to
+	 * coordinate 0 and y coordinate 480. Width is set to 90 and height is set to
 	 * 70. The collision rectangle has dimensions of 70x90 and the initial direction
 	 * of the animal is Northwest.
 	 * 
@@ -33,7 +33,7 @@ public class Animal extends Interactable implements java.io.Serializable {
 	 *
 	 */
 	public Animal() {
-		super(200, 400, imageHeight, imageWidth);
+		super(360, 50, imageHeight, imageWidth);
 		this.setRelativeCollisionRect(15, 15, imageWidth, imageHeight); // this is for the collision detection
 		curDir = Direction.NORTHWEST;
 	}
