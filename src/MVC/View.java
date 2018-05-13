@@ -116,6 +116,9 @@ public class View extends JPanel{
 	/** Boolean that represents whether or not the Player is hovering, but not picking up a Litter object */
 	private boolean hoverLitter = false;
 
+	/** Stores font sizes calculated using binary search. Should be reset whenever View is resized. */
+	private Map<Integer, Integer> fontWorldToPt = new HashMap<>();
+
 	/** The current phase of the game */
 	GamePhase gamePhase = GamePhase.TITLE_SCREEN;
 
@@ -465,6 +468,12 @@ public class View extends JPanel{
 	}
 
 	private int setFontSize(Graphics g, int worldHeight) {
+		Integer storedSize = this.fontWorldToPt.get(worldHeight);
+		if(storedSize != null) {
+			g.setFont(new Font("TimesRoman", Font.BOLD, storedSize));
+			return storedSize;
+		}
+
 		int targetHeight = worldHeightToPixelHeight(worldHeight);
 		int fontSize = 32;
 		System.out.println("Target "+targetHeight);
@@ -490,6 +499,8 @@ public class View extends JPanel{
 		}
 
 		System.out.println("Goin' with "+fontSize);
+
+		this.fontWorldToPt.put(worldHeight, fontSize);
 		return fontSize;
 	}
 	
