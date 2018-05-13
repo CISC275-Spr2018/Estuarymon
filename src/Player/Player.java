@@ -21,7 +21,7 @@ public class Player extends Interactable implements java.io.Serializable{
 	 */
 	private int dy = 0;
 	/** Movement speed */
-	private static int SPEED = 10;
+	private int SPEED = 10;
 	/** Movement direction.
 	 *  Gets recalculated when {@link #dx} and {@link #dy} are changed to match their behaviour. Initial value is EAST.
 	 */
@@ -43,20 +43,27 @@ public class Player extends Interactable implements java.io.Serializable{
 		this.setRelativeCollisionRect(40, 40, rWidth - 80, rHeight - 80);
 	}
 	
-	
 	/**
-	 * Method that restores a plants health as well as chooses a new plant to start fading. 
+	 * Returns the Dx of the current Player.
 	 * 
-	 * @param i The index in the plant array of the plant to be replanted. 
-	 * @return None. 
+	 * @param
+	 * @return The Dx of the player. 
 	 */
-	public void growPlant(int i) {
-		System.out.println("Plant!");
-		// restore health and pick new plant
-		//model.setRandPlant();
-		//Plant.plants[i].health = 100;
-		//Plant.randPlant = (int) Math.floor(Math.random() * 4);
+	public int getDx() {
+		return dx;
 	}
+	
+/**
+ * Returns the Dy of the current Player
+ * 
+ * @param
+ * @return The Dy of the player. 
+ */
+	public int getDy() {
+		return dy;
+	}
+
+
 
 	/** Changes the velocity of the Player relatively, and recalculates {@link #direction} and {@link #status}. For example, if the player is moving left then alterVelocity is called with <code>ddx=1</code> <code>ddy=1</code>, then he will start moving down. This method also keeps the velocities bounded from -1 to 1.
 	 *  @param ddx The amount to change {@link #dx}.
@@ -153,4 +160,10 @@ public class Player extends Interactable implements java.io.Serializable{
 	{
 		this.SPEED = speed;
 	}
+	
+	public int getSpeed() {
+		return this.SPEED;
+	}
+	
+	
 }

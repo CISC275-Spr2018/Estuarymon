@@ -64,9 +64,9 @@ public class Model implements java.io.Serializable{
 	private Receptacle rBin = new Receptacle(128,128,ReceptacleType.RECYCLINGBIN);
 
 	/** Whether the trash bin recently received a piece of Litter */
-	public static boolean trashVictory = false;
+	private boolean trashVictory = false;
 	/** Whether the recycle bin recently received a piece of Litter */
-	public static boolean recycleVictory = false;
+	private boolean recycleVictory = false;
 	/** A count of the number of frames the trash bin has been in glowing victory state for*/
 	private int trashGlow = 1;
 	/** A count of the number of frames the recycle bin has been in glowing victory state for*/
@@ -97,8 +97,7 @@ public class Model implements java.io.Serializable{
 	private Litter pickedUp;
 	/** ArrayList of Litter imgID and LitterType of Model.pickedUp Litter attribute to send to View */
 	ArrayList<Integer> pickedUpAttr = new ArrayList<Integer>();
-	/** The last Litter to be picked up by an {@link #animals animal} */
-	private Litter animalEatenLitter;
+
 	/**Contains plant objects**/
 	private ArrayList<Plant> plants = new ArrayList<Plant>();
 	/**Random index of next plant**/
@@ -139,6 +138,24 @@ public class Model implements java.io.Serializable{
 			plants.add(new Plant(plantHealth, river.getXLocation() - 200, 50+(WIDTH / 90) + count));//sets location of plants
 			count = count + 200;
 		}
+	}
+	public void setTrashVictory(boolean trashVictory) {
+		this.trashVictory = trashVictory;
+	}
+	public void setRecycleVictory(boolean recycleVictory) {
+		this.recycleVictory = recycleVictory;
+	}
+	public void setPlantGrown(boolean plantGrown) {
+		this.plantGrown = plantGrown;
+	}
+	public boolean isAnimalAteLitter() {
+		return animalAteLitter;
+	}
+	public void setAnimalAteLitter(boolean animalAteLitter) {
+		this.animalAteLitter = animalAteLitter;
+	}
+	public HashSet<Litter> getLitterSet() {
+		return litterSet;
 	}
 	/**
 	 * Returns the hoverLitter boolean of Model. 
@@ -513,10 +530,6 @@ public class Model implements java.io.Serializable{
 			crab.setYLocation(crab.getYLocation() + animalYIncr);
 			crab.setXLocation(crab.getXLocation() - animalXIncr);
 			break;
-		default:
-			crab.setXLocation(0);
-			crab.setYLocation(0);
-
 		}
 	}
 
@@ -546,7 +559,7 @@ public class Model implements java.io.Serializable{
 		}
 		else if(plants.get(randPlant).getHealth() == 0)
 		{
-			setRandPlant();
+			this.randPlant = (int) Math.floor(Math.random() * 4);
 		}
 	}
 	
@@ -559,17 +572,6 @@ public class Model implements java.io.Serializable{
 	public void damagePlant(int i) {
 		if(plants.get(i).getHealth() > 0)
 			plants.get(i).health -= plantDamage;
-	}
-
-	/**
-	 * Method called to set randPlant index
-	 * 
-	 * @param
-	 * @return
-	 */
-	public void setRandPlant()
-	{
-		this.randPlant = (int) Math.floor(Math.random() * 4);
 	}
 	
 	/**
