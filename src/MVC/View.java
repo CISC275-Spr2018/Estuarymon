@@ -205,10 +205,6 @@ public class View extends JPanel{
 		// Draw the player
 		drawImage(g, getPlayerSprite(), playerXLoc, playerYLoc);
 
-		// Draw the score
-//		drawImage(g, Sprite.ID.SCORESTAR, WORLD_WIDTH-100, 0);
-//		drawString(g, Integer.toString(score), 100, WORLD_WIDTH-100, 65);
-
 
 		// Draw overlays depending on the game phase
 		switch(this.gamePhase) {
@@ -506,7 +502,7 @@ public class View extends JPanel{
 
 //	public void update(int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,Litter playerPickedUp,boolean hasLitter, Litter animalEatenLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory, int playerHealth, int animalHealth) {
 
-	public void update(GamePhase gamePhase, int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,ArrayList<Integer> pickedUpAttr,boolean hasLitter, int score, ArrayList<Plant> plants,boolean tVictory, boolean rVictory,  int playerHealth, int animalHealth, River river, TutorialState tutorialState, HashSet<ArrayList<Integer>> litterAttrSet, boolean arrowKeyPrompt,boolean hoverLitter, long startTime, int endTime){
+	public void update(GamePhase gamePhase, int playerX, int playerY, Direction dir, PlayerStatus status, int crabX, int crabY,ArrayList<Integer> pickedUpAttr,boolean hasLitter, ArrayList<Plant> plants,boolean tVictory, boolean rVictory,  int playerHealth, int animalHealth, River river, TutorialState tutorialState, HashSet<ArrayList<Integer>> litterAttrSet, boolean arrowKeyPrompt,boolean hoverLitter, long startTime, int endTime){
 		//Updating crab and player locations
 		this.gamePhase = gamePhase;
 		playerXLoc = playerX;
@@ -517,7 +513,6 @@ public class View extends JPanel{
 		crabYLoc = crabY;
 		this.plants = plants;
 		this.river = river;
-		this.score = score;
 		tGlow = tVictory;
 		rGlow = rVictory;
 

@@ -528,6 +528,18 @@ public class Model implements java.io.Serializable {
 			crab.setDirection(Direction.SOUTHEAST);
 		}
 	}
+	
+	public void animalBinCollision() {
+		if(crab.getCollidesWith(rBin) || crab.getCollidesWith(tBin)) {
+			if(crab.getDirection() == Direction.NORTHEAST) {
+				crab.setDirection(Direction.SOUTHWEST);
+			}else if(crab.getDirection() == Direction.WEST || crab.getDirection() == Direction.SOUTH || crab.getDirection() == Direction.SOUTHEAST) {
+				crab.setDirection(Direction.NORTHEAST);
+			}else if(crab.getDirection() == Direction.SOUTHWEST || crab.getDirection() == Direction.NORTHWEST) {
+				crab.setDirection(Direction.SOUTHEAST);
+			}
+		}
+	}
 
 	public void updatingTutorialAnimalLocation() {
 		crab.setYLocation(crab.getYLocation() + 10);
@@ -576,16 +588,6 @@ public class Model implements java.io.Serializable {
 		}
 	}
 
-	/**
-	 * Simple getter method that retrieves the score. Created so that the View knows
-	 * what the score is and can display it.
-	 * 
-	 * @param empty
-	 * @return The current score
-	 */
-	public int getScore() {
-		return score;
-	}
 
 	// damage plant every 10 seconds
 	/**
@@ -742,10 +744,10 @@ public class Model implements java.io.Serializable {
 		this.litterAttrSet.add(getLitterAttr(l));
 		return l;
 	}
+	
 	/** A public version of {@link #checkCollision} only for use by the {@link ModelTest} class.
 	 *  @see #checkCollision
 	 *  @see ModelTest
->>>>>>> master
 	 */
 	public boolean testCheckColl() {
 		return checkCollision();
@@ -853,7 +855,6 @@ public class Model implements java.io.Serializable {
 			if(this.player.getCollidesWith(this.tBin) && this.pickedUp.getType() == LitterType.TRASH) {
 				this.tBin.takeLitter(this.player, this);
 				System.out.println("DEPOSITED TRASH");
-				//changeScore(10);
 				trashVictory = true;
 				return true;
 			}
@@ -861,13 +862,13 @@ public class Model implements java.io.Serializable {
 			if(this.player.getCollidesWith(this.rBin) && this.pickedUp.getType() == LitterType.RECYCLABLE) {
 				this.rBin.takeLitter(this.player, this);
 				System.out.println("DEPOSITED RECYCLABLE");
-				//changeScore(10);
 				recycleVictory = true;
 				return true;
 			}
 
 
 		animalWallCollision();
+		animalBinCollision();
 
 		Iterator<Litter> litterIterator = litterSet.iterator();
 		while (litterIterator.hasNext()) {
