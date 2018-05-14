@@ -65,13 +65,13 @@ public class Sprite {
 		/** spot of mud where plant resided*/	
 		MUD("MapObjects/mud.png", 100, 100),
 		/** A banana peel */
-		BANANAPEEL("MapObjects/bananaSkin.png",50,50),
+		BANANAPEEL("MapObjects/bananaSkin.png",60,60),
 		/** A soda can */
-		SODACAN("MapObjects/Soda-Can.png",40,40),
+		SODACAN("MapObjects/Soda-Can.png",50,50),
 		/** A crumpled up piece of paper */
-		PAPER("MapObjects/paper.png",40,40),
+		PAPER("MapObjects/paper.png",50,50),
 		/** A eaten apple */
-		APPLE("MapObjects/CompostA.png",75,75),
+		APPLE("MapObjects/CompostA.png",85,85),
 		/** A trash bin */
 		TRASHBIN("MapObjects/garbage.png",128,128),
 		/** A glowing trash bin */
