@@ -59,8 +59,6 @@ public class Controller implements KeyListener {
 	private void step() {
 		// increment the x and y coordinates, alter direction if necessary
 
-	
-		if(model.getModelStatus()) {
 		model.updateModel();
 
 		view.update(		
@@ -83,13 +81,6 @@ public class Controller implements KeyListener {
 			model.getEndTime(),
 			model.getTotalLitterCollected(),
 			model.getTotalPlantsPlanted());
-		}
-		else {
-			stepTimer.stop(); //Maybe try wait in the future
-			trashTimer.cancel(); // wait here too
-			taskTimer.cancel(); // and here
-			System.out.println("game over");
-		}
 	}
 	
 	/**

@@ -148,8 +148,6 @@ public class Model implements java.io.Serializable {
 	private boolean tutorialHoverLitter;
 	/** onscreen river **/
 	River river;
-	/** Boolean value to represent if the game is in progress or over */
-	private boolean running = true;
 	/** The time in milliseconds that the game has begun */
 	private long startTime = -1;
 	/** How many milliseconds the game should last */
@@ -1168,16 +1166,6 @@ public class Model implements java.io.Serializable {
 
 		this.totalLitterCollected = 0;
 		this.totalPlantsPlanted = 0;
-	}
-
-	/**
-	 * Method to determine the game's status
-	 * 
-	 * @return running A boolean which is true if the game is running false
-	 *         otherwise
-	 */
-	public boolean getModelStatus() {
-		return running;
 	}
 
 	/**
