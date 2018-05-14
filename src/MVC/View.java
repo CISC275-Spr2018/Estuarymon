@@ -281,7 +281,7 @@ public class View extends JPanel {
 			}
 			break;
 		case SIGNALPLANT:
-			drawImage(g, Sprite.ID.ARROW, plants.get(0).getXLocation(), 0);
+			drawImage(g, Sprite.ID.ARROW, plants.get(0).getXLocation() + 30, plants.get(0).getYLocation()-50);
 			break;
 		case SIGNALTRASHCAN:
 			drawImage(g, Sprite.ID.ARROW, 50, Receptacle.trashYpos - 60);

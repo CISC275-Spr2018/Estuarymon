@@ -181,7 +181,7 @@ public class Model implements java.io.Serializable {
 		//fills plant array
 		for(int i = 0; i < 4; i++)
 		{
-			plants.add(new Plant(plantHealth, river.getXLocation() - 120, 50+(WIDTH / 90) + count));//sets location of plants
+			plants.add(new Plant(plantHealth, river.getXLocation() - 120,((HEIGHT/10)+80) + count));//sets location of plants
 		// fills plant array
 //		for (int i = 0; i < 4; i++) {
 //			plants.add(new Plant(plantHealth, WIDTH - (WIDTH / 3), 50 + (WIDTH / 90) + count));// sets location of
@@ -1160,6 +1160,7 @@ public class Model implements java.io.Serializable {
 		animals.add(crab);
 		this.litterSet = new HashSet<>();
 		this.litterAttrSet = new HashSet<>();
+		this.river = new River(WIDTH - 200, 0, WIDTH, HEIGHT);
 	}
 
 	/**
