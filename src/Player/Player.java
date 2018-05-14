@@ -31,7 +31,7 @@ public class Player extends Interactable implements java.io.Serializable{
 	 */
 	private PlayerStatus status = PlayerStatus.IDLE;
 	/** Player's health*/
-	private static int health = 300;
+	private int health = 300;
 
 
 	/** Create a player with the given position and size, and sets up the collision box.
@@ -44,6 +44,7 @@ public class Player extends Interactable implements java.io.Serializable{
 		super(xLoc, yLoc, rWidth, rHeight);
 		// Set collision rectangle, 40px padding on each side
 		this.setRelativeCollisionRect(40, 40, rWidth - 80, rHeight - 80);
+		this.health = 300;
 	}
 	
 	/**
@@ -162,15 +163,15 @@ public class Player extends Interactable implements java.io.Serializable{
 	/** Gets the current health of the player
 	 *  @return The current health of the Player
 	 */
-	public static int getHealth() {
+	public int getHealth() {
 		return health;
 	}
 
 	/** Decrement the player's health by 10
 	 *  @param empty
 	 */
-	public static void loseHealth() {
-		Player.health -= 10;
+	public void loseHealth() {
+		this.health -= 10;
 	}
 
 	public void setSpeed(int speed)

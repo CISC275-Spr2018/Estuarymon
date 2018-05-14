@@ -22,7 +22,7 @@ public class Animal extends Interactable implements java.io.Serializable {
 	/** Width of the Animal */
 	private static int imageWidth = 90;
 	/** Health of the Animal */
-	private static int health = 90;
+	private int health = 90;
 
 	/**
 	 * Constructor for the animal object. The animal originally spawns at the x
@@ -38,6 +38,7 @@ public class Animal extends Interactable implements java.io.Serializable {
 		super(360, 50, imageHeight, imageWidth);
 		this.setRelativeCollisionRect(15, 15, imageWidth, imageHeight); // this is for the collision detection
 		curDir = Direction.NORTHWEST;
+		this.health = 90;
 	}
 
 	/**
@@ -69,7 +70,7 @@ public class Animal extends Interactable implements java.io.Serializable {
 	 *            
 	 * @return The current health of the animal
 	 */
-	public static int getHealth() {
+	public  int getHealth() {
 		return health;
 	}
 
@@ -80,8 +81,8 @@ public class Animal extends Interactable implements java.io.Serializable {
 	 *            
 	 * @return empty
 	 */
-	public static void loseHealth() {
-		Animal.health -= 30;
+	public void loseHealth() {
+		this.health -= 30;
 	}
 
 }

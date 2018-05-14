@@ -985,12 +985,13 @@ public class Model implements java.io.Serializable {
 				trashVictory = true;
 				return true;
 			}
-		}
+		
 		if (this.player.getCollidesWith(this.rBin) && this.pickedUp.getType() == LitterType.RECYCLABLE) {
 			this.rBin.takeLitter(this.player, this);
 			System.out.println("DEPOSITED RECYCLABLE");
 			recycleVictory = true;
 			return true;
+		}
 		}
 
 		checkPlayerAnimalCollision();
@@ -1150,6 +1151,7 @@ public class Model implements java.io.Serializable {
 		this.pickedUp = null;
 		this.animalXIncr = 4;
 		this.animalYIncr = 4;
+		this.hasLitter = false;
 		for (Plant p : this.plants) {
 			p.setHealth(100);
 		}
