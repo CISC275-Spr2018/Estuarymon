@@ -28,7 +28,7 @@ public class Sprite {
 	public static enum ID {
 		/** The background image */
 
-		BACKGROUND("Map/map2.png", View.WORLD_WIDTH, View.WORLD_HEIGHT),
+		BACKGROUND("Map/map3.png", View.WORLD_WIDTH, View.WORLD_HEIGHT),
 		
 		KID_WALK_SOUTH("Player/boy_south.png", 130, 130, 4, 1),
 		KID_WALK_NORTH("Player/boy_north.png", 130, 130, 4, 1),
@@ -44,32 +44,6 @@ public class Sprite {
 
 		/** The Title Screen */
 		TITLE_SCREEN("overlays/titleScreen.png", View.WORLD_WIDTH*18/20, View.WORLD_HEIGHT*18/20),
-
-		/** Orc walkig north */
-		ORC_WALK_NORTH("orc/orc_forward_north.png", 165, 165, 10, 1),
-		/** Orc walking south */
-		ORC_WALK_SOUTH("orc/orc_forward_south.png", 165, 165, 10, 1),
-		/** Orc walking east */
-		ORC_WALK_EAST("orc/orc_forward_east.png", 165, 165, 10, 1),
-		/** Orc walking west */
-		ORC_WALK_WEST("orc/orc_forward_west.png", 165, 165, 10, 1),
-		/** Orc walking northwest */
-		ORC_WALK_NORTHWEST("orc/orc_forward_northwest.png", 165, 165, 10, 1),
-		/** Orc walking southeast */
-		ORC_WALK_NORTHEAST("orc/orc_forward_northeast.png", 165, 165, 10, 1),
-		/** Orc walking southwest */
-		ORC_WALK_SOUTHWEST("orc/orc_forward_southwest.png", 165, 165, 10, 1),
-		/** Orc walking southeast */
-		ORC_WALK_SOUTHEAST("orc/orc_forward_southeast.png", 165, 165, 10, 1),
-
-		/** Orc facing north */
-		ORC_IDLE_NORTH("orc/orc_idle_north.png", 165, 165, 4, 1),
-		/** Orc facing south */
-		ORC_IDLE_SOUTH("orc/orc_idle_south.png", 165, 165, 4, 1),
-		/** Orc facing east */
-		ORC_IDLE_EAST("orc/orc_idle_east.png", 165, 165, 4, 1),
-		/** Orc facing west */
-		ORC_IDLE_WEST("orc/orc_idle_west.png", 165, 165, 4, 1),
 
 		/** A crab */
 		CRAB("Animal/crab.png", 150, 100, 7, 5),
@@ -106,6 +80,7 @@ public class Sprite {
 		RECYCLEGLOW("MapObjects/recyclegreen.png",128,128),
 		HEART("MapObjects/FlatIcon-052.png", 75, 75),
 		CRABHEART("MapObjects/crablife.png", 125, 75),
+		KIDHEAD("MapObjects/kid head.png", 125, 75),
 
 		/** Onscreen river*/
 		RIVER("MapObjects/river.png", View.WORLD_HEIGHT, View.WORLD_HEIGHT),

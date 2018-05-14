@@ -62,9 +62,8 @@ public class Controller implements KeyListener {
 		// increment the x and y coordinates, alter direction if necessary
 
 		num += 1;
-		//model.updateModel(num);
 		if(model.getModelStatus()) {
-		model.updateModel(num);
+		model.updateModel();
 
 		view.update(		
 			model.getGamePhase(),
