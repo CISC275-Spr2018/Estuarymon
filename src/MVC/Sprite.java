@@ -44,6 +44,8 @@ public class Sprite {
 
 		/** The Title Screen */
 		TITLE_SCREEN("overlays/titleScreen.png", View.WORLD_WIDTH*18/20, View.WORLD_HEIGHT*18/20),
+		/** The End Screen */
+		END_SCREEN("overlays/endScreen.png", View.WORLD_WIDTH*18/20, View.WORLD_HEIGHT*18/20),
 
 		/** A crab */
 		CRAB("Animal/crab.png", 150, 100, 7, 5),

@@ -43,9 +43,7 @@ public class Controller implements KeyListener {
 
 	/** The stage of counting "cheat" typing */
 	private int cheatState = 0;
-	
-	private long num = 0;
-	
+
 	/** The Action to run every frame. Simply calls the {@link #step} method. */
 	private final Action stepAction = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
@@ -61,7 +59,7 @@ public class Controller implements KeyListener {
 	private void step() {
 		// increment the x and y coordinates, alter direction if necessary
 
-		num += 1;
+	
 		if(model.getModelStatus()) {
 		model.updateModel();
 
@@ -234,7 +232,17 @@ public class Controller implements KeyListener {
 			break;
 		case KeyEvent.VK_SPACE:
 			model.spaceKeyReleased();
+			if(model.getGamePhase() == GamePhase.TITLE_SCREEN) {
+				model.startTutorial();
+			} else if(model.getGamePhase() == GamePhase.GAME_END) {
+				model.resetEverything();
+				model.startNormal();
+			}
 			break;
+		case KeyEvent.VK_Q:
+			if(model.getGamePhase() == GamePhase.GAME_END) {
+				model.startTitleScreen();
+			}
 		}
 	}
 

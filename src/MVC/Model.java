@@ -880,10 +880,18 @@ public class Model implements java.io.Serializable {
 	 */
 	private boolean checkPlayerAnimalCollision() {
 		if (this.player.getCollidesWith(this.crab)) { // this checks if the player has collided with the crab
-			player.loseHealth();
+			if (gamePhase == GamePhase.NORMAL) {
+				player.loseHealth();
+			}
+			if (gamePhase == GamePhase.TUTORIAL) {
+				playerMove = true;
+			}else {
+				playerMove = false;
+			}
+		
 			// the if statements determine the direction the crab should move depending on
 			// the player
-			playerMove = false; // this tells the player to stop moving so it cannot go through the crab
+			 // this tells the player to stop moving so it cannot go through the crab
 			animalXIncr = 6; // this changes the speed of the crab when there is a collision between the
 								// player
 			if (player.getDirection() == Direction.EAST) {
@@ -1024,14 +1032,9 @@ public class Model implements java.io.Serializable {
 	}
 
 	/**
-<<<<<<< HEAD
 	 * Take a litter object and adds its attributes to an ArrayList of Integers that can be passed on to view 
 	 * The first and second integer in the ArrayList returns represents the x and y location of the Litter object respectively
 	 * The third integer represents the imgID, the fourth represents the LitterType represented as an integer. 
-=======
-	 * Take a litter object and adds its attributes to an ArrayList of Integers that
-	 * can be passed on to view
->>>>>>> cleanKalBranch
 	 * 
 	 * @param l
 	 *            The litter object
@@ -1154,6 +1157,8 @@ public class Model implements java.io.Serializable {
 		this.crab = new Animal();
 		animals = new HashSet<Animal>();
 		animals.add(crab);
+		this.litterSet = new HashSet<>();
+		this.litterAttrSet = new HashSet<>();
 	}
 
 	/**
