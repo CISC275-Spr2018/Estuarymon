@@ -41,6 +41,8 @@ public class Sprite {
 
 		/** The Title Screen */
 		TITLE_SCREEN("overlays/titleScreen.png", View.WORLD_WIDTH*18/20, View.WORLD_HEIGHT*18/20),
+		/** The Try Again Screen */
+		TRY_AGAIN_SCREEN("overlays/tryAgainScreen.png", View.WORLD_WIDTH*18/20, View.WORLD_HEIGHT*18/20),
 		/** The End Screen */
 		END_SCREEN("overlays/endScreen.png", View.WORLD_WIDTH*18/20, View.WORLD_HEIGHT*18/20),
 

@@ -157,6 +157,8 @@ public class View extends JPanel {
 	private int totalLitterCollected = 0;
 	/** The number of Plants that the Player has replanted throughout the game */
 	private int totalPlantsPlanted = 0;
+
+	private boolean hasLost;
 	
 
 	/** Creates a new View, places it in a new JPanel, arranges everything, and makes it visible. */
@@ -357,9 +359,15 @@ public class View extends JPanel {
 
 	/** Draws the end screen text onto the screen. Does not draw the underlying box. */
 	private void drawEndScreenOverlay(Graphics g) {
-		this.drawImage(g, Sprite.ID.END_SCREEN,
-			WORLD_WIDTH/20,
-			WORLD_HEIGHT/20);
+		if(this.hasLost) {
+			this.drawImage(g, Sprite.ID.TRY_AGAIN_SCREEN,
+				WORLD_WIDTH/20,
+				WORLD_HEIGHT/20);
+		} else {
+			this.drawImage(g, Sprite.ID.END_SCREEN,
+				WORLD_WIDTH/20,
+				WORLD_HEIGHT/20);
+		}
 
 		g.setColor(Color.BLACK);
 
@@ -709,7 +717,7 @@ public class View extends JPanel {
 			int crabY, ArrayList<Integer> pickedUpAttr, boolean hasLitter, ArrayList<Plant> plants, boolean tVictory,
 			boolean rVictory, int playerHealth, int animalHealth, River river, TutorialState tutorialState,
 			HashSet<ArrayList<Integer>> litterAttrSet, boolean arrowKeyPrompt, boolean hoverLitter, long startTime,
-			int endTime, int totalLitterCollected, int totalPlantsPlanted) {
+			int endTime, int totalLitterCollected, int totalPlantsPlanted, boolean hasLost) {
 		// Updating crab and player locations
 		this.gamePhase = gamePhase;
 		playerXLoc = playerX;
@@ -739,6 +747,8 @@ public class View extends JPanel {
 
 		this.totalLitterCollected = totalLitterCollected;
 		this.totalPlantsPlanted = totalPlantsPlanted;
+
+		this.hasLost = hasLost;
 
 		if(gamePhase != GamePhase.GAME_END) {
 			this.endScreenTimestamp = -1;
