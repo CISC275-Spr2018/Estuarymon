@@ -69,7 +69,7 @@ public class Model implements java.io.Serializable{
 	/** A count of the number of frames the trash bin has been in glowing victory state for*/
 	private int trashGlow = 1;
 	/** A count of the number of frames the recycle bin has been in glowing victory state for*/
-	private int recycleGlow = 1;
+	private int recycleGlow = 1; 
 
 
 	/** The Crab, currently the only Animal in the game. */
@@ -144,21 +144,57 @@ public class Model implements java.io.Serializable{
 
 		this.resetEverything();
 	}
+	/**
+	 * Sets the trashVictory boolean of the Model.
+	 * 
+	 * @param trashVictory The boolean value the trashVictory boolean will be set to.
+	 * @return 
+	 */
 	public void setTrashVictory(boolean trashVictory) {
 		this.trashVictory = trashVictory;
 	}
+	
+	/**
+	 * Sets the recycleVictory boolean of the Model. 
+	 * 
+	 * @param recycleVictory The boolean value the recycleVictory boolean will be set to.
+	 */
 	public void setRecycleVictory(boolean recycleVictory) {
 		this.recycleVictory = recycleVictory;
 	}
+	/**
+	 * Sets the tutorialPlantGrown boolean value of the Model.
+	 * 
+	 * @param plantGrown The boolean value the tutorialPlantGrown boolean will be set to.
+	 * @return 
+	 */
 	public void setPlantGrown(boolean plantGrown) {
 		this.tutorialPlantGrown = plantGrown;
 	}
+	/**
+	 * Returns the tutorialAnimalAteLitter boolean value 
+	 * 
+	 * @param
+	 * @return True if the animal in the tutorial has already eaten the piece of Litter in the tutorial, false otherwise
+	 */
 	public boolean isAnimalAteLitter() {
 		return tutorialAnimalAteLitter;
 	}
+	/**
+	 * Sets the tutorialAnimalAteLitter boolean value of the Model.
+	 * 
+	 * @param animalAteLitter The boolean value the tutorialAnimalAteLitter boolean will be set to.
+	 * @return 
+	 */
 	public void setAnimalAteLitter(boolean animalAteLitter) {
 		this.tutorialAnimalAteLitter = animalAteLitter;
 	}
+	/**
+	 * Returns the HashSet<Litter> of Litter objects in the game.  
+	 * 
+	 * @param
+	 * @return HashSet<Litter> of Litter objects currently in the game. 
+	 */
 	public HashSet<Litter> getLitterSet() {
 		return litterSet;
 	}
@@ -192,7 +228,12 @@ public class Model implements java.io.Serializable{
 		return pickedUpAttr;
 	}
 
-	
+	/**
+	 * Returns the HashSet<ArrayList<Integer>> of Litter attributes used to send to View to avoid calling Litter methods in the view and maintain MVC. 
+	 * 
+	 * @param
+	 * @return HashSet<ArrayList<Integer>> of Litter attributes. 
+	 */
 	public HashSet<ArrayList<Integer>> getLitterAttrSet(){
 		return this.litterAttrSet;
 	}
@@ -224,7 +265,11 @@ public class Model implements java.io.Serializable{
 	public TutorialState getTutorialState() {
 		return tutorialState;
 	}
-
+	/**
+	 * Sets the tutorial state of the game. 
+	 * 
+	 * @param tutorialState TutorialState variable that will become the current tutorial state of this Model. 
+	 */
 	public void setTutorialState(TutorialState tutorialState) {
 		this.tutorialState = tutorialState;
 	}
@@ -699,9 +744,9 @@ public class Model implements java.io.Serializable{
 		this.litterAttrSet.add(getLitterAttr(l));
 		return l;
 	}
-	/** A public version of {@link #checkCollision} only for use by the {@link ModelTest} class.
+	/** A public version of {@link #checkCollision} only for use by the {@link tests.ModelTest} class.
 	 *  @see #checkCollision
-	 *  @see ModelTest
+	 *  @see tests.ModelTest
 	 */
 	public boolean testCheckColl() {
 		return checkCollision();
@@ -860,6 +905,8 @@ public class Model implements java.io.Serializable{
 	
 	/**
 	 * Take a litter object and adds its attributes to an ArrayList of Integers that can be passed on to view 
+	 * The first and second integer in the ArrayList returns represents the x and y location of the Litter object respectively
+	 * The third integer represents the imgID, the fourth represents the LitterType represented as an integer. 
 	 * 
 	 * @param l The litter object 
 	 * @return An ArrayList of Integers of the Litter object's attributes. 
