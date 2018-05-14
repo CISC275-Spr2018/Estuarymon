@@ -30,17 +30,14 @@ public class Sprite {
 
 		BACKGROUND("Map/map3.png", View.WORLD_WIDTH, View.WORLD_HEIGHT),
 		
-		KID_WALK_SOUTH("Player/boy_south.png", 130, 130, 4, 1),
-		KID_WALK_NORTH("Player/boy_north.png", 130, 130, 4, 1),
-		KID_WALK_EAST("Player/boy_east.png", 130, 130, 4, 1),
-		KID_WALK_WEST("Player/boy_west.png", 130, 130, 4, 1),
-		KID_IDLE_WEST("Player/boy_idle_west.png", 130, 130, 4, 1),
-		KID_IDLE_EAST("Player/boy_idle_east.png", 130, 130, 4, 1),
-		KID_IDLE_NORTH("Player/boy_idle_north.png", 130, 130, 4, 1),
-		KID_IDLE_SOUTH("Player/boy_idle_south.png", 130, 130, 4, 1),
-
-		//BACKGROUND("Map/Background.jpg", View.WORLD_WIDTH, View.WORLD_HEIGHT),
-
+		KID_WALK_SOUTH("Player/boy_south.png", 130, 130, 4, 1, 4),
+		KID_WALK_NORTH("Player/boy_north.png", 130, 130, 4, 1, 4),
+		KID_WALK_EAST("Player/boy_east.png", 130, 130, 4, 1, 4),
+		KID_WALK_WEST("Player/boy_west.png", 130, 130, 4, 1, 4),
+		KID_IDLE_WEST("Player/boy_idle_west.png", 130, 130, 4, 1, 4),
+		KID_IDLE_EAST("Player/boy_idle_east.png", 130, 130, 4, 1, 4),
+		KID_IDLE_NORTH("Player/boy_idle_north.png", 130, 130, 4, 1, 4),
+		KID_IDLE_SOUTH("Player/boy_idle_south.png", 130, 130, 4, 1, 4),
 
 		/** The Title Screen */
 		TITLE_SCREEN("overlays/titleScreen.png", View.WORLD_WIDTH*18/20, View.WORLD_HEIGHT*18/20),
@@ -58,8 +55,6 @@ public class Sprite {
 		/** A decaying plant */
 
 		DECAY_PLANT("MapObjects/d014.png", 100, 100),
-//=======
-//		DECAY_PLANT("MapObjects/dazal.png", 100, 100),
 		/** spot of dirt where plant resided*/	
 		DIRT("MapObjects/spot.png", 100, 100),
 		/** spot of mud where plant resided*/	
@@ -112,6 +107,8 @@ public class Sprite {
 		private final int numTilesWide;
 		/** The number of tiles in a single column of the tileset */
 		private final int numTilesHigh;
+		/** The number ofa in-game frames that progress in order to move on to the next frame of this image. Default 1. */
+		private final int frameDivider;
 
 		/** Creates a non-animated Sprite.ID with the given fname, world width, and world height. 
 		 *  @param fname The path to the source image, relative to the images/ folder.
@@ -131,11 +128,17 @@ public class Sprite {
 		 *  @param numTilesHigh The number of tiles in a single column of the tileset.
 		 */
 		private ID(String fname, int worldWidth, int worldHeight, int numTilesWide, int numTilesHigh) {
+			// Default frameDivider is 1.
+			this(fname, worldWidth, worldHeight, numTilesWide, numTilesHigh, 1);
+		}
+		
+		private ID(String fname, int worldWidth, int worldHeight, int numTilesWide, int numTilesHigh, int frameDivider) {
 			this.fname = fname;
 			this.worldWidth = worldWidth;
 			this.worldHeight = worldHeight;
 			this.numTilesWide = numTilesWide;
 			this.numTilesHigh = numTilesHigh;
+			this.frameDivider = frameDivider;
 		}
 	}
 
@@ -149,7 +152,7 @@ public class Sprite {
 	public static BufferedImage getImage(Sprite.ID id, double scaleFactor) {
 		Sprite s = instances.get(id);
 		if(s == null) {
-			s = new Sprite(id.fname, id.worldWidth, id.worldHeight, id.numTilesWide, id.numTilesHigh);
+			s = new Sprite(id.fname, id.worldWidth, id.worldHeight, id.numTilesWide, id.numTilesHigh, id.frameDivider);
 			instances.put(id, s);
 		}
 
@@ -177,6 +180,8 @@ public class Sprite {
 	private int numTilesWide;
 	/** The number of tiles in a single column of the tileset */
 	private int numTilesHigh;
+	/** The number of in-game frames that progress in order to move on to the next frame of this Sprite, */
+	private int frameDivider;
 	/** The completely unprocessed source image */
 	private BufferedImage source;
 	/** A scaled version of {@link #source}, scaled according to the scale factor {@link #scaleFactor}*/
@@ -190,13 +195,15 @@ public class Sprite {
 	 *  @param worldHeight The display height of the image, in world coordinates.
 	 *  @param numTilesWide The number of tiles in a single row of the tileset.
 	 *  @param numTilesHigh The number of tiles in a single column of the tileset.
+	 *  @param frameDivider The number of in-game frames that progress in order to move on to the next frame of this Sprite.
 	 */
-	private Sprite(String fname, int worldWidth, int worldHeight, int numTilesWide, int numTilesHigh) {
+	private Sprite(String fname, int worldWidth, int worldHeight, int numTilesWide, int numTilesHigh, int frameDivider) {
 		this.fname = fname;
 		this.worldWidth = worldWidth;
 		this.worldHeight = worldHeight;
 		this.numTilesWide = numTilesWide;
 		this.numTilesHigh = numTilesHigh;
+		this.frameDivider = frameDivider;
 	}
 
 	/** Ensures that the image is loaded from disk. Will only load from disk once on a single Sprite instance. 
@@ -297,6 +304,6 @@ public class Sprite {
 		this.loadSource(); // Ensure loaded from disk
 		this.scale(scaleFactor); // Ensure scaled correctly
 		this.tile(); // Ensure has been tiled
-		return this.scaledTiles[Sprite.frameCounter % this.scaledTiles.length]; // Return a single frame
+		return this.scaledTiles[(Sprite.frameCounter / this.frameDivider) % this.scaledTiles.length]; // Return a single frame
 	}
 }
