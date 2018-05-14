@@ -122,6 +122,12 @@ public class View extends JPanel{
 	/** The current phase of the game */
 	GamePhase gamePhase = GamePhase.TITLE_SCREEN;
 
+	/** The time that the phase GamePhase.GAME_END was entered. -1 when not in GAME_END. */
+	private long endScreenTimestamp = -1;
+
+	/** Duration over which to slowly raise the score when transitioning into the end game screen. In milliseconds. */
+	private static final int END_SCREEN_SCORE_TRANSITION_DURATION = 5000;
+
 	/** Creates a new View, places it in a new JPanel, arranges everything, and makes it visible. */
 	public View() {	
 		// Prepare for rendering litters
@@ -312,7 +318,21 @@ public class View extends JPanel{
 
 		this.setFontSize(g, WORLD_HEIGHT/8); // Side-affect, adds font to Graphics.
 
-		g.drawString(String.valueOf(this.score), pixelX, pixelY);
+		int offset = (int) (System.currentTimeMillis() - this.endScreenTimestamp);
+		String print;
+		if(offset > END_SCREEN_SCORE_TRANSITION_DURATION) {
+			print = String.valueOf(this.score);
+			g.setColor(Color.WHITE);
+		} else {
+			double percent = (double) (System.currentTimeMillis() - this.endScreenTimestamp) / END_SCREEN_SCORE_TRANSITION_DURATION;
+			double multiplier = (Math.sin((percent/2+0.5) * Math.PI / 2) - 0.5) * 2;
+			multiplier *= multiplier; // square it, make curve more dramatic
+			print = String.valueOf((int) (this.score * multiplier));
+			g.setColor(new Color(255, 255, 255, 128));
+		}
+
+		g.drawString(print, pixelX, pixelY);
+		g.setColor(Color.WHITE);
 	}
 
 	/** Determines which {@link Sprite.ID} to use to render the player. Determines this based on the player's {@link #playerStatus status} and {@link #playerDirection direction}.
@@ -553,6 +573,13 @@ public class View extends JPanel{
 		this.hoverLitter = hoverLitter;
 		this.startTime = startTime;
 		this.endTime = endTime;
+
+		if(gamePhase != GamePhase.GAME_END) {
+			this.endScreenTimestamp = -1;
+		} else if(this.endScreenTimestamp == -1) {
+			this.endScreenTimestamp = System.currentTimeMillis();
+		}
+
 		frame.repaint();
 	}
 	
