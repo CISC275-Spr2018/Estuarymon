@@ -456,7 +456,8 @@ public class Model implements java.io.Serializable {
 
 		if (!this.gamePhase.isPlayable())
 			return;
-
+		checkPlayerWallCollision();
+		
 		if (playerMove)
 			this.player.move();
 		this.checkCollision();
@@ -478,6 +479,24 @@ public class Model implements java.io.Serializable {
 			if (startTime != -1 && (System.currentTimeMillis()) - startTime >= endTimeMilli) {
 				this.startEndGame();
 			}
+		}
+	}
+	
+	public void checkPlayerWallCollision() {
+		if(this.player.getXLocation() <= 0) {
+			this.playerMove = false;
+			this.player.addXLocation(1);
+		}else if (this.player.getXLocation() >= this.getWidth() ) {
+			this.playerMove = false;
+			this.player.addXLocation(-1);
+		}
+		else if(this.player.getYLocation() <= 0) {
+			this.playerMove = false;
+			this.player.addYLocation(1);
+		}
+		else if(this.player.getYLocation() >= (this.getHeight() - this.player.getHeight())) {
+			this.playerMove = false;
+			this.player.addYLocation(-1);
 		}
 	}
 
@@ -578,7 +597,7 @@ public class Model implements java.io.Serializable {
 	 * @return empty
 	 */
 	public void animalWallCollision() {
-		System.out.println("Crab x: " + crab.getXLocation() + "Crab y: " + crab.getYLocation());
+		//System.out.println("Crab x: " + crab.getXLocation() + "Crab y: " + crab.getYLocation());
 		if (crab.getXLocation() <= 0 && crab.getDirection() == Direction.WEST) { // when the left wall is hit
 			crab.setDirection(Direction.EAST);
 		} else if (crab.getXLocation() >= WIDTH - 600 && crab.getDirection() == Direction.EAST) { // when the right wall

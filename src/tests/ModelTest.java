@@ -1092,6 +1092,13 @@ class ModelTest {
 		assertTrue(crab.getDirection()==Direction.SOUTH);
 	}
 	
+	@Test
+	void testAnimalLoseHealth() {
+		Animal a = new Animal();
+		a.loseHealth();
+		assertTrue(a.getHealth()==60);
+	}
+	
 	
 	
 	
