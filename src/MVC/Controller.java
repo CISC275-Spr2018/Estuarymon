@@ -43,7 +43,7 @@ public class Controller implements KeyListener {
 
 	/** The stage of counting "cheat" typing */
 	private int cheatState = 0;
-	
+
 	/** The Action to run every frame. Simply calls the {@link #step} method. */
 	private final Action stepAction = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
@@ -58,8 +58,11 @@ public class Controller implements KeyListener {
 	 */
 	private void step() {
 		// increment the x and y coordinates, alter direction if necessary
+
+	
 		if(model.getModelStatus()) {
 		model.updateModel();
+
 		view.update(		
 			model.getGamePhase(),
 			model.getPlayer().getXLocation(),
@@ -70,10 +73,7 @@ public class Controller implements KeyListener {
 			model.getAnimal().getYLocation(),
 			model.getPickedUpAttr(),
 			model.isHasLitter(),
-			model.getScore(),
-			model.getPlants(),
-			model.getTrashVictory(),
-			model.getRecycleVictory(),
+			model.getPlants(),model.getTrashVictory(),model.getRecycleVictory(), model.getPlayer().getHealth(), model.getAnimal().getHealth(),
 			model.getRiver(),
 			model.getTutorialState(),
 			model.getLitterAttrSet(),
@@ -300,12 +300,6 @@ public class Controller implements KeyListener {
 				break;
 			case 'e':
 				this.model.startEndGame();
-				break;
-			case 's':
-				this.model.changeScore(10);
-				break;
-			case 'S':
-				this.model.changeScore(100);
 				break;
 			default:
 				System.out.println("Unrecognised cheat.");

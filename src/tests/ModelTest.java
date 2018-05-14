@@ -287,116 +287,10 @@ class ModelTest {
 	void testGetAnimalYIncr() {
 		Model model = new Model(1000,1000);
 		assertTrue(model.getAnimalYIncr()==4);
-	}
+	} 
 	
-	@Test
-	void testGetScore() {
-		Model model = new Model(1000,1000);
-		assertTrue(model.getScore()==0);
-	}
 	
-	@Test
-	void testPlayerAnimalCollision() {
-		Model model = new Model(1000,1000);
-		model.getPlayer().setXLocation(0);
-		model.getAnimal().setXLocation(0);
-		model.getAnimal().setYLocation(0);
-		model.getPlayer().setYLocation(0);
-		assertTrue(model.testCheckColl()==true);
-	}
-	
-	@Test
-	void testPlayerAnimalCollision2() {
-		Model model = new Model(1000,1000);
-		model.getPlayer().setXLocation(0);
-		model.getAnimal().setXLocation(0);
-		model.getAnimal().setYLocation(0);
-		model.getPlayer().setYLocation(0);
-		model.getPlayer().setDirection(Direction.SOUTHEAST);
-		model.testCheckColl();
-		assertTrue(model.getAnimal().getDirection()==Direction.SOUTHEAST);
-	}
-	
-	@Test
-	void testScore() {
-		Model model = new Model(1000,1000);
-		model.changeScore(-5);
-		assertTrue(model.getScore()==0);
-	}
-	
-	@Test
-	void testPlayerAnimalCollision3() {
-		Model model = new Model(1000,1000);
-		model.getPlayer().setXLocation(0);
-		model.getAnimal().setXLocation(0);
-		model.getAnimal().setYLocation(0);
-		model.getPlayer().setYLocation(0);
-		model.getPlayer().setDirection(Direction.WEST);
-		model.testCheckColl();
-		assertTrue(model.getAnimal().getDirection()==Direction.WEST);
-	}
-	
-	@Test
-	void testPlayerAnimalCollision4() {
-		Model model = new Model(1000,1000);
-		model.getPlayer().setXLocation(0);
-		model.getAnimal().setXLocation(0);
-		model.getAnimal().setYLocation(0);
-		model.getPlayer().setYLocation(0);
-		model.getPlayer().setDirection(Direction.NORTH);
-		model.testCheckColl();
-		assertTrue(model.getAnimal().getDirection()==Direction.NORTH);
-		
-		
-	}
-	
-	@Test
-	void testPlayerAnimalCollision5() {
-		Model model = new Model(1000,1000);
-		model.getPlayer().setXLocation(0);
-		model.getAnimal().setXLocation(0);
-		model.getAnimal().setYLocation(0);
-		model.getPlayer().setYLocation(0);
-		model.getPlayer().setDirection(Direction.SOUTH);
-		model.testCheckColl();
-		assertTrue(model.getAnimal().getDirection()==Direction.SOUTH);
-	}
-	
-	@Test
-	void testPlayerAnimalCollision6() {
-		Model model = new Model(1000,1000);
-		model.getPlayer().setXLocation(0);
-		model.getAnimal().setXLocation(0);
-		model.getAnimal().setYLocation(0);
-		model.getPlayer().setYLocation(0);
-		model.getPlayer().setDirection(Direction.NORTHEAST);
-		model.testCheckColl();
-		assertTrue(model.getAnimal().getDirection()==Direction.NORTHEAST);
-	}
-	
-	@Test
-	void testPlayerAnimalCollision7() {
-		Model model = new Model(1000,1000);
-		model.getPlayer().setXLocation(0);
-		model.getAnimal().setXLocation(0);
-		model.getAnimal().setYLocation(0);
-		model.getPlayer().setYLocation(0);
-		model.getPlayer().setDirection(Direction.NORTHWEST);
-		model.testCheckColl();
-		assertTrue(model.getAnimal().getDirection()==Direction.NORTHWEST);
-	}
-	
-	@Test
-	void testPlayerAnimalCollision8() {
-		Model model = new Model(1000,1000);
-		model.getPlayer().setXLocation(0);
-		model.getAnimal().setXLocation(0);
-		model.getAnimal().setYLocation(0);
-		model.getPlayer().setYLocation(0);
-		model.getPlayer().setDirection(Direction.SOUTHWEST);
-		model.testCheckColl();
-		assertTrue(model.getAnimal().getDirection()==Direction.SOUTHWEST);
-	}
+
 	
 	@Test
 	void testGetGameState() {
@@ -1040,6 +934,176 @@ class ModelTest {
 		model.updatingAnimalLocation();
 		assertTrue(crab.getXLocation()==0 && crab.getYLocation()==4);
 	}
+	
+	@Test
+	void testAnimalBinCollisionNorthEast() {
+		Model model = new Model(1000,1000);
+		model.getAnimal().setXLocation(model.getRBin().getXLocation());
+		model.getAnimal().setYLocation(model.getRBin().getYLocation());
+		model.getAnimal().setDirection(Direction.NORTHEAST);
+		model.animalBinCollision();
+		assertTrue(model.getAnimal().getDirection()==Direction.SOUTHWEST);
+		
+	}
+	
+	@Test
+	void testAnimalBinCollisionWest() {
+		Model model = new Model(1000,1000);
+		model.getAnimal().setXLocation(model.getRBin().getXLocation());
+		model.getAnimal().setYLocation(model.getRBin().getYLocation());
+		model.getAnimal().setDirection(Direction.WEST);
+		model.animalBinCollision();
+		assertTrue(model.getAnimal().getDirection()==Direction.NORTHEAST);
+		
+	}
+	
+	@Test
+	void testAnimalBinCollisionSouth() {
+		Model model = new Model(1000,1000);
+		model.getAnimal().setXLocation(model.getRBin().getXLocation());
+		model.getAnimal().setYLocation(model.getRBin().getYLocation());
+		model.getAnimal().setDirection(Direction.SOUTH);
+		model.animalBinCollision();
+		assertTrue(model.getAnimal().getDirection()==Direction.NORTHEAST);
+		
+	}
+	
+	@Test
+	void testAnimalBinCollisionSouthEast() {
+		Model model = new Model(1000,1000);
+		model.getAnimal().setXLocation(model.getRBin().getXLocation());
+		model.getAnimal().setYLocation(model.getRBin().getYLocation());
+		model.getAnimal().setDirection(Direction.SOUTHEAST);
+		model.animalBinCollision();
+		assertTrue(model.getAnimal().getDirection()==Direction.NORTHEAST);
+		
+	}
+	
+	@Test
+	void testAnimalBinCollisionSouthWest() {
+		Model model = new Model(1000,1000);
+		model.getAnimal().setXLocation(model.getRBin().getXLocation());
+		model.getAnimal().setYLocation(model.getRBin().getYLocation());
+		model.getAnimal().setDirection(Direction.SOUTHWEST);
+		model.animalBinCollision();
+		assertTrue(model.getAnimal().getDirection()==Direction.SOUTHEAST);
+		
+	}
+	
+	@Test
+	void testAnimalBinCollisionNorththWest() {
+		Model model = new Model(1000,1000);
+		model.getAnimal().setXLocation(model.getRBin().getXLocation());
+		model.getAnimal().setYLocation(model.getRBin().getYLocation());
+		model.getAnimal().setDirection(Direction.NORTHWEST);
+		model.animalBinCollision();
+		assertTrue(model.getAnimal().getDirection()==Direction.SOUTHEAST);
+		
+	}
+	
+	@Test
+	void testPlayerAnimalCollisionEast() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		Player p = model.getPlayer();
+		crab.setXLocation(p.getXLocation());
+		crab.setYLocation(p.getYLocation());
+		p.setDirection(Direction.EAST);
+		model.checkPlayerAnimalCollision();
+		assertTrue(crab.getDirection()==Direction.SOUTHEAST);
+	}
+	
+	@Test
+	void testPlayerAnimalCollisionWest() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		Player p = model.getPlayer();
+		crab.setXLocation(p.getXLocation());
+		crab.setYLocation(p.getYLocation());
+		p.setDirection(Direction.WEST);
+		model.checkPlayerAnimalCollision();
+		assertTrue(crab.getDirection()==Direction.NORTHWEST);
+	}
+	
+	@Test
+	void testPlayerAnimalCollisionNorth() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		Player p = model.getPlayer();
+		crab.setXLocation(p.getXLocation());
+		crab.setYLocation(p.getYLocation());
+		p.setDirection(Direction.NORTH);
+		model.checkPlayerAnimalCollision();
+		assertTrue(crab.getDirection()==Direction.NORTHEAST);
+	}
+	
+	@Test
+	void testPlayerAnimalCollisionSouth() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		Player p = model.getPlayer();
+		crab.setXLocation(p.getXLocation());
+		crab.setYLocation(p.getYLocation());
+		p.setDirection(Direction.SOUTH);
+		model.checkPlayerAnimalCollision();
+		assertTrue(crab.getDirection()==Direction.SOUTHWEST);
+	}
+	
+	@Test
+	void testPlayerAnimalCollisionNorthEast() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		Player p = model.getPlayer();
+		crab.setXLocation(p.getXLocation());
+		crab.setYLocation(p.getYLocation());
+		p.setDirection(Direction.NORTHEAST);
+		model.checkPlayerAnimalCollision();
+		assertTrue(crab.getDirection()==Direction.NORTH);
+	}
+	
+	@Test
+	void testPlayerAnimalCollisionNorthWest() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		Player p = model.getPlayer();
+		crab.setXLocation(p.getXLocation());
+		crab.setYLocation(p.getYLocation());
+		p.setDirection(Direction.NORTHWEST);
+		model.checkPlayerAnimalCollision();
+		assertTrue(crab.getDirection()==Direction.NORTH);
+	}
+	
+	@Test
+	void testPlayerAnimalCollisionSouthWest() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		Player p = model.getPlayer();
+		crab.setXLocation(p.getXLocation());
+		crab.setYLocation(p.getYLocation());
+		p.setDirection(Direction.SOUTHWEST);
+		model.checkPlayerAnimalCollision();
+		assertTrue(crab.getDirection()==Direction.SOUTH);
+	}
+	
+	@Test
+	void testPlayerAnimalCollisionSouthEast() {
+		Model model = new Model(1000,1000);
+		Animal crab = model.getAnimal();
+		Player p = model.getPlayer();
+		crab.setXLocation(p.getXLocation());
+		crab.setYLocation(p.getYLocation());
+		p.setDirection(Direction.SOUTHEAST);
+		model.checkPlayerAnimalCollision();
+		assertTrue(crab.getDirection()==Direction.SOUTH);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
