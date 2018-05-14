@@ -127,7 +127,7 @@ class ModelTest {
 	@Test
 	void testPlayerPlantCollision() {
 		Model model = new Model(1000,1000);
-		model.getPlants().get(0).health = 0;
+		model.getPlants().get(0).setHealth(0);
 		model.getPlayer().setXLocation(model.getPlants().get(0).getXLocation()+10);
 		model.getPlayer().setYLocation(model.getPlants().get(0).getYLocation()-8);
 		assertTrue(model.testCheckColl()==true);
@@ -136,7 +136,7 @@ class ModelTest {
 	@Test
 	void testPlayerPlantCollisionFalse() {
 		Model model = new Model(1000,1000);
-		model.getPlants().get(0).health = 0;
+		model.getPlants().get(0).setHealth(0);
 		model.getPlayer().setXLocation(300);
 		model.getPlayer().setYLocation(300);
 		assertTrue(model.testCheckColl()==false);
@@ -455,7 +455,7 @@ class ModelTest {
 	void testCheckTutorialDamagePlant() {
 		Model model = new Model(1000,1000);
 		model.damagePlant(1);
-		assertTrue(model.getPlants().get(1).health == 80);
+		assertTrue(model.getPlants().get(1).getHealth() == 80);
 	}
 	
 	@Test 
@@ -671,12 +671,7 @@ class ModelTest {
 		Model model = new Model(1000,1000);
 		assertTrue(model.getStartTime()==-1);
 	}
-	
-	@Test
-	void testGetModelStatus() {
-		Model model = new Model(1000,1000);
-		assertTrue(model.getModelStatus()==true);
-	}
+
 	
 	@Test
 	void testStartTitleScreen() {
