@@ -122,7 +122,6 @@ public class Model implements java.io.Serializable {
 	private Litter animalEatenLitter;
 	/** Contains plant objects **/
 	private ArrayList<Plant> plants = new ArrayList<Plant>();
-
 	/** Random index of next plant **/
 	private int randPlant = (int) Math.floor(Math.random() * 4);
 
@@ -698,7 +697,7 @@ public class Model implements java.io.Serializable {
 	 */
 	public void damagePlant() {
 		if (plants.get(randPlant).getHealth() > 0) {
-			plants.get(randPlant).health = plants.get(randPlant).health - plantDamage;
+			plants.get(randPlant).setHealth(plants.get(randPlant).getHealth() - plantDamage);
 		}
 		else if(plants.get(randPlant).getHealth() == 0)
 		{
@@ -716,7 +715,7 @@ public class Model implements java.io.Serializable {
 	 */
 	public void damagePlant(int i) {
 		if (plants.get(i).getHealth() > 0)
-			plants.get(i).health -= plantDamage;
+			plants.get(i).setHealth(plants.get(i).getHealth() - plantDamage);
 	}
 	/**
 	 * Method called to set randPlant index
@@ -793,7 +792,7 @@ public class Model implements java.io.Serializable {
 
 		int sum = 0;
 		for (Plant plant : plants) {
-			sum = sum + plant.health;
+			sum = sum + plant.getHealth();
 
 		}
 		if (sum == 0) {
@@ -962,9 +961,9 @@ public class Model implements java.io.Serializable {
 
 		for (Plant plant : plants) {
 			// add and health == 0
-			if (plant.health == 0 && plant.getCollidesWith(this.player)) {
+			if (plant.getHealth() == 0 && plant.getCollidesWith(this.player)) {
 				setRandPlant();
-				plant.health = 100;
+				plant.setHealth(100);
 				this.totalPlantsPlanted++;
 				this.tutorialPlantGrown = true;
 				return true;
