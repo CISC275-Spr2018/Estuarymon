@@ -153,6 +153,12 @@ public class View extends JPanel {
 	/** Duration over which to slowly raise the score when transitioning into the end game screen. In milliseconds. */
 	private static final int END_SCREEN_SCORE_TRANSITION_DURATION = 5000;
 
+	/** The number of Litter objects that the Player has picked up throughout the game */
+	private int totalLitterCollected = 0;
+	/** The number of Plants that the Player has replanted throughout the game */
+	private int totalPlantsPlanted = 0;
+	
+
 	/** Creates a new View, places it in a new JPanel, arranges everything, and makes it visible. */
 	public View() {	
 		// Prepare for rendering litters
@@ -261,10 +267,6 @@ public class View extends JPanel {
 		drawImage(g, Sprite.ID.LITTERFRAME,0,5);
 		if(hasLitter) {
 			drawImage(g,getSpriteID(pickedUpAttr.get(1),pickedUpAttr.get(0)),15,15);
-//
-//		drawImage(g, Sprite.ID.LITTERFRAME, 0, 0);
-//		if (hasLitter) {
-//			drawImage(g, getSpriteID(pickedUpAttr.get(1), pickedUpAttr.get(0)), 10, 10);
 		}
 	}
 
@@ -353,38 +355,38 @@ public class View extends JPanel {
 			WORLD_HEIGHT/20);
 	}
 
-	/** Draws the end screen text onto the screen. Does not draw that underlying box. */
+	/** Draws the end screen text onto the screen. Does not draw the underlying box. */
 	private void drawEndScreenOverlay(Graphics g) {
 		this.drawImage(g, Sprite.ID.END_SCREEN,
 			WORLD_WIDTH/20,
 			WORLD_HEIGHT/20);
 
-		// Now draw the score text.
-		// Bottom left of the text is 2/3 from left, 1/2 from top.
-		int worldX = WORLD_WIDTH*13/20; // Simplification of:
-		                                // (WORLD_WIDTH*18/20)*2/3+(WORLD_WIDTH/20)
-		int worldY = WORLD_HEIGHT/2;
-		int pixelX = worldXToPixelX(worldX);
-		int pixelY = worldYToPixelY(worldY);
+		g.setColor(Color.BLACK);
 
-		this.setFontSize(g, WORLD_HEIGHT/8); // Side-affect, adds font to Graphics.
-		int score = 123;
+		this.drawString(g, "# of Plants Replanted: ", WORLD_WIDTH / 2, WORLD_HEIGHT * 140 / 216, WORLD_HEIGHT / 16, HorizLocation.RIGHT, VertLocation.BOTTOM);
+		this.drawString(g, "# of Litter Collected: ", WORLD_WIDTH / 2, WORLD_HEIGHT * 100 / 216, WORLD_HEIGHT / 16, HorizLocation.RIGHT, VertLocation.BOTTOM);
 
 		int offset = (int) (System.currentTimeMillis() - this.endScreenTimestamp);
-		String print;
+		String printLitter;
+		String printPlants;
 		if(offset > END_SCREEN_SCORE_TRANSITION_DURATION) {
-			print = String.valueOf(score);
-			g.setColor(Color.WHITE);
+			printLitter = String.valueOf(this.totalLitterCollected);
+			printPlants = String.valueOf(this.totalPlantsPlanted);
+			g.setColor(Color.BLACK);
 		} else {
 			double percent = (double) (System.currentTimeMillis() - this.endScreenTimestamp) / END_SCREEN_SCORE_TRANSITION_DURATION;
 			double multiplier = (Math.sin((percent/2+0.5) * Math.PI / 2) - 0.5) * 2;
 			multiplier *= multiplier; // square it, make curve more dramatic
-			print = String.valueOf((int) (score * multiplier));
-			g.setColor(new Color(255, 255, 255, 128));
+			printLitter = String.valueOf((int) (this.totalLitterCollected * multiplier));
+			printPlants = String.valueOf((int) (this.totalPlantsPlanted * multiplier));
+			g.setColor(new Color(0, 0, 0, 128));
 		}
 
-		g.drawString(print, pixelX, pixelY);
-		g.setColor(Color.WHITE);
+		// Fit these even vertically between 25% of dialog and 75% of dialog. So they should vertically be at 41% and 57% of the dialog.
+		// So they should bet 100/216 and 140/216 of the world. Math.
+
+		this.drawString(g, printLitter, WORLD_WIDTH / 2, WORLD_HEIGHT * 100 / 216, WORLD_HEIGHT / 16, HorizLocation.LEFT, VertLocation.BOTTOM);
+		this.drawString(g, printPlants, WORLD_WIDTH / 2, WORLD_HEIGHT * 140 / 216, WORLD_HEIGHT / 16, HorizLocation.LEFT, VertLocation.BOTTOM);
 	}
 
 	/**
@@ -480,12 +482,26 @@ public class View extends JPanel {
 	 *            the y-coordinate of the left endpoint of the line, in
 	 *            <em>world</em> coordinates.
 	 */
-	private void drawString(Graphics g, String word, int width, int XPos, int YPos) {
-		g.setFont(new Font("TimesRoman", Font.BOLD, 25));
-		int stringLength = (int) g.getFontMetrics().getStringBounds(word, g).getWidth();
-		int start = worldXToPixelX(XPos + width / 2) - stringLength / 2;
-		g.setColor(Color.BLACK);
-		g.drawString(word, start, worldYToPixelY(YPos));
+	private void drawString(Graphics g, String str, int xpos, int ypos, int height, HorizLocation horizLocation, VertLocation vertLocation) {
+		this.setFontSize(g, height);
+		int pixel_x = worldXToPixelX(xpos);
+		int pixel_y = worldYToPixelY(ypos);
+		int pixel_width = g.getFontMetrics().stringWidth(str);
+		int pixel_height = worldHeightToPixelHeight(height);
+
+		switch(horizLocation) {
+			case LEFT: break;
+			case CENTER: pixel_x -= pixel_width / 2; break;
+			case RIGHT: pixel_x -= pixel_width; break;
+		}
+
+		switch(vertLocation) {
+			case TOP: pixel_y += pixel_height; break;
+			case MIDDLE: pixel_y += pixel_height / 2; break;
+			case BOTTOM: break;
+		}
+
+		g.drawString(str, pixel_x, pixel_y);
 	}
 
 	/**
@@ -683,13 +699,17 @@ public class View extends JPanel {
 	 *            When the game began
 	 * @param endTime
 	 *            When the truck visual timer should end
+	 * @param totalLitterCollected
+	 *            The total number of litter objects collected throughout the game
+	 * @param totalPlatsPlanted
+	 *            The total number of plants that were replanted throughout the game
 	 * @return None.
 	 */
 	public void update(GamePhase gamePhase, int playerX, int playerY, Direction dir, PlayerStatus status, int crabX,
 			int crabY, ArrayList<Integer> pickedUpAttr, boolean hasLitter, ArrayList<Plant> plants, boolean tVictory,
 			boolean rVictory, int playerHealth, int animalHealth, River river, TutorialState tutorialState,
 			HashSet<ArrayList<Integer>> litterAttrSet, boolean arrowKeyPrompt, boolean hoverLitter, long startTime,
-			int endTime) {
+			int endTime, int totalLitterCollected, int totalPlantsPlanted) {
 		// Updating crab and player locations
 		this.gamePhase = gamePhase;
 		playerXLoc = playerX;
@@ -716,6 +736,9 @@ public class View extends JPanel {
 		this.hoverLitter = hoverLitter;
 		this.startTime = startTime;
 		this.endTime = endTime;
+
+		this.totalLitterCollected = totalLitterCollected;
+		this.totalPlantsPlanted = totalPlantsPlanted;
 
 		if(gamePhase != GamePhase.GAME_END) {
 			this.endScreenTimestamp = -1;
@@ -759,4 +782,6 @@ public class View extends JPanel {
 
 	}
 
+	private static enum HorizLocation { LEFT, CENTER, RIGHT }
+	private static enum VertLocation { TOP, MIDDLE, BOTTOM }
 }

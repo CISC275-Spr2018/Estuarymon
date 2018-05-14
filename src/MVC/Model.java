@@ -147,12 +147,15 @@ public class Model implements java.io.Serializable {
 	private boolean tutorialHoverLitter;
 	/** onscreen river **/
 	River river;
-	/** Boolean value to represent if the game is in progress or over */
-	private boolean running = true;
 	/** The time in milliseconds that the game has begun */
 	private long startTime = -1;
 	/** How many milliseconds the game should last */
 	private int endTimeMilli = 6 * 10000;
+
+	/** The number of Litter objects that the Player has picked up throughout the game */
+	private int totalLitterCollected;
+	/** The number of Plants that the Player has replanted throughout the game */
+	private int totalPlantsPlanted;
 
 	/**
 	 * Constructor for the Model. It creates a new animal and initializes a hashset
@@ -193,7 +196,6 @@ public class Model implements java.io.Serializable {
 	}
 
 	/**
-<<<<<<< HEAD
 	 * Sets the trashVictory boolean of the Model.
 	 * 
 	 * @param trashVictory The boolean value the trashVictory boolean will be set to.
@@ -249,9 +251,6 @@ public class Model implements java.io.Serializable {
 	}
 	/**
 	 * Returns the tutorialHoverLitter boolean of Model. 
-=======
-	 * Returns the tutorialHoverLitter boolean of Model.
->>>>>>> cleanKalBranch
 	 * 
 	 * @param
 	 * @return True if the Player is hovering, but not picking up a Litter object,
@@ -965,6 +964,7 @@ public class Model implements java.io.Serializable {
 			if (plant.getHealth() == 0 && plant.getCollidesWith(this.player)) {
 				setRandPlant();
 				plant.setHealth(100);
+				this.totalPlantsPlanted++;
 				this.tutorialPlantGrown = true;
 				return true;
 			}
@@ -981,6 +981,7 @@ public class Model implements java.io.Serializable {
 				this.tBin.takeLitter(this.player, this);
 				System.out.println("DEPOSITED TRASH");
 				trashVictory = true;
+				this.totalLitterCollected++;
 				return true;
 			}
 		
@@ -988,6 +989,7 @@ public class Model implements java.io.Serializable {
 			this.rBin.takeLitter(this.player, this);
 			System.out.println("DEPOSITED RECYCLABLE");
 			recycleVictory = true;
+			this.totalLitterCollected++;
 			return true;
 		}
 		}
@@ -1160,16 +1162,9 @@ public class Model implements java.io.Serializable {
 		this.litterSet = new HashSet<>();
 		this.litterAttrSet = new HashSet<>();
 		this.river = new River(WIDTH - 200, 0, WIDTH, HEIGHT);
-	}
 
-	/**
-	 * Method to determine the game's status
-	 * 
-	 * @return running A boolean which is true if the game is running false
-	 *         otherwise
-	 */
-	public boolean getModelStatus() {
-		return running;
+		this.totalLitterCollected = 0;
+		this.totalPlantsPlanted = 0;
 	}
 
 	/**
@@ -1188,5 +1183,17 @@ public class Model implements java.io.Serializable {
 	 */
 	public int getEndTime() {
 		return endTimeMilli;
+	}
+
+	public void litterWasCollected() {
+		this.totalLitterCollected++;
+	}
+
+	public int getTotalLitterCollected() {
+		return this.totalLitterCollected;
+	}
+
+	public int getTotalPlantsPlanted() {
+		return this.totalPlantsPlanted;
 	}
 }
