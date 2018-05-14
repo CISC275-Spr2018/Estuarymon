@@ -65,7 +65,7 @@ public class Sprite {
 		/** A star intended to house the current score */
 		SCORESTAR("MapObjects/FlatIcon-074.png", 100, 100),
 		/** A box intended to house a type of litter */
-		LITTERFRAME("MapObjects/litterbox.png", 75,75),
+		LITTERFRAME("MapObjects/litterbox.png", 95,95),
 		/** A plant */
 		PLANT("MapObjects/azalea.png", 100, 100),
 		/** A decaying plant */
@@ -75,13 +75,13 @@ public class Sprite {
 		/** spot of mud where plant resided*/	
 		MUD("MapObjects/mud.png", 100, 100),
 		/** A banana peel */
-		BANANAPEEL("MapObjects/bananaSkin.png",40,40),
+		BANANAPEEL("MapObjects/bananaSkin.png",50,50),
 		/** A soda can */
 		SODACAN("MapObjects/Soda-Can.png",40,40),
 		/** A crumpled up piece of paper */
 		PAPER("MapObjects/paper.png",40,40),
 		/** A eaten apple */
-		APPLE("MapObjects/CompostA.png",50,50),
+		APPLE("MapObjects/CompostA.png",75,75),
 		/** A trash bin */
 		TRASHBIN("MapObjects/garbage.png",128,128),
 		/** A glowing trash bin */

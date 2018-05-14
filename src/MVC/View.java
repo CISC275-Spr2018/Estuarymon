@@ -234,9 +234,9 @@ public class View extends JPanel{
 	/** Draws the litter container overlay */
 	private void drawLitterContainerOverlay(Graphics g) {
 		// Draw the litter in the box
-		drawImage(g, Sprite.ID.LITTERFRAME,0,0);
+		drawImage(g, Sprite.ID.LITTERFRAME,0,5);
 		if(hasLitter) {
-			drawImage(g,getSpriteID(pickedUpAttr.get(1),pickedUpAttr.get(0)),10,10);
+			drawImage(g,getSpriteID(pickedUpAttr.get(1),pickedUpAttr.get(0)),15,15);
 		}
 	}
 
