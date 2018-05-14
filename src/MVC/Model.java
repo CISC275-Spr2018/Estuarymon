@@ -816,8 +816,7 @@ public class Model implements java.io.Serializable {
 		Random r = new Random();
 		Litter l = new Litter();
 		l.setType(LitterType.randomLitter());
-		int litterXCoord = r.nextInt((WIDTH - l.getWidth()) - (rBin.getXLocation() + rBin.getWidth()))
-				+ rBin.getXLocation() + rBin.getWidth();// generates random coordinates
+		int litterXCoord = r.nextInt((plants.get(0).getXLocation() - l.getWidth())-(rBin.getXLocation()+rBin.getWidth())) + rBin.getXLocation() + rBin.getWidth();// generates random coordinates
 		int litterYCoord = r.nextInt((HEIGHT - l.getHeight()));
 		l.setXLocation(litterXCoord);//
 		l.setYLocation(litterYCoord);
