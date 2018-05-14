@@ -327,7 +327,7 @@ public class View extends JPanel {
 
 	/** Draws a box on the screen appropriate for title screen, end score, etc. */
 	private void drawOverlayBox(Graphics g) {
-		g.setColor(new Color(0, 0, 0, 128));
+		g.setColor(new Color(255, 255, 255, 128));
 		g.fillRoundRect(worldXToPixelX(WORLD_WIDTH / 20), // X
 				worldYToPixelY(WORLD_HEIGHT / 20), // Y
 				worldWidthToPixelWidth(WORLD_WIDTH * 18 / 20), // WIDTH
