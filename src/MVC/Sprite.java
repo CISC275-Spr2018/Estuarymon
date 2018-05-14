@@ -27,16 +27,23 @@ public class Sprite {
 	/** Houses all Sprites' info. This is the only public way to represent a Sprite. */
 	public static enum ID {
 		/** The background image */
-
 		BACKGROUND("Map/map3.png", View.WORLD_WIDTH, View.WORLD_HEIGHT),
 		
+		/** A kid walking south */
 		KID_WALK_SOUTH("Player/boy_south.png", 130, 130, 4, 1, 4),
+		/** A kid walking north */
 		KID_WALK_NORTH("Player/boy_north.png", 130, 130, 4, 1, 4),
+		/** A kid walking east */
 		KID_WALK_EAST("Player/boy_east.png", 130, 130, 4, 1, 4),
+		/** A kid walking west */
 		KID_WALK_WEST("Player/boy_west.png", 130, 130, 4, 1, 4),
+		/** A kid facing west */
 		KID_IDLE_WEST("Player/boy_idle_west.png", 130, 130, 4, 1, 4),
+		/** A kid facing east */
 		KID_IDLE_EAST("Player/boy_idle_east.png", 130, 130, 4, 1, 4),
+		/** A kid facing north */
 		KID_IDLE_NORTH("Player/boy_idle_north.png", 130, 130, 4, 1, 4),
+		/** A kid facing south */
 		KID_IDLE_SOUTH("Player/boy_idle_south.png", 130, 130, 4, 1, 4),
 
 		/** The Title Screen */
@@ -54,8 +61,8 @@ public class Sprite {
 		LITTERFRAME("MapObjects/litterbox.png", 95,95),
 		/** A plant */
 		PLANT("MapObjects/014.png", 100, 100),
-		/** A decaying plant */
 
+		/** A decaying plant */
 		DECAY_PLANT("MapObjects/d014.png", 100, 100),
 		/** spot of dirt where plant resided*/	
 		DIRT("MapObjects/spot.png", 100, 100),
@@ -77,8 +84,11 @@ public class Sprite {
 		RECYCLEBIN("MapObjects/recycling-bin.png",128,128),
 		/** A glowing recycle bin */
 		RECYCLEGLOW("MapObjects/recyclegreen.png",128,128),
+		/** A heart for use in health icons */
 		HEART("MapObjects/FlatIcon-052.png", 75, 75),
+		/** An icon for use as a crab;s health */
 		CRABHEART("MapObjects/crablife.png", 125, 75),
+		/** The head of a kid */
 		KIDHEAD("MapObjects/kid head.png", 125, 75),
 
 		/** Onscreen river*/
@@ -93,6 +103,7 @@ public class Sprite {
 		ARROWKEYS("Tutorial/arrow_key.png",80,60),
 		/** The arrow prompt for the tutorial */
 		ARROW("Tutorial/arrow.png",40,60),
+		/** A icon representing the space key on a keyboard */
 		SPACEKEY("Tutorial/Key_space_Icon.png",60,50),
 		;
 
@@ -134,6 +145,14 @@ public class Sprite {
 			this(fname, worldWidth, worldHeight, numTilesWide, numTilesHigh, 1);
 		}
 		
+		/** Creates a animated Sprite.ID with the given filename, world width, world height, tileset width, tileset height, and frame division factor.
+		 *  @param fname The path to the source image, relative to the images/ folder.
+		 *  @param worldWidth The display width of the image, in world coordinates.
+		 *  @param worldHeight The display height of the image, in world coordinates.
+		 *  @param numTilesWide The number of tiles in a single row of the tileset.
+		 *  @param numTilesHigh The number of tiles in a single column of the tileset.
+		 *  @param frameDivier The number of output frames to advance a single frame of this animation.
+		 */
 		private ID(String fname, int worldWidth, int worldHeight, int numTilesWide, int numTilesHigh, int frameDivider) {
 			this.fname = fname;
 			this.worldWidth = worldWidth;
