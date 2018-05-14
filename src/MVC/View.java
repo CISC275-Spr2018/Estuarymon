@@ -249,6 +249,7 @@ public class View extends JPanel {
 			break;
 		case GAME_END:
 			this.drawOverlayBox(g);
+			this.drawEndScreenOverlay(g);
 			break;
 		}
 	}
@@ -366,23 +367,24 @@ public class View extends JPanel {
 		int pixelX = worldXToPixelX(worldX);
 		int pixelY = worldYToPixelY(worldY);
 
-//	//	this.setFontSize(g, WORLD_HEIGHT/8); // Side-affect, adds font to Graphics.
-//
-//		int offset = (int) (System.currentTimeMillis() - this.endScreenTimestamp);
-//		String print;
-//		if(offset > END_SCREEN_SCORE_TRANSITION_DURATION) {
-//			print = String.valueOf(this.score);
-//			g.setColor(Color.WHITE);
-//		} else {
-//			double percent = (double) (System.currentTimeMillis() - this.endScreenTimestamp) / END_SCREEN_SCORE_TRANSITION_DURATION;
-//			double multiplier = (Math.sin((percent/2+0.5) * Math.PI / 2) - 0.5) * 2;
-//			multiplier *= multiplier; // square it, make curve more dramatic
-//			print = String.valueOf((int) (this.score * multiplier));
-//			g.setColor(new Color(255, 255, 255, 128));
-//		}
-//
-//		g.drawString(print, pixelX, pixelY);
-//		g.setColor(Color.WHITE);
+		this.setFontSize(g, WORLD_HEIGHT/8); // Side-affect, adds font to Graphics.
+		int score = 123;
+
+		int offset = (int) (System.currentTimeMillis() - this.endScreenTimestamp);
+		String print;
+		if(offset > END_SCREEN_SCORE_TRANSITION_DURATION) {
+			print = String.valueOf(score);
+			g.setColor(Color.WHITE);
+		} else {
+			double percent = (double) (System.currentTimeMillis() - this.endScreenTimestamp) / END_SCREEN_SCORE_TRANSITION_DURATION;
+			double multiplier = (Math.sin((percent/2+0.5) * Math.PI / 2) - 0.5) * 2;
+			multiplier *= multiplier; // square it, make curve more dramatic
+			print = String.valueOf((int) (score * multiplier));
+			g.setColor(new Color(255, 255, 255, 128));
+		}
+
+		g.drawString(print, pixelX, pixelY);
+		g.setColor(Color.WHITE);
 	}
 
 	/**
@@ -601,6 +603,7 @@ public class View extends JPanel {
 	 * location, direction, and status. Updates the crab's position. Updates the
 	 * most recently held {@link Litter}, whether the player is currently holding a
 	 * {@link Litter}, and the most recent {@link Litter} eaten by the animal.
+	 */
 	private int setFontSize(Graphics g, int worldHeight) {
 		Integer storedSize = this.fontWorldToPt.get(worldHeight);
 		if(storedSize != null) {
@@ -643,7 +646,6 @@ public class View extends JPanel {
 	 * Updates the player's location, direction, and status. 
 	 * Updates the crab's position. 
 	 * Updates the most recently held {@link Litter}, whether the player is currently holding a {@link Litter}, and the most recent {@link Litter} eaten by the animal.
->>>>>>> 4da5a55c1f7be781fc79feb65fcdadd4a29bd5ca
 	 * Updates the current game score.
 	 * 
 	 * @param phase
