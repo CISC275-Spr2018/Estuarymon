@@ -80,7 +80,13 @@ public class Controller implements KeyListener {
 			model.isArrowKeyPrompt(),
 			model.isHoverLitter(),
 			model.getStartTime(),
-			model.getEndTime());
+			model.getEndTime(),
+			model.getRiver().getXLocation(),
+			model.getRiver().getYLocation(),
+			model.getPlantx(),
+			model.getPlanty(),
+			model.getPlantHealths()
+			);
 		}
 		else {
 			stepTimer.stop(); //Maybe try wait in the future

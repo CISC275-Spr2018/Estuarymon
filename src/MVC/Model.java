@@ -122,10 +122,14 @@ public class Model implements java.io.Serializable {
 	private Litter animalEatenLitter;
 	/** Contains plant objects **/
 	private ArrayList<Plant> plants = new ArrayList<Plant>();
-
+	/** Contains plant xcoords of plant objects **/
+	private ArrayList<Integer> plantx = new ArrayList<Integer>();
+	/** Contains plant ycoords of plant objects **/
+	private ArrayList<Integer> planty = new ArrayList<Integer>();
+	/** Contains plant health of plant objects **/
+	private ArrayList<Integer> plantHealths = new ArrayList<Integer>();
 	/** Random index of next plant **/
 	private int randPlant = (int) Math.floor(Math.random() * 4);
-
 	/**
 	 * Boolean variable that represents whether the player has planted the plant
 	 * that despawns in the tutorial
@@ -147,7 +151,7 @@ public class Model implements java.io.Serializable {
 	 */
 	private boolean tutorialHoverLitter;
 	/** onscreen river **/
-	River river;
+	private River river;
 	/** Boolean value to represent if the game is in progress or over */
 	private boolean running = true;
 	/** The time in milliseconds that the game has begun */
@@ -182,6 +186,9 @@ public class Model implements java.io.Serializable {
 		for(int i = 0; i < 4; i++)
 		{
 			plants.add(new Plant(plantHealth, river.getXLocation() - 120,((HEIGHT/10)+80) + count));//sets location of plants
+			plantx.add(river.getXLocation() - 120);
+			planty.add(((HEIGHT/10)+80) + count);
+			plantHealths.add(plantHealth);
 		// fills plant array
 //		for (int i = 0; i < 4; i++) {
 //			plants.add(new Plant(plantHealth, WIDTH - (WIDTH / 3), 50 + (WIDTH / 90) + count));// sets location of
@@ -786,12 +793,13 @@ public class Model implements java.io.Serializable {
 	
 	/**
 	 * Method called to decide if all plants are gone and whether to flood the river
+	 * also updates health of plants
 	 * 
 	 * @param
 	 * @return 
 	 */
-	public void checkPlants() {
-
+	public void checkPlants() 
+	{
 		int sum = 0;
 		for (Plant plant : plants) {
 			sum = sum + plant.health;
@@ -802,7 +810,36 @@ public class Model implements java.io.Serializable {
 		} else if (sum > 0) {
 			recedeRiver();
 		}
+		
+		for(int i=0;i<plants.size();i++)
+		{
+			plantHealths.set(i, plants.get(i).health);
+		}
 	}
+	
+	/** Returns plant xcoords of plant objects 
+	 * @return plantx xcoords of plant objects
+	 * **/
+	public ArrayList<Integer> getPlantx()
+	{
+		return plantx;
+	}
+	/** Returns plant ycoords of plant objects 
+	 * @return plantx ycoords of plant objects
+	 * **/
+	public ArrayList<Integer> getPlanty()
+	{
+		return planty;
+	}
+	
+	/** Returns plant health of plant objects 
+	 * @return plant health of plant objects
+	 * **/
+	public ArrayList<Integer> getPlantHealths()
+	{
+		return plantHealths;
+	}
+
 
 	/**
 	 * Generates a new Litter object with random x and y coordinates, as well as

@@ -112,13 +112,10 @@ public class View extends JPanel {
 	private boolean tGlow = false;
 	/** A Boolean to decide if the recycling bin is in the glowing deposit state */
 	private boolean rGlow = false;
-
+	/** A player health variable */
 	private int playerHealth = 0;
+	/** An animal health variable */
 	private int animalHealth = 0;
-
-	/** river onmap **/
-	private River river = new River(0, 0, 0, 0);
-
 	/**
 	 * A long representing when the game started in order to draw the truck timer in
 	 * the correct spot
@@ -152,7 +149,16 @@ public class View extends JPanel {
 
 	/** Duration over which to slowly raise the score when transitioning into the end game screen. In milliseconds. */
 	private static final int END_SCREEN_SCORE_TRANSITION_DURATION = 5000;
-
+	/**x coordinate of river**/
+	private int rivX;
+	/**y coordinate of river**/
+	private int rivY;
+	/** Contains plant xcoords of plant objects **/
+	private ArrayList<Integer> plantx = new ArrayList<Integer>();
+	/** Contains plant ycoords of plant objects **/
+	private ArrayList<Integer> planty = new ArrayList<Integer>();
+	/** Contains plant health of plant objects **/
+	private ArrayList<Integer> plantHealths = new ArrayList<Integer>();
 	/** Creates a new View, places it in a new JPanel, arranges everything, and makes it visible. */
 	public View() {	
 		// Prepare for rendering litters
@@ -195,18 +201,18 @@ public class View extends JPanel {
 		Sprite.incrementFrameCounter();
 		// Draw the background
 		drawImage(g, Sprite.ID.BACKGROUND, 0, 0);
-		drawImage(g, Sprite.ID.RIVER, river.getXLocation(), river.getYLocation());
+		drawImage(g, Sprite.ID.RIVER, rivX, rivY);
 
 		// Draw all plants
-		for (Plant plant : plants) {
-			if (plant.health < 100 && plant.health != 0) // If decaying...
+		for (int i = 0; i < plantHealths.size(); i++) {
+			if (plantHealths.get(i) < 100 && plantHealths.get(i) != 0) // If decaying...
 			{
-				drawImage(g, Sprite.ID.DECAY_PLANT, plant.getXLocation(), plant.getYLocation());
-			} else if (plant.health == 100) // If fully alive...
+				drawImage(g, Sprite.ID.DECAY_PLANT, plantx.get(i), planty.get(i));
+			} else if (plantHealths.get(i) == 100) // If fully alive...
 			{
-				drawImage(g, Sprite.ID.PLANT, plant.getXLocation(), plant.getYLocation());
+				drawImage(g, Sprite.ID.PLANT, plantx.get(i), planty.get(i));
 			} else {
-				drawImage(g, Sprite.ID.DIRT, plant.getXLocation(), plant.getYLocation());
+				drawImage(g, Sprite.ID.DIRT, plantx.get(i), planty.get(i));
 			}
 		}
 
@@ -689,7 +695,7 @@ public class View extends JPanel {
 			int crabY, ArrayList<Integer> pickedUpAttr, boolean hasLitter, ArrayList<Plant> plants, boolean tVictory,
 			boolean rVictory, int playerHealth, int animalHealth, River river, TutorialState tutorialState,
 			HashSet<ArrayList<Integer>> litterAttrSet, boolean arrowKeyPrompt, boolean hoverLitter, long startTime,
-			int endTime) {
+			int endTime, int rivx, int rivy, ArrayList<Integer> plantx, ArrayList<Integer> planty, ArrayList<Integer> plantHealths) {
 		// Updating crab and player locations
 		this.gamePhase = gamePhase;
 		playerXLoc = playerX;
@@ -699,7 +705,11 @@ public class View extends JPanel {
 		crabXLoc = crabX;
 		crabYLoc = crabY;
 		this.plants = plants;
-		this.river = river;
+		this.plantx = plantx;
+		this.planty = planty;
+		this.plantHealths = plantHealths;
+		this.rivX = rivx;
+		this.rivY = rivy;
 		tGlow = tVictory;
 		rGlow = rVictory;
 
