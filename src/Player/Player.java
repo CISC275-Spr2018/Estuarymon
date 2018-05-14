@@ -30,6 +30,9 @@ public class Player extends Interactable implements java.io.Serializable{
 	 *  Gets recalculated when {@link #dx} and {@link #dy} are changed to match their behaviour. Initial value is IDLE.
 	 */
 	private PlayerStatus status = PlayerStatus.IDLE;
+	/** Player's health*/
+	private static int health = 300;
+
 
 	/** Create a player with the given position and size, and sets up the collision box.
 	 *  @param xLoc The x-location of the Player
@@ -156,6 +159,20 @@ public class Player extends Interactable implements java.io.Serializable{
 		this.direction = d;
 	}
 	
+	/** Gets the current health of the player
+	 *  @return The current health of the Player
+	 */
+	public static int getHealth() {
+		return health;
+	}
+
+	/** Decrement the player's health by 10
+	 *  @param empty
+	 */
+	public static void loseHealth() {
+		Player.health -= 10;
+	}
+
 	public void setSpeed(int speed)
 	{
 		this.SPEED = speed;
@@ -165,6 +182,7 @@ public class Player extends Interactable implements java.io.Serializable{
 		this.dx = 0;
 		this.dy = 0;
 		this.status = PlayerStatus.IDLE;
+
 	}
 	
 	public int getSpeed() {

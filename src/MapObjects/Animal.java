@@ -21,6 +21,8 @@ public class Animal extends Interactable implements java.io.Serializable {
 	private static int imageHeight = 70;
 	/** Width of the Animal */
 	private static int imageWidth = 90;
+	/** Health of the Animal */
+	private static int health = 90;
 
 	/**
 	 * Constructor for the animal object. The animal originally spawns at the x
@@ -40,13 +42,9 @@ public class Animal extends Interactable implements java.io.Serializable {
 
 	/**
 	 * Simple getter method that retrieves the current direction of the animal.
-	 * 
-<<<<<<< HEAD
+	 *
 	 * @param empty
-=======
-	 * @param l empty
 	 *            
->>>>>>> bdb104553ae472f5edb18095e3e9ab7438aadf4c
 	 * @return The current direction of the crab
 	 */
 	public Direction getDirection() {
@@ -54,7 +52,7 @@ public class Animal extends Interactable implements java.io.Serializable {
 	}
 
 	/**
-	 * "Sets the direction of the crab.
+	 * "Sets the direction of the animal.
 	 * 
 	 * @param direction The direction that the user wants the crab to go
 	 *            
@@ -62,6 +60,28 @@ public class Animal extends Interactable implements java.io.Serializable {
 	 */
 	public void setDirection(Direction direction) {
 		this.curDir = direction;
+	}
+	
+	/**
+	 * Simple getter method that retrieves the current health of the animal.
+	 *
+	 * @param empty
+	 *            
+	 * @return The current health of the animal
+	 */
+	public static int getHealth() {
+		return health;
+	}
+
+	/**
+	 * "Decreases the health of the animal by 30.
+	 * 
+	 * @param empty
+	 *            
+	 * @return empty
+	 */
+	public static void loseHealth() {
+		Animal.health -= 30;
 	}
 
 }
