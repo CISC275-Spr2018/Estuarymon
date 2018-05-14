@@ -104,6 +104,9 @@ public class Model implements java.io.Serializable {
 	/** The vertical speed of the Crab */
 	private int animalYIncr;
 
+	/** Whether the player has lost */
+	private boolean hasLost;
+
 	/**
 	 * Whether the player is allowed to move this frame. Set to false under specific
 	 * circumstances, i.e. when colliding with an Animal
@@ -472,6 +475,7 @@ public class Model implements java.io.Serializable {
 		if (gamePhase == GamePhase.TUTORIAL) {
 			checkTutorialStates();
 		} else if (player.getHealth() == 0 || crab.getHealth() == 0) {
+			this.hasLost = true;
 			gamePhase = GamePhase.GAME_END;
 		} else {
 			updatingAnimalLocation();
@@ -1184,6 +1188,8 @@ public class Model implements java.io.Serializable {
 
 		this.totalLitterCollected = 0;
 		this.totalPlantsPlanted = 0;
+
+		this.hasLost = false;
 	}
 
 	/**
@@ -1214,5 +1220,9 @@ public class Model implements java.io.Serializable {
 
 	public int getTotalPlantsPlanted() {
 		return this.totalPlantsPlanted;
+	}
+
+	public boolean getHasLost() {
+		return this.hasLost;
 	}
 }

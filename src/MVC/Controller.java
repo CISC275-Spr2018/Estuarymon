@@ -80,7 +80,8 @@ public class Controller implements KeyListener {
 			model.getStartTime(),
 			model.getEndTime(),
 			model.getTotalLitterCollected(),
-			model.getTotalPlantsPlanted());
+			model.getTotalPlantsPlanted(),
+			model.getHasLost());
 	}
 	
 	/**
