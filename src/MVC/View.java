@@ -261,10 +261,6 @@ public class View extends JPanel {
 		drawImage(g, Sprite.ID.LITTERFRAME,0,5);
 		if(hasLitter) {
 			drawImage(g,getSpriteID(pickedUpAttr.get(1),pickedUpAttr.get(0)),15,15);
-//
-//		drawImage(g, Sprite.ID.LITTERFRAME, 0, 0);
-//		if (hasLitter) {
-//			drawImage(g, getSpriteID(pickedUpAttr.get(1), pickedUpAttr.get(0)), 10, 10);
 		}
 	}
 
@@ -353,7 +349,7 @@ public class View extends JPanel {
 			WORLD_HEIGHT/20);
 	}
 
-	/** Draws the end screen text onto the screen. Does not draw that underlying box. */
+	/** Draws the end screen text onto the screen. Does not draw the underlying box. */
 	private void drawEndScreenOverlay(Graphics g) {
 		this.drawImage(g, Sprite.ID.END_SCREEN,
 			WORLD_WIDTH/20,
@@ -383,8 +379,9 @@ public class View extends JPanel {
 			g.setColor(new Color(255, 255, 255, 128));
 		}
 
-		g.drawString(print, pixelX, pixelY);
-		g.setColor(Color.WHITE);
+		g.setColor(Color.BLACK);
+		this.drawString(g, "# of Trash Collected: ", WORLD_WIDTH / 2, WORLD_HEIGHT * 100 / 216, WORLD_HEIGHT / 16, HorizLocation.RIGHT, VertLocation.BOTTOM);
+		this.drawString(g, "# of Trash Collected: ", WORLD_WIDTH / 2, WORLD_HEIGHT * 140 / 216, WORLD_HEIGHT / 16, HorizLocation.RIGHT, VertLocation.BOTTOM);
 	}
 
 	/**
@@ -480,12 +477,26 @@ public class View extends JPanel {
 	 *            the y-coordinate of the left endpoint of the line, in
 	 *            <em>world</em> coordinates.
 	 */
-	private void drawString(Graphics g, String word, int width, int XPos, int YPos) {
-		g.setFont(new Font("TimesRoman", Font.BOLD, 25));
-		int stringLength = (int) g.getFontMetrics().getStringBounds(word, g).getWidth();
-		int start = worldXToPixelX(XPos + width / 2) - stringLength / 2;
-		g.setColor(Color.BLACK);
-		g.drawString(word, start, worldYToPixelY(YPos));
+	private void drawString(Graphics g, String str, int xpos, int ypos, int height, HorizLocation horizLocation, VertLocation vertLocation) {
+		this.setFontSize(g, height);
+		int pixel_x = worldXToPixelX(xpos);
+		int pixel_y = worldYToPixelY(ypos);
+		int pixel_width = g.getFontMetrics().stringWidth(str);
+		int pixel_height = worldHeightToPixelHeight(height);
+
+		switch(horizLocation) {
+			case LEFT: break;
+			case CENTER: pixel_x -= pixel_width / 2; break;
+			case RIGHT: pixel_x -= pixel_width; break;
+		}
+
+		switch(vertLocation) {
+			case TOP: pixel_y += pixel_height; break;
+			case MIDDLE: pixel_y += pixel_height / 2; break;
+			case BOTTOM: break;
+		}
+
+		g.drawString(str, pixel_x, pixel_y);
 	}
 
 	/**
@@ -759,4 +770,6 @@ public class View extends JPanel {
 
 	}
 
+	private static enum HorizLocation { LEFT, CENTER, RIGHT }
+	private static enum VertLocation { TOP, MIDDLE, BOTTOM }
 }
