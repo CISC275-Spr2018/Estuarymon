@@ -7,8 +7,11 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Rectangle;
+import java.awt.TexturePaint;
 import java.awt.Toolkit;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
@@ -197,12 +200,15 @@ public class View extends JPanel {
 	 */
 	public void paint(Graphics g) {
 		super.paint(g);
+		Graphics2D g2 = (Graphics2D) g;
 		// Increment animations to the next frame
 		Sprite.incrementFrameCounter();
 		// Draw the background
-		drawImage(g, Sprite.ID.BACKGROUND, 0, 0);
+		this.setPaint(g2, Sprite.ID.BACKGROUND);
+		g2.fillRect(0, 0, this.getWidth(), this.getHeight());
+		g2.setPaint(Color.WHITE);
+		// Draw the river
 		drawImage(g, Sprite.ID.RIVER, river.getXLocation(), river.getYLocation());
-
 		// Draw all plants
 		for (Plant plant : plants) {
 			if (plant.getHealth() < 100 && plant.getHealth() != 0) // If decaying...
@@ -502,6 +508,12 @@ public class View extends JPanel {
 		}
 
 		g.drawString(str, pixel_x, pixel_y);
+	}
+
+	private void setPaint(Graphics2D g, Sprite.ID s) {
+		BufferedImage img = Sprite.getImage(s, (double) this.getFrameWidth() / WORLD_WIDTH);
+		g.setPaint(
+			new TexturePaint(img, new Rectangle(0, 0, img.getWidth(), img.getHeight())));
 	}
 
 	/**
