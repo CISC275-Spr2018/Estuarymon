@@ -155,6 +155,11 @@ public class Model implements java.io.Serializable {
 	/** How many milliseconds the game should last */
 	private int endTimeMilli = 6 * 10000;
 
+	/** The number of Litter objects that the Player has picked up throughout the game */
+	private int totalLitterCollected = 0;
+	/** The number of Plants that the Player has replanted throughout the game */
+	private int totalPlantsPlanted = 0;
+
 	/**
 	 * Constructor for the Model. It creates a new animal and initializes a hashset
 	 * of animals just in case more than one animal is wanted in the game. Then the
@@ -194,7 +199,6 @@ public class Model implements java.io.Serializable {
 	}
 
 	/**
-<<<<<<< HEAD
 	 * Sets the trashVictory boolean of the Model.
 	 * 
 	 * @param trashVictory The boolean value the trashVictory boolean will be set to.
@@ -250,9 +254,6 @@ public class Model implements java.io.Serializable {
 	}
 	/**
 	 * Returns the tutorialHoverLitter boolean of Model. 
-=======
-	 * Returns the tutorialHoverLitter boolean of Model.
->>>>>>> cleanKalBranch
 	 * 
 	 * @param
 	 * @return True if the Player is hovering, but not picking up a Litter object,
@@ -1189,5 +1190,13 @@ public class Model implements java.io.Serializable {
 	 */
 	public int getEndTime() {
 		return endTimeMilli;
+	}
+
+	public int getTotalLitterCollected() {
+		return 100;
+	}
+
+	public int getTotalPlantsPlanted() {
+		return 200;
 	}
 }
