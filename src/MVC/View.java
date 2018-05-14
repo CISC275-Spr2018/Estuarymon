@@ -3,6 +3,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -115,8 +116,17 @@ public class View extends JPanel{
 	/** Boolean that represents whether or not the Player is hovering, but not picking up a Litter object */
 	private boolean hoverLitter = false;
 
+	/** Stores font sizes calculated using binary search. Should be reset whenever View is resized. */
+	private Map<Integer, Integer> fontWorldToPt = new HashMap<>();
+
 	/** The current phase of the game */
 	GamePhase gamePhase = GamePhase.TITLE_SCREEN;
+
+	/** The time that the phase GamePhase.GAME_END was entered. -1 when not in GAME_END. */
+	private long endScreenTimestamp = -1;
+
+	/** Duration over which to slowly raise the score when transitioning into the end game screen. In milliseconds. */
+	private static final int END_SCREEN_SCORE_TRANSITION_DURATION = 5000;
 
 	/** Creates a new View, places it in a new JPanel, arranges everything, and makes it visible. */
 	public View() {	
@@ -216,6 +226,7 @@ public class View extends JPanel{
 				break;
 			case GAME_END:
 				this.drawOverlayBox(g);
+				this.drawEndScreenOverlay(g);
 				break;
 		}
 	}
@@ -286,7 +297,42 @@ public class View extends JPanel{
 
 	/** Draws the start screen text onto the screen. Does not draw the box. */
 	private void drawStartScreenText(Graphics g) {
-		this.drawImage(g, Sprite.ID.TITLE_SCREEN, 50, 50);
+		this.drawImage(g, Sprite.ID.TITLE_SCREEN,
+			WORLD_WIDTH/20,
+			WORLD_HEIGHT/20);
+	}
+
+	/** Draws the end screen text onto the screen. Does not draw that underlying box. */
+	private void drawEndScreenOverlay(Graphics g) {
+		this.drawImage(g, Sprite.ID.END_SCREEN,
+			WORLD_WIDTH/20,
+			WORLD_HEIGHT/20);
+
+		// Now draw the score text.
+		// Bottom left of the text is 2/3 from left, 1/2 from top.
+		int worldX = WORLD_WIDTH*13/20; // Simplification of:
+		                                // (WORLD_WIDTH*18/20)*2/3+(WORLD_WIDTH/20)
+		int worldY = WORLD_HEIGHT/2;
+		int pixelX = worldXToPixelX(worldX);
+		int pixelY = worldYToPixelY(worldY);
+
+		this.setFontSize(g, WORLD_HEIGHT/8); // Side-affect, adds font to Graphics.
+
+		int offset = (int) (System.currentTimeMillis() - this.endScreenTimestamp);
+		String print;
+		if(offset > END_SCREEN_SCORE_TRANSITION_DURATION) {
+			print = String.valueOf(this.score);
+			g.setColor(Color.WHITE);
+		} else {
+			double percent = (double) (System.currentTimeMillis() - this.endScreenTimestamp) / END_SCREEN_SCORE_TRANSITION_DURATION;
+			double multiplier = (Math.sin((percent/2+0.5) * Math.PI / 2) - 0.5) * 2;
+			multiplier *= multiplier; // square it, make curve more dramatic
+			print = String.valueOf((int) (this.score * multiplier));
+			g.setColor(new Color(255, 255, 255, 128));
+		}
+
+		g.drawString(print, pixelX, pixelY);
+		g.setColor(Color.WHITE);
 	}
 
 	/** Determines which {@link Sprite.ID} to use to render the player. Determines this based on the player's {@link #playerStatus status} and {@link #playerDirection direction}.
@@ -440,6 +486,44 @@ public class View extends JPanel{
 			return new Dimension(this.getHeight() * WORLD_WIDTH / WORLD_HEIGHT, this.getHeight());
 		}
 	}
+
+	private int setFontSize(Graphics g, int worldHeight) {
+		Integer storedSize = this.fontWorldToPt.get(worldHeight);
+		if(storedSize != null) {
+			g.setFont(new Font("TimesRoman", Font.BOLD, storedSize));
+			return storedSize;
+		}
+
+		int targetHeight = worldHeightToPixelHeight(worldHeight);
+		int fontSize = 32;
+		System.out.println("Target "+targetHeight);
+		do {
+			fontSize *= 2;
+			System.out.println("Increasing to "+fontSize);
+			g.setFont(new Font("TimesRoman", Font.BOLD, fontSize));
+		} while (g.getFontMetrics().getHeight() < targetHeight);
+
+		int distance = fontSize/2;
+		while(distance > 0) {
+			g.setFont(new Font("TimesRoman", Font.BOLD, fontSize));
+			int height = g.getFontMetrics().getHeight();
+			System.out.println("Tryping "+fontSize+" : " + height);
+			if(height > targetHeight) {
+				fontSize -= distance;
+			} else if(height < targetHeight) {
+				fontSize += distance;
+			} else {
+				break;
+			}
+			distance /= 2;
+		}
+
+		System.out.println("Goin' with "+fontSize);
+
+		this.fontWorldToPt.put(worldHeight, fontSize);
+		return fontSize;
+	}
+	
 	
 	/**Updates the View based on the given parameters.
 	 * Updates the player's location, direction, and status. 
@@ -489,6 +573,13 @@ public class View extends JPanel{
 		this.hoverLitter = hoverLitter;
 		this.startTime = startTime;
 		this.endTime = endTime;
+
+		if(gamePhase != GamePhase.GAME_END) {
+			this.endScreenTimestamp = -1;
+		} else if(this.endScreenTimestamp == -1) {
+			this.endScreenTimestamp = System.currentTimeMillis();
+		}
+
 		frame.repaint();
 	}
 	

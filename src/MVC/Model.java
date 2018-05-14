@@ -473,9 +473,6 @@ public class Model implements java.io.Serializable{
 	 */
 	public void spaceKeyReleased() {
 		this.spacePressed = false;
-		if(this.gamePhase == GamePhase.TITLE_SCREEN) {
-			this.startTutorial();
-		}
 	}
 
 	/**
@@ -1018,6 +1015,8 @@ public class Model implements java.io.Serializable{
 		this.crab = new Animal();
 		animals = new HashSet<Animal>();
 		animals.add(crab);
+		this.litterSet = new HashSet<>();
+		this.litterAttrSet = new HashSet<>();
 	}
 
 	/** Method to determine the game's status 
