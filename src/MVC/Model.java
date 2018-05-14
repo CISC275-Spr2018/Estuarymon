@@ -877,7 +877,7 @@ public class Model implements java.io.Serializable {
 	 * @param empty
 	 * @return empty
 	 */
-	private boolean checkPlayerAnimalCollision() {
+	public boolean checkPlayerAnimalCollision() {
 		if (this.player.getCollidesWith(this.crab)) { // this checks if the player has collided with the crab
 			if (gamePhase == GamePhase.NORMAL) {
 				player.loseHealth();
