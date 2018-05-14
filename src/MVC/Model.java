@@ -156,9 +156,9 @@ public class Model implements java.io.Serializable {
 	private int endTimeMilli = 6 * 10000;
 
 	/** The number of Litter objects that the Player has picked up throughout the game */
-	private int totalLitterCollected = 0;
+	private int totalLitterCollected;
 	/** The number of Plants that the Player has replanted throughout the game */
-	private int totalPlantsPlanted = 0;
+	private int totalPlantsPlanted;
 
 	/**
 	 * Constructor for the Model. It creates a new animal and initializes a hashset
@@ -1165,6 +1165,9 @@ public class Model implements java.io.Serializable {
 		this.litterSet = new HashSet<>();
 		this.litterAttrSet = new HashSet<>();
 		this.river = new River(WIDTH - 200, 0, WIDTH, HEIGHT);
+
+		this.totalLitterCollected = 0;
+		this.totalPlantsPlanted = 0;
 	}
 
 	/**
