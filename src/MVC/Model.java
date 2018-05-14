@@ -967,6 +967,7 @@ public class Model implements java.io.Serializable {
 			if (plant.health == 0 && plant.getCollidesWith(this.player)) {
 				setRandPlant();
 				plant.health = 100;
+				this.totalPlantsPlanted++;
 				this.tutorialPlantGrown = true;
 				return true;
 			}
@@ -983,6 +984,7 @@ public class Model implements java.io.Serializable {
 				this.tBin.takeLitter(this.player, this);
 				System.out.println("DEPOSITED TRASH");
 				trashVictory = true;
+				this.totalLitterCollected++;
 				return true;
 			}
 		
@@ -990,6 +992,7 @@ public class Model implements java.io.Serializable {
 			this.rBin.takeLitter(this.player, this);
 			System.out.println("DEPOSITED RECYCLABLE");
 			recycleVictory = true;
+			this.totalLitterCollected++;
 			return true;
 		}
 		}
@@ -1192,11 +1195,15 @@ public class Model implements java.io.Serializable {
 		return endTimeMilli;
 	}
 
+	public void litterWasCollected() {
+		this.totalLitterCollected++;
+	}
+
 	public int getTotalLitterCollected() {
-		return 100;
+		return this.totalLitterCollected;
 	}
 
 	public int getTotalPlantsPlanted() {
-		return 200;
+		return this.totalPlantsPlanted;
 	}
 }
