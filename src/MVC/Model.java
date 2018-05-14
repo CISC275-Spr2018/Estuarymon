@@ -744,9 +744,9 @@ public class Model implements java.io.Serializable{
 		this.litterAttrSet.add(getLitterAttr(l));
 		return l;
 	}
-	/** A public version of {@link #checkCollision} only for use by the {@link ModelTest} class.
+	/** A public version of {@link #checkCollision} only for use by the {@link tests.ModelTest} class.
 	 *  @see #checkCollision
-	 *  @see ModelTest
+	 *  @see tests.ModelTest
 	 */
 	public boolean testCheckColl() {
 		return checkCollision();
