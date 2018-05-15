@@ -34,7 +34,9 @@ import Player.PlayerStatus;
  * @author Zack Klodnicki
  **/
 public class Model implements java.io.Serializable {
+	/** The width of the world in <em>WORLD</em> coordinates */
 	private static int WIDTH;
+	/** The height of the world in <em>WORLD</em> coordinates */
 	private static int HEIGHT;
 
 	/**
@@ -486,6 +488,9 @@ public class Model implements java.io.Serializable {
 		}
 	}
 	
+	/**
+	 * Checks whether the player is walking of the screen in any dimension, and prevents the player from doing so.
+	 */
 	public void checkPlayerWallCollision() {
 		if(this.player.getXLocation() <= 0) {
 			this.playerMove = false;
@@ -667,6 +672,9 @@ public class Model implements java.io.Serializable {
 		}
 	}
 
+	/**
+	 * Moves the crab down by 10 units
+	 */
 	public void updatingTutorialAnimalLocation() {
 		crab.setYLocation(crab.getYLocation() + 10);
 	}
@@ -1210,18 +1218,28 @@ public class Model implements java.io.Serializable {
 		return endTimeMilli;
 	}
 
+	/** Increments the counter to track that a litter was collected. */
 	public void litterWasCollected() {
 		this.totalLitterCollected++;
 	}
 
+	/** Returns the number of Litter objects that were collected throughout the game. 
+	 *  @return The number of litter objects that were collicted throughout the game. 
+	 */
 	public int getTotalLitterCollected() {
 		return this.totalLitterCollected;
 	}
 
+	/** Get the number of plants that were planted throughout the game.
+	 *  @return the number of plants that were planted throughout the game
+	 */
 	public int getTotalPlantsPlanted() {
 		return this.totalPlantsPlanted;
 	}
 
+	/** Get whether the player has lost,
+	 *  @return <code>false</code> if the player has won, <code>true</code> if the player has lost.
+	 */
 	public boolean getHasLost() {
 		return this.hasLost;
 	}

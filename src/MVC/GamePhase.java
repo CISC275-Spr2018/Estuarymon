@@ -11,12 +11,17 @@ public enum GamePhase {
 	/** Game has ended */
 	GAME_END(false);
 
+	/** Whether the game can be played normally during this phase. */
 	private boolean playable;
 
+	/** Constructs a GamePhase with the given {@link #playable} attribute.
+	 *  @param playable Whether the game can be played normally during this phase.
+	 */
 	private GamePhase(boolean playable) {
 		this.playable = playable;
 	}
 
+	/** Returns whether the game is playable during this phase. */
 	public boolean isPlayable() {
 		return playable;
 	}

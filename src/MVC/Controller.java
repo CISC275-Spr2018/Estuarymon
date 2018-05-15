@@ -206,7 +206,10 @@ public class Controller implements KeyListener {
 
 	
 	/** Changes the player's velocity according to the arrow keys being released, or mark that the space key is no longer pressed down.
-	 *  @param e The KeyEvent containing the key that was rseleased. */
+	 *  If the space key was released and the game is in the {@link GamePhase.TITLE_SCREEN}, will start the tutorial.
+	 *  If the space key was released and the game is in the {@link GamePhase.GAME_END}, will reset and start normal mode.
+	 *  If the 'q' key was released and the game is in the {@link GamePhase.GAME_END{}, will start the title screen.
+	 *  @param e The KeyEvent containing the key that was released. */
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int key = e.getKeyCode();
@@ -241,6 +244,12 @@ public class Controller implements KeyListener {
 	}
 
 	/** 
+	 *  Handles typing and cheat codes. If the user types 'cheat', the next letter they press will be interpreted as a cheat code.
+	 *  'T' will start the title screen.
+	 *  't' will start the tutorial.
+	 *  'n' will start normal play.
+	 *  'r' will reset everything.
+	 *  'e' will go to the game end screen
 	 *  @param e Ignored
 	 */
 	@Override

@@ -116,10 +116,12 @@ public class View extends JPanel {
 	/** A Boolean to decide if the recycling bin is in the glowing deposit state */
 	private boolean rGlow = false;
 
+	/** The current health of the player */
 	private int playerHealth = 0;
+	/** The current health of the animal */
 	private int animalHealth = 0;
 
-	/** river onmap **/
+	/** The river */
 	private River river = new River(0, 0, 0, 0);
 
 	/**
@@ -160,7 +162,7 @@ public class View extends JPanel {
 	private int totalLitterCollected = 0;
 	/** The number of Plants that the Player has replanted throughout the game */
 	private int totalPlantsPlanted = 0;
-
+	/** Whether the player has lost or won the game. True if lost, false if won. */
 	private boolean hasLost;
 	
 
@@ -268,7 +270,11 @@ public class View extends JPanel {
 		}
 	}
 
-	/** Draws the litter container overlay */
+	/** Draws the litter container overlay
+	 * 
+	 * @param g
+	 *            The {@link java.awt.Graphics} object to use for painting
+	 */
 	private void drawLitterContainerOverlay(Graphics g) {
 
 		// Draw the litter in the box
@@ -277,7 +283,11 @@ public class View extends JPanel {
 			drawImage(g,getSpriteID(pickedUpAttr.get(1),pickedUpAttr.get(0)),15,15);
 		}
 	}
-
+	/** Draws the tutorial overlay
+	 * 
+	 * @param g
+	 *            The {@link java.awt.Graphics} object to use for painting
+	 */
 	private void drawTutorialOverlays(Graphics g) {
 		if (arrowKeyPrompt)
 			drawImage(g, Sprite.ID.ARROWKEYS, 240, 200);
@@ -335,7 +345,11 @@ public class View extends JPanel {
 		}
 	}
 
-	/** Draws a box on the screen appropriate for title screen, end score, etc. */
+	/** Draws a box on the screen appropriate for title screen, end score, etc.
+	 * 
+	 * @param g
+	 *            The {@link java.awt.Graphics} object to use for painting
+	 */
 	private void drawOverlayBox(Graphics g) {
 		g.setColor(new Color(255, 255, 255, 128));
 		g.fillRoundRect(worldXToPixelX(WORLD_WIDTH / 20), // X
@@ -347,6 +361,11 @@ public class View extends JPanel {
 		g.setColor(Color.WHITE);
 	}
 
+	/** Draws a timer on the screen. Represented as a garbage truck moving along a line.
+	 * 
+	 * @param g
+	 *            The {@link java.awt.Graphics} object to use for painting
+	 */
 	private void drawTimer(Graphics g) {
 		drawImage(g, Sprite.ID.REDPATH, 0, WORLD_HEIGHT - 64);
 		drawImage(g, Sprite.ID.FLAG, WORLD_WIDTH - 128, WORLD_HEIGHT - 164);
@@ -356,14 +375,22 @@ public class View extends JPanel {
 		drawImage(g, Sprite.ID.GARBAGETRUCK, truckX, WORLD_HEIGHT - 128);
 	}
 
-	/** Draws the start screen text onto the screen. Does not draw the box. */
+	/** Draws the start screen text onto the screen. Does not draw the box.
+	 * 
+	 * @param g
+	 *            The {@link java.awt.Graphics} object to use for painting
+	 */
 	private void drawStartScreenText(Graphics g) {
 		this.drawImage(g, Sprite.ID.TITLE_SCREEN,
 			WORLD_WIDTH/20,
 			WORLD_HEIGHT/20);
 	}
 
-	/** Draws the end screen text onto the screen. Does not draw the underlying box. */
+	/** Draws the end screen text onto the screen. Does not draw the underlying box.
+	 * 
+	 * @param g
+	 *            The {@link java.awt.Graphics} object to use for painting
+	 */
 	private void drawEndScreenOverlay(Graphics g) {
 		if(this.hasLost) {
 			this.drawImage(g, Sprite.ID.TRY_AGAIN_SCREEN,
@@ -518,6 +545,14 @@ public class View extends JPanel {
 		g.drawString(str, pixel_x, pixel_y);
 	}
 
+	/** Sets the paint of the given Graphics2D to be a tesselation of the given Sprite.ID. 
+	 *  Scales the Sprite appropriately to make it apppear the same size as if it were drawn using @{link #drawImage}.
+	 * 
+	 * @param g
+	 *            The {@link java.awt.Graphics} object to use for painting
+	 * @param s
+	 *            The {@link Sprite.ID} to use as the texture
+	 */
 	private void setPaint(Graphics2D g, Sprite.ID s) {
 		BufferedImage img = Sprite.getImage(s, (double) this.getFrameWidth() / WORLD_WIDTH);
 		g.setPaint(
@@ -634,29 +669,40 @@ public class View extends JPanel {
 	}
 
 
-	/**
-	 * Updates the View based on the given parameters. Updates the player's
-	 * location, direction, and status. Updates the crab's position. Updates the
-	 * most recently held {@link Litter}, whether the player is currently holding a
-	 * {@link Litter}, and the most recent {@link Litter} eaten by the animal.
+	/** 
+	 *  Sets the font of the given {@link java.awt.Graphics} to match the given height in <em>world</em> coordinates.
+	 *  Uses the font Times New Roman, Bold.
+	 *
+	 * @param g
+	 *        The Graphics to set the font on
+	 * @param worldHeight
+	 *        The expected font height, in <em>world</em> coordinates.
 	 */
 	private int setFontSize(Graphics g, int worldHeight) {
+		// If we already remember it, just return that.
 		Integer storedSize = this.fontWorldToPt.get(worldHeight);
 		if(storedSize != null) {
 			g.setFont(new Font("TimesRoman", Font.BOLD, storedSize));
 			return storedSize;
 		}
 
+		// Okay we need to calculate it.
+		// Convert the given height to pixel coordinates
 		int targetHeight = worldHeightToPixelHeight(worldHeight);
-		int fontSize = 32;
 		System.out.println("Target "+targetHeight);
+
+		// Now we're going to continue doubling the size until it's too big.
+		int fontSize = 32; // A decent starting point
+
 		do {
 			fontSize *= 2;
 			System.out.println("Increasing to "+fontSize);
 			g.setFont(new Font("TimesRoman", Font.BOLD, fontSize));
 		} while (g.getFontMetrics().getHeight() < targetHeight);
 
+		// Now we do a binary search (bounded by the starting value of fontSize) to get the exact correct size.
 		int distance = fontSize/2;
+
 		while(distance > 0) {
 			g.setFont(new Font("TimesRoman", Font.BOLD, fontSize));
 			int height = g.getFontMetrics().getHeight();
@@ -670,10 +716,11 @@ public class View extends JPanel {
 			}
 			distance /= 2;
 		}
-
 		System.out.println("Goin' with "+fontSize);
 
+		// Remember for later.
 		this.fontWorldToPt.put(worldHeight, fontSize);
+		// Return our answer.
 		return fontSize;
 	}
 	
@@ -684,7 +731,7 @@ public class View extends JPanel {
 	 * Updates the most recently held {@link Litter}, whether the player is currently holding a {@link Litter}, and the most recent {@link Litter} eaten by the animal.
 	 * Updates the current game score.
 	 * 
-	 * @param phase
+	 * @param gamePhase
 	 *            The current game phase.
 	 * @param playerX
 	 *            The Player's X-location in <em>world</em> coordinates.
@@ -698,31 +745,42 @@ public class View extends JPanel {
 	 *            The Animal's X-location in <em>world</em> coordinates.
 	 * @param crabY
 	 *            The Animal's Y-location in <em>world</em> coordinates.
-	 * @param playerPickedUp
-	 *            The most recent Litter object picked up by the Player
+	 * @param playerPickedUpAttr
+	 *            The attributes of the most recent litter object picked up by the
+	 *            player.
 	 * @param hasLitter
 	 *            Boolean value representing if the Player is currently holding a
 	 *            Litter object.
-	 * @param playerHealth
-	 *            int value representing the life of the player
-	 * @param animalHealth
-	 *            int value representing the life of the animal
-	 * @param animalEatenLitter
-	 *            The most recent Litter object eaten by the animal.
 	 * @param plants
-	 *            the array of plants in the game
+	 *            All plants to render
 	 * @param tVictory
-	 *            Whether the trash bin should be glowing
+	 *            Whether the player has recently deposited a Trash.
 	 * @param rVictory
-	 *            Whether the recycle bin should be glowing
+	 *            Whether the player has recently deposited a Recyclable.
+	 * @param animalHealth
+	 *            The health of the Animal
+	 * @param river
+	 *            The river, including its position.
+	 * @param tutorialState
+	 *            The current state of the tutorial
+	 * @param litterAttrSet
+	 *            The attributes of all litter to render
+	 * @param arrowKeyPrompt
+	 *            Whether to render an arrow key tutorial prompt
+	 * @param hoverLitter
+	 *            Whether the player has touched the litter yet 
+	 *            in the tutorial phase
 	 * @param startTime
-	 *            When the game began
+	 *            The <code>System.currentTimeMillis()</code> when the game was started. 
+	 *            Should be 0 immediately after the tutorial ends and normal gameplay begins.
 	 * @param endTime
-	 *            When the truck visual timer should end
+	 *            The number of milliseconds that a game should last
 	 * @param totalLitterCollected
 	 *            The total number of litter objects collected throughout the game
 	 * @param totalPlatsPlanted
 	 *            The total number of plants that were replanted throughout the game
+	 * @param hasLost
+	 *            Whether the player has lost the game.
 	 * @return None.
 	 */
 	public void update(GamePhase gamePhase, int playerX, int playerY, Direction dir, PlayerStatus status, int crabX,
@@ -775,8 +833,10 @@ public class View extends JPanel {
 	 * chosen using the Litter's enum attribute that represents type, specific image
 	 * chosen is done using the Litter object's imgID
 	 * 
-	 * @param l
-	 *            the Litter object whose Sprite ID will be chosen.
+	 * @param lType
+	 *            the Litter type whose Sprite ID will be chosen.
+	 * @param imgID
+	 *            The image id of the given litter.
 	 * @return Sprite ID representing the parameter.
 	 */
 	public Sprite.ID getSpriteID(int lType, int imgID) {
@@ -785,8 +845,7 @@ public class View extends JPanel {
 	}
 
 	/**
-	 * Loads in the different Litter images to be used in the game.
-	 * 
+	 * Populates trashImgList and recyclableImgList with Sprite.IDs.
 	 * 
 	 * @param None.
 	 * @return None.
@@ -804,6 +863,8 @@ public class View extends JPanel {
 
 	}
 
+	/** A x-location of something */
 	private static enum HorizLocation { LEFT, CENTER, RIGHT }
+	/** A y-location of something */
 	private static enum VertLocation { TOP, MIDDLE, BOTTOM }
 }
