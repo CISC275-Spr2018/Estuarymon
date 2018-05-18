@@ -91,8 +91,6 @@ public class Sprite {
 		/** The head of a kid */
 		KIDHEAD("MapObjects/kid head.png", 125, 75),
 
-		/** Onscreen river*/
-		RIVER("MapObjects/river2.png", View.WORLD_HEIGHT, View.WORLD_HEIGHT),
 		/** A garbage truck for timer  */
 		GARBAGETRUCK("Map/garbage-truck.png",128,128),   // <div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 		/** The path on which the garbage truck timer travels */ 
@@ -105,6 +103,11 @@ public class Sprite {
 		ARROW("Tutorial/arrow.png",40,60),
 		/** A icon representing the space key on a keyboard */
 		SPACEKEY("Tutorial/Key_space_Icon.png",60,50),
+
+		/** A texture of the river. Should not be scaled. */
+		RIVER_TEXTURE("River/texture.png", -1, -1),
+		/** An alpha map for use rendering the river. Should not be scaled. */
+		RIVER_ALPHA("River/alphaMap.png", -1, -1),
 		;
 
 		
@@ -164,6 +167,20 @@ public class Sprite {
 	}
 
 	/**
+	 *  Returns an instance of Sprite for the given Sprite.ID. Creates the instance if one does not exist already.
+	 *  @param id The id used to create the image
+	 *  @return An instance of Sprite. Don't let it leave this class!
+	 */
+	private static Sprite makeInstance(Sprite.ID id) {
+		Sprite s = instances.get(id);
+		if(s == null) {
+			s = new Sprite(id.fname, id.worldWidth, id.worldHeight, id.numTilesWide, id.numTilesHigh, id.frameDivider);
+			instances.put(id, s);
+		}
+		return s;
+	}
+
+	/**
 	 *  Retrieve the correctly scaled image for the given id, according to the given scaleFactor, loading from disk if necessary, scaling if necessary, and tiling if necessary.
 	 *  The scaleFactor is the size of the View relative to the Model. For example, if the Model is 100 units wide and the View is 200 pixels wide, scaleFactor should be 2.0.
 	 *  @return The correctly scaled image
@@ -171,13 +188,16 @@ public class Sprite {
 	 *  @param scaleFactor The size of the View relative to the Model.
 	 */
 	public static BufferedImage getImage(Sprite.ID id, double scaleFactor) {
-		Sprite s = instances.get(id);
-		if(s == null) {
-			s = new Sprite(id.fname, id.worldWidth, id.worldHeight, id.numTilesWide, id.numTilesHigh, id.frameDivider);
-			instances.put(id, s);
-		}
+		return makeInstance(id).getImage(scaleFactor);
+	}
 
-		return s.getImage(scaleFactor);
+	/**
+	 *  Retrieves thet unscaled version of the image. Should be used with caution, the image size relative to the world does change depending on the viewport size!
+	 *  @param id The Sprite ID to get the image from
+	 *  @return The unscaled image
+	 */
+	public static BufferedImage getRawImage(Sprite.ID id) {
+		return makeInstance(id).getRawImage();
 	}
 
 	/**
@@ -209,6 +229,7 @@ public class Sprite {
 	private BufferedImage scaled;
 	/** A array of tiles, cropped out of {@link #scaled} */
 	private BufferedImage[] scaledTiles;
+	/** The raw data of the unscaled image */
 
 	/** Creates a Sprite with the specified attributes, not to be called by the user,
 	 *  @param fname The path to the source image, relative to the images/ folder.
@@ -326,5 +347,13 @@ public class Sprite {
 		this.scale(scaleFactor); // Ensure scaled correctly
 		this.tile(); // Ensure has been tiled
 		return this.scaledTiles[(Sprite.frameCounter / this.frameDivider) % this.scaledTiles.length]; // Return a single frame
+	}
+
+	/** Retrieve the unscaled image, loading from disk if necessary.
+	 *  @return The source image
+	 */
+	private BufferedImage getRawImage() {
+		this.loadSource(); // Ensure loaded from disk
+		return this.source;
 	}
 }

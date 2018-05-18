@@ -164,6 +164,11 @@ public class View extends JPanel {
 	private int totalPlantsPlanted = 0;
 	/** Whether the player has lost or won the game. True if lost, false if won. */
 	private boolean hasLost;
+
+	/** A array of every pixel in the image {@link Sprite.ID.RIVER_TEXTURE}, set the first time {@link #drawRiver} is run. */
+	private int[] riverTexturePixels;
+	/** A array of every pixel in the image {@link Sprite.ID.RIVER_ALPHA}, set the first time {@link #drawRiver} os run. */
+	private int[] riverAlphaMapPixels;
 	
 
 	/** Creates a new View, places it in a new JPanel, arranges everything, and makes it visible. */
@@ -212,7 +217,7 @@ public class View extends JPanel {
 		g2.fillRect(0, 0, this.getWidth(), this.getHeight());
 		g2.setPaint(Color.WHITE);
 		// Draw the river
-		drawImage(g, Sprite.ID.RIVER, river.getXLocation(), river.getYLocation());
+		this.drawRiver(g2, this.river.getXLocation());
 		// Draw all plants
 		for (Plant plant : plants) {
 			if (plant.getHealth() < 100 && plant.getHealth() != 0) // If decaying...
@@ -430,6 +435,91 @@ public class View extends JPanel {
 		this.drawString(g, printPlants, WORLD_WIDTH / 2, WORLD_HEIGHT * 140 / 216, WORLD_HEIGHT / 16, HorizLocation.LEFT, VertLocation.BOTTOM);
 	}
 
+	/** Draws the river on the screen. Some complex rendering tecniques used here!
+	 *  @param g The graphics object to use for rendering
+	 *  @param xpos_world The x-position of the River, in world coordinates
+	 */
+	private void drawRiver(Graphics2D g, int xpos_world) {
+		// ---------- Constants for tuning appearance!
+		final int RIVER_X_DIVISOR = -62;
+		final int RIVER_Y_DIVISOR = 25;
+		final int ALPHA_X_DIVISOR = -60;
+		final int ALPHA_Y_DIVISOR = 80;
+		final int SIN_DIVISOR = 2530;
+		final int SIN_MULTIPLIER = 50;
+		final int TRANSITION_WIDTH = 400;
+		final int TRANSITION_OFFSET = TRANSITION_WIDTH/2;
+
+		long t = System.currentTimeMillis();
+		int xpos = this.worldXToPixelX(xpos_world) + (int) (SIN_MULTIPLIER * Math.sin((double) t / SIN_DIVISOR));
+
+		BufferedImage solidTexture = Sprite.getRawImage(Sprite.ID.RIVER_TEXTURE);
+		BufferedImage alphaMap = Sprite.getRawImage(Sprite.ID.RIVER_ALPHA);
+
+		int riverWidth = solidTexture.getWidth();
+		int riverHeight = solidTexture.getHeight();
+		int alphaWidth = alphaMap.getWidth();
+		int alphaHeight = alphaMap.getHeight();
+
+		int riverXOffset = (int) ((t / RIVER_X_DIVISOR) % riverWidth);
+		int riverYOffset = (int) ((t / RIVER_Y_DIVISOR) % riverHeight);
+		int alphaXOffset = (int) ((t / ALPHA_X_DIVISOR) % alphaWidth);
+		alphaXOffset = 0;
+		int alphaYOffset = (int) ((t / ALPHA_Y_DIVISOR) % alphaHeight);
+
+		// ---------- Draw solid texture on right side
+		// ----- From xpos + 100 to right side
+
+		g.setPaint(
+			new TexturePaint(solidTexture, 
+				new Rectangle(
+					riverXOffset,
+					riverYOffset,
+					solidTexture.getWidth(), 
+					solidTexture.getHeight())));
+
+		g.fillRect(xpos+TRANSITION_OFFSET, 0, this.getWidth() - xpos - TRANSITION_OFFSET, this.getHeight());
+		g.setPaint(Color.WHITE);
+
+		// ---------- Load pixels if necessary.
+		if(this.riverTexturePixels == null)
+			this.riverTexturePixels = solidTexture.getRaster().getPixels(0, 0, solidTexture.getWidth(), solidTexture.getHeight(), this.riverTexturePixels);
+		if(this.riverAlphaMapPixels == null) {
+			this.riverAlphaMapPixels = alphaMap.getRaster().getPixels(0, 0, alphaWidth, alphaHeight, this.riverAlphaMapPixels);
+		}
+
+		// ---------- Construct the transition BufferedImage
+		BufferedImage transitionImage = new BufferedImage(TRANSITION_WIDTH, this.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		int[] transitionPixels = new int[TRANSITION_WIDTH * this.getHeight() * 4];
+		transitionPixels = transitionImage.getRaster().getPixels(0, 0, transitionImage.getWidth(), transitionImage.getHeight(), transitionPixels);
+		for(int y = 0; y < this.getHeight(); y++) {
+			for(int x = 0; x < TRANSITION_WIDTH; x++) {
+				int transitionOffset = (x + y * TRANSITION_WIDTH) * 4;
+				int riverOffset = (Math.floorMod(x + xpos - TRANSITION_OFFSET - riverXOffset, riverWidth) + Math.floorMod(y - riverYOffset, riverHeight) * riverWidth) * 4;
+				int alphaMapOffset = (Math.floorMod(x + xpos - TRANSITION_OFFSET - alphaXOffset, alphaWidth) + Math.floorMod(y - alphaYOffset, alphaHeight) * alphaWidth) * 4;
+
+				float percent = ((float) x / TRANSITION_WIDTH);
+				int alphaMapRed = this.riverAlphaMapPixels[alphaMapOffset];
+				int alphaValue = (((int) (alphaMapRed + percent * 0x120) - 0x80) * 2) - 0x10;
+				if(percent < 0.25);
+					alphaValue *= percent * 4;
+				if(alphaValue > 0xFF) alphaValue = 0xFF;
+				else if(alphaValue < 0 ) alphaValue = 0;
+
+				transitionPixels[transitionOffset] = this.riverTexturePixels[riverOffset];
+				transitionPixels[transitionOffset+1] = this.riverTexturePixels[riverOffset+1];
+				transitionPixels[transitionOffset+2] = this.riverTexturePixels[riverOffset+2];
+				transitionPixels[transitionOffset+3] = alphaValue;
+			}
+		}
+		transitionImage.getRaster().setPixels(0, 0, transitionImage.getWidth(), transitionImage.getHeight(), transitionPixels);
+
+		System.out.println("Raster size: " + transitionPixels.length);
+		System.out.println("W*H: " + TRANSITION_WIDTH * this.getHeight());
+
+		g.drawImage(transitionImage, xpos - TRANSITION_OFFSET, 0, null);
+	}
+
 	/**
 	 * Determines which {@link Sprite.ID} to use to render the player. Determines
 	 * this based on the player's {@link #playerStatus status} and
@@ -545,7 +635,7 @@ public class View extends JPanel {
 		g.drawString(str, pixel_x, pixel_y);
 	}
 
-	/** Sets the paint of the given Graphics2D to be a tesselation of the given Sprite.ID. 
+	/** Sets the paint of the given Graphics2D to be a tesselation of the given Sprite.ID, scaling to match rendering size. 
 	 *  Scales the Sprite appropriately to make it apppear the same size as if it were drawn using @{link #drawImage}.
 	 * 
 	 * @param g
