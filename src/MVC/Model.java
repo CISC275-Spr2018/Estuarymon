@@ -797,7 +797,7 @@ public class Model implements java.io.Serializable {
 	public void floodRiver()
 	{
 		if(river.getXLocation() > WIDTH - 800)
-			river.addXLocation(-5);
+			river.addXLocation(-3);
 	}
 	
 	/**
@@ -809,7 +809,7 @@ public class Model implements java.io.Serializable {
 	public void recedeRiver()
 	{
 		if(river.getXLocation() < WIDTH - 200)
-			river.addXLocation(5);
+			river.addXLocation(3);
 	}
 
 	
