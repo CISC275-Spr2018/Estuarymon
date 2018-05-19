@@ -441,13 +441,13 @@ public class View extends JPanel {
 	 */
 	private void drawRiver(Graphics2D g, int xpos_world) {
 		// ---------- Constants for tuning appearance!
-		final int RIVER_X_DIVISOR = -62;
-		final int RIVER_Y_DIVISOR = 25;
+		final int RIVER_X_DIVISOR = -82;
+		final int RIVER_Y_DIVISOR = 75;
 		final int ALPHA_X_DIVISOR = -60;
 		final int ALPHA_Y_DIVISOR = 80;
-		final int SIN_DIVISOR = 2530;
+		final int SIN_DIVISOR = 2102;
 		final int SIN_MULTIPLIER = 50;
-		final int TRANSITION_WIDTH = 400;
+		final int TRANSITION_WIDTH = 200;
 		final int TRANSITION_OFFSET = TRANSITION_WIDTH/2;
 
 		long t = System.currentTimeMillis();
@@ -498,7 +498,7 @@ public class View extends JPanel {
 				int riverOffset = (Math.floorMod(x + xpos - TRANSITION_OFFSET - riverXOffset, riverWidth) + Math.floorMod(y - riverYOffset, riverHeight) * riverWidth) * 4;
 				int alphaMapOffset = (Math.floorMod(x + xpos - TRANSITION_OFFSET - alphaXOffset, alphaWidth) + Math.floorMod(y - alphaYOffset, alphaHeight) * alphaWidth) * 4;
 
-				float percent = ((float) x / TRANSITION_WIDTH);
+				float percent = ((float) x / TRANSITION_WIDTH) * 11/12;
 				int alphaMapRed = this.riverAlphaMapPixels[alphaMapOffset];
 				int alphaValue = (((int) (alphaMapRed + percent * 0x120) - 0x80) * 2) - 0x10;
 				if(percent < 0.25);
