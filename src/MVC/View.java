@@ -514,9 +514,6 @@ public class View extends JPanel {
 		}
 		transitionImage.getRaster().setPixels(0, 0, transitionImage.getWidth(), transitionImage.getHeight(), transitionPixels);
 
-		System.out.println("Raster size: " + transitionPixels.length);
-		System.out.println("W*H: " + TRANSITION_WIDTH * this.getHeight());
-
 		g.drawImage(transitionImage, xpos - TRANSITION_OFFSET, 0, null);
 	}
 
