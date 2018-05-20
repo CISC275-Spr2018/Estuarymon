@@ -615,7 +615,7 @@ class ModelTest {
 		Model model = new Model(1000,1000);
 		model.getRiver().setXLocation(model.getWidth());
 		model.floodRiver();
-		assertTrue(model.getRiver().getXLocation()==995);
+		assertTrue(model.getRiver().getXLocation()==997);
 	}
 	
 	@Test
@@ -623,7 +623,7 @@ class ModelTest {
 		Model model = new Model(1000,1000);
 		model.getRiver().setXLocation(0);
 		model.recedeRiver();
-		assertTrue(model.getRiver().getXLocation()==5);
+		assertTrue(model.getRiver().getXLocation()==3);
 	}
 	
 	@Test
@@ -640,7 +640,7 @@ class ModelTest {
 			p.setHealth(0);
 		}
 		model.checkPlants();
-		assertTrue(model.getRiver().getXLocation()==995);
+		assertTrue(model.getRiver().getXLocation()==997);
 		
 	}
 	
@@ -649,7 +649,7 @@ class ModelTest {
 		Model model = new Model(1000,1000);
 		model.getRiver().setXLocation(0);
 		model.checkPlants();
-		assertTrue(model.getRiver().getXLocation()==5);
+		assertTrue(model.getRiver().getXLocation()==3);
 	}
 	
 	@Test
